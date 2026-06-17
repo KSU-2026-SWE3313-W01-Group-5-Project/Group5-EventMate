@@ -1,2 +1,2 @@
 # term-project
-WIP
+WIP hello :)
