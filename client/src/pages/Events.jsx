@@ -17,12 +17,22 @@ import Navbar from "../components/Navbar.jsx";
 
 export default function Events() {
     const { data: events, isLoading, isError, error } = useQuery({
-        queryKey: "events",
+        queryKey: ["events"],
         queryFn: getEvents,
     })
 
-    if (isLoading) return <span>Loading...</span>;
-    if (isError) return <span>Error: {error}</span>
+    if (isLoading) return (
+        <>
+            <Navbar />
+            <span>Loading...</span>
+        </>
+    );
+    if (isError) return (
+        <>
+            <Navbar />
+            <span>Error...</span>
+        </>
+    );
 
     return (
         <>
