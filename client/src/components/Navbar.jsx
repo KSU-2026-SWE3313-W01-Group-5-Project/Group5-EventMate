@@ -67,7 +67,7 @@ export default function Navbar() {
                 ))}
             </div>
 
-            <div className="text-stone-800 dark:text-white font-bold text-lg absolute left-1/2 -translate-x-1/2">
+            <div className="text-stone-700 dark:text-white font-bold text-lg absolute left-1/2 -translate-x-1/2">
                 Placeholder logo
             </div>
 
@@ -84,28 +84,31 @@ export default function Navbar() {
                 </button>
 
                 {dropDownOpen && (
-                    <div className="absolute right-0 mt-2 w-48 bg-stone-50 border border-stone-200 dark:bg-gray-700 dark:border-gray-800 rounded-md shadow-lg overflow-hidden">
-                        <NavLink
-                            to={"/"}
-                            className="block px-4 py-2 text-stone-700 hover:bg-stone-100 hover:text-stone-900 dark:hover:bg-gray-600 dark:text-stone-50 dark:hover:text-stone-200 transition-colors"
-                        >
-                            Your Profile
-                        </NavLink>
+                    <>
+                        <div className="fixed inset-0" onClick={() => setDropdownOpen(false)}/>
+                        <div className="absolute right-0 mt-2 w-48 bg-stone-50 border border-stone-200 dark:bg-gray-700 dark:border-gray-800 rounded-md shadow-lg overflow-hidden">
+                            <NavLink
+                                to={"/"}
+                                className="block px-4 py-2 text-stone-700 hover:bg-stone-100 hover:text-stone-900 dark:hover:bg-gray-600 dark:text-stone-50 dark:hover:text-stone-200 transition-colors"
+                            >
+                                Your Profile
+                            </NavLink>
 
-                        <NavLink
-                            to={"/"}
-                            className="block px-4 py-2 text-stone-700 hover:bg-stone-100 hover:text-stone-900 dark:hover:bg-gray-600 dark:text-stone-50 dark:hover:text-stone-200 transition-colors"
-                        >
-                            Settings
-                        </NavLink>
+                            <NavLink
+                                to={"/"}
+                                className="block px-4 py-2 text-stone-700 hover:bg-stone-100 hover:text-stone-900 dark:hover:bg-gray-600 dark:text-stone-50 dark:hover:text-stone-200 transition-colors"
+                            >
+                                Settings
+                            </NavLink>
 
-                        <NavLink
-                            to={"/"}
-                            className="block px-4 py-2 text-stone-700 hover:bg-stone-100 hover:text-stone-900 dark:hover:bg-gray-600 dark:text-stone-50 dark:hover:text-stone-200 transition-colors"
-                        >
-                            Sign out
-                        </NavLink>
-                    </div>
+                            <NavLink
+                                to={"/"}
+                                className="block px-4 py-2 text-stone-700 hover:bg-stone-100 hover:text-stone-900 dark:hover:bg-gray-600 dark:text-stone-50 dark:hover:text-stone-200 transition-colors"
+                            >
+                                Sign out
+                            </NavLink>
+                        </div>
+                    </>
                 )}
             </div>
         </nav>

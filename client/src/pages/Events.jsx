@@ -27,6 +27,7 @@ export default function Events() {
             <span>Loading...</span>
         </>
     );
+
     if (isError) return (
         <>
             <Navbar />
@@ -50,6 +51,5 @@ export default function Events() {
                 <Link to="/">Return to home</Link>
             </div>
         </>
-
     )
 }
