@@ -1,4 +1,5 @@
 import {pool} from "./index.js";
+import {hashPassword} from "../utils/hashPassword.js";
 
 // Seeds the database with initial test data.
 //
@@ -12,6 +13,14 @@ export default async function runSeed() {
         INSERT INTO events (title, description, event_date)
         VALUES ('Welcome Event', 'First event in database', NOW());
     `);
+
+    const seededHashPassword = await hashPassword('password');
+
+    await pool.query(`
+        INSERT INTO users (username, email, password_hash, created_at)
+        VALUES ('dylan', 'dylan@dylan.com', $1, NOW())`,
+        [seededHashPassword]
+    );
 
     console.log("Databases seeded!")
 }
