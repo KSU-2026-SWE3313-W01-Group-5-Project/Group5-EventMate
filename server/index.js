@@ -5,6 +5,7 @@ import {runSchema} from "./db/index.js";
 import runSeed from "./db/seed.js";
 
 import eventRoutes from "./routes/events.js";
+import authRoutes from "./routes/auth.js";
 
 const app = express();
 
@@ -12,6 +13,7 @@ app.use(cors());
 app.use(express.json());
 
 app.use("/api/events", eventRoutes);
+app.use("/api/auth", authRoutes);
 
 app.get("/", (req, res) => {
     res.send("Server running!");
