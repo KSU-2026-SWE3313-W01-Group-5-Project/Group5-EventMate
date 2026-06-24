@@ -21,8 +21,8 @@ export default function LoginModal() {
 
     return (
         <>
-            <div className={"w-full max-w-md rounded-xl border border-stone-200 bg-stone-50 shadow-lg p-8 transition-colors duration-300 "} onClick={(e) => e.stopPropagation()}>
-                <h1 className={"text-center text-2xl font-bold text-stone-800 mb-6"}>
+            <div className={"w-full max-w-md rounded-xl border border-stone-200 bg-stone-50 dark:bg-gray-800 dark:border-gray-900 shadow-lg p-8 transition-colors duration-300 "} onClick={(e) => e.stopPropagation()}>
+                <h1 className={"text-center text-2xl font-bold text-stone-800 dark:text-white mb-6"}>
                     Login
                 </h1>
 
@@ -42,7 +42,7 @@ export default function LoginModal() {
                         className={"px-4 py-3 rounded-md border border-stone-300 bg-white text-stone-800 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-stone-500 transition-colors duration-300"}
                     />
 
-                    <button type="submit" className={"mt-2 rounded-md bg-stone-700 text-stone-50 px-4 py-3 font-medium hover:bg-stone-800 transition-colors"}>
+                    <button type="submit" className={"mt-2 rounded-md bg-stone-700 dark:bg-gray-950/50 dark:hover:bg-white/5 text-stone-50 px-4 py-3 font-medium hover:bg-stone-800 transition-colors"}>
                         Login
                     </button>
                 </form>
