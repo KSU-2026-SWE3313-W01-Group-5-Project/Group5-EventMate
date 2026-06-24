@@ -24,7 +24,7 @@ export default function Login() {
         e.preventDefault();
 
         try {
-            register({
+            await register({
                 username,
                 email,
                 password

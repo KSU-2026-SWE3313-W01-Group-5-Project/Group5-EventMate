@@ -1,2 +1,27 @@
 @import "tailwindcss";
+
 @custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+    --animate-slide-up: slide-up 0.2s ease-out forwards;
+
+    @keyframes slide-up {
+        from {
+            transform: translateY(300%);
+        } to {
+            transform: translateY(-25%);
+        }
+    }
+}
+
+@theme {
+    --animate-slide-down: slide-down 0.2s ease-out forwards;
+
+    @keyframes slide-down {
+        from {
+            transform: translateY(0%);
+        } to {
+            transform: translateY(300%);
+        }
+    }
+}
