@@ -11,12 +11,22 @@ export async function registerUser(req, res) {
         }
 
         const existingUser = await pool.query(
-            'SELECT * FROM users WHERE email = $1',
-            [email]
+            'SELECT username, email FROM users WHERE username = $1 OR email = $2',
+            [username, email]
         );
 
-        if (existingUser.rows.length > 0) {
-            return res.status(400).json({ message: "Email already exists" });
+        for (const user of existingUser.rows) {
+            if (user.username === username) {
+                return res.status(409).json({
+                    error: "USERNAME_TAKEN"
+                })
+            }
+
+            if (user.email === email) {
+                return res.status(409).json({
+                    error: "EMAIL_TAKEN"
+                })
+            }
         }
 
         const hashedPassword = await hashPassword(password);
@@ -50,14 +60,14 @@ export async function loginUser(req, res) {
     );
 
     if (selectedUser.rows.length === 0) {
-        return res.status(400).json({ message: "Bad Credentials" });
+        return res.status(401).json({ error: "INVALID_CREDENTIALS" });
     }
 
     const user = selectedUser.rows[0];
     const valid = await comparePasswords(password, user.password_hash);
 
     if (!valid) {
-        return res.status(400).json({ message: "Invalid Password" });
+        return res.status(401).json({ error: "INVALID_CREDENTIALS" });
     }
 
     return res.status(200).json({
