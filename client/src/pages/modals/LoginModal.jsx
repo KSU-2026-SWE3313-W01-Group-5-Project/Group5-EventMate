@@ -1,13 +1,19 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { login } from "../../services/authServices.js";
 import {useNavigate} from "react-router-dom";
+import {useAuth} from "../../context/AuthContext.jsx";
 
 import idIcon from "../../assets/id-card.png"
 import passwordIcon from "../../assets/padlock.png"
 import openEyeIcon from "../../assets/open-eye.png"
 
 export default function LoginModal() {
+    const {
+        login,
+        isLoggingIn,
+        logout
+    } = useAuth();
+
     const queryClient = useQueryClient();
 
     const [username, setUsername] = useState("");

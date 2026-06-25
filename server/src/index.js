@@ -1,9 +1,6 @@
 import express from 'express';
 import cors from 'cors';
 
-import {runSchema} from "./db/index.js";
-import runSeed from "./db/seed.js";
-
 import eventRoutes from "./routes/events.js";
 import authRoutes from "./routes/auth.js";
 
@@ -20,12 +17,6 @@ app.get("/", (req, res) => {
 });
 
 async function startServer() {
-    await runSchema();
-
-    if (process.env.SEED_DB === 'true') {
-        await runSeed();
-    }
-
     app.listen(process.env.PORT, () => {
         console.log("Server listening on port: " + process.env.PORT);
     })
