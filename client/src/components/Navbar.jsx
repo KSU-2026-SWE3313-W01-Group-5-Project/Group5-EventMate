@@ -28,7 +28,6 @@ export default function Navbar() {
     const navigation = [
         { name: "Home", link: "/", current: true },
         { name: "Events", link: "/events", current: false },
-        { name: "Login", link: "/login", current: false },
     ]
 
     const rootElement = document.documentElement;

@@ -2,7 +2,6 @@ import {Route, Routes} from "react-router-dom";
 
 import Home from "./pages/Home.jsx";
 import Events from "./pages/Events.jsx";
-import Login from "./pages/Login.jsx";
 
 /*
     APP COMPONENT
@@ -20,7 +19,6 @@ export default function App() {
         <Routes>
             <Route path={"/"} element={<Home />}/>
             <Route path={"events"} element={<Events />}/>
-            <Route path={"login"} element={<Login />}/>
         </Routes>
     )
 }

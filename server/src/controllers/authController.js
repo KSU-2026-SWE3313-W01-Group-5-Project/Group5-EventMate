@@ -1,6 +1,9 @@
-import { pool } from "../db/index.js";
+import { createPool } from "../../db/index.js";
 import crypto from "crypto";
 import {comparePasswords, hashPassword} from "../utils/hashPassword.js";
+import {generateToken} from "../utils/jwt.js";
+
+const pool = createPool();
 
 export async function registerUser(req, res) {
     try {
@@ -70,7 +73,30 @@ export async function loginUser(req, res) {
         return res.status(401).json({ error: "INVALID_CREDENTIALS" });
     }
 
+    const token = generateToken(user);
+
     return res.status(200).json({
         message: "Login Successful",
+        token: token
     });
+}
+
+export async function getUser(req, res) {
+    try {
+        const userId = req.user.id;
+
+        const result = await pool.query(
+            'SELECT id, username, email FROM users WHERE id = $1',
+            [userId]
+        );
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: "USER_NOT_FOUND" });
+        }
+
+        res.status(200).json(result.rows[0])
+    } catch (err) {
+        console.error("Getting user failed:", err);
+        res.status(500).json({ error: "INTERNAL_SERVER_ERROR" });
+    }
 }

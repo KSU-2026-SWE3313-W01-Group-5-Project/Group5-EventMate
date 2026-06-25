@@ -3,6 +3,7 @@ import Navbar from "../components/Navbar.jsx";
 import LoginModal from "./modals/LoginModal.jsx";
 import Modal from "../components/Modal.jsx";
 import RegisterModal from "./modals/RegisterModal.jsx";
+import {useAuth} from "../context/AuthContext.jsx";
 
 /*
     Home PAGE
@@ -12,15 +13,41 @@ import RegisterModal from "./modals/RegisterModal.jsx";
 */
 
 export default function Home() {
+    const { user, isLoading, isError, logout } = useAuth();
+
+    const renderUser = () => {
+        if (isLoading) {
+            return (
+                <span>Loading...</span>
+            )
+        }
+
+        if (isError || !user) {
+            return <span>Not logged in...</span>
+        }
+
+        return (
+            <>
+                <p>Username: {user.username}</p>
+                <p>Email: {user.email}</p>
+            </>
+        )
+    }
+
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
 
     const modal = searchParams.get("modal");
 
+    const handleLogout = () => {
+        logout();
+        navigate("/events");
+    }
+
     return (
         <>
             <Navbar />
-            <div>
+            <div className={"flex flex-col gap-8"}>
                 <h1>Home</h1>
                 <p>Welcome to the home page for this website!</p>
 
@@ -37,6 +64,9 @@ export default function Home() {
 
                 <button className={"bg-gray-500"} onClick={() => navigate("/?modal=login")}>Open Login Modal</button>
                 <button className={"bg-gray-500"} onClick={() => navigate("/?modal=register")}>Open Register Modal</button>
+
+                {renderUser()}
+                <button onClick={handleLogout}>Logout</button>
             </div>
         </>
     )

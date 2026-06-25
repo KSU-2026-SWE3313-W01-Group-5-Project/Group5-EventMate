@@ -1,4 +1,6 @@
-import {pool} from "../db/index.js";
+import { createPool } from "../../db/index.js";
+
+const pool = createPool();
 
 // Handles logic for event-specific API requests.
 //

@@ -21,3 +21,18 @@ export async function register(userData) {
 
     return response.data;
 }
+
+export async function getCurrentUser() {
+    const token = localStorage.getItem("token");
+
+    const response = await axios.get(
+        `${BASE_URL}/me`,
+        {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        }
+    );
+
+    return response.data;
+}
