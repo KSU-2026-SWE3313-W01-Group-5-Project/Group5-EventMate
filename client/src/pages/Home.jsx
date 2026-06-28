@@ -3,6 +3,8 @@ import Navbar from "../components/Navbar.jsx";
 import {useAuth} from "../context/AuthContext.jsx";
 import {AuthModal} from "./modals/AuthModal.jsx";
 
+import heroImage from "../assets/hero/pexels-michael-brennan-173741263-14591832.jpg"
+
 /*
     Home PAGE
 
@@ -46,6 +48,27 @@ export default function Home() {
     return (
         <>
             <Navbar />
+
+            <main>
+
+                <section className="relative h-[80vh] min-h-200">
+
+                    <img
+                        src={heroImage}
+                        alt="People attending an event"
+                        className="h-full w-full object-cover object-center"
+                    />
+
+                    <div className="absolute inset-0 flex flex-col justify-center items-center text-white text-center bg-black/50">
+                        <h1 className="text-5xl md:text-6xl lg:text-7xl mb-3 font-bold">Find Your Next Adventure</h1>
+
+
+                    </div>
+
+
+
+                </section>
+            </main>
             <div className={"flex flex-col gap-8"}>
                 <h1>Home</h1>
                 <p>Welcome to the home page for this website!</p>
