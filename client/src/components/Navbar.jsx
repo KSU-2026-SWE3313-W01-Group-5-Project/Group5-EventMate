@@ -39,24 +39,14 @@ export default function Navbar() {
     useEffect(() => {
         const rootElement = document.documentElement;
 
-        const savedTheme = localStorage.getItem("theme");
-
-        if (savedTheme === "dark" || (!savedTheme && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
-            rootElement.classList.add("dark");
-            localStorage.setItem("theme", "dark");
-        } else {
-            rootElement.classList.remove("dark");
-            localStorage.setItem("theme", "light");
-        }
-    }, []);
+        rootElement.classList.toggle("dark", theme === "dark");
+        localStorage.setItem("theme", theme);
+    }, [theme]);
 
     const handleDarkMode = () => {
-        const newTheme = theme === "dark" ? "light" : "dark";
-
-        setTheme(newTheme);
-        localStorage.setItem("theme", newTheme);
-
-        document.documentElement.classList.toggle("dark", newTheme === "dark");
+        setTheme((currentTheme) =>
+            currentTheme === "dark" ? "light" : "dark"
+        );
     }
 
     return (

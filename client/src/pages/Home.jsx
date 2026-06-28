@@ -52,17 +52,6 @@ export default function Home() {
 
                 <AuthModal modal={modal} isOpen={isOpen} navigate={navigate} />
 
-                {/*{modal === "login" && (*/}
-                {/*    <Modal onClose={() => navigate("/")}>*/}
-                {/*        <LoginModal />*/}
-                {/*    </Modal>*/}
-                {/*)}*/}
-                {/*{modal === "register" && (*/}
-                {/*    <Modal onClose={() => navigate("/")}>*/}
-                {/*        <RegisterModal />*/}
-                {/*    </Modal>*/}
-                {/*)}*/}
-
                 <button className={"bg-gray-500"} onClick={() => navigate("/?modal=login")}>Open Login Modal</button>
                 <button className={"bg-gray-500"} onClick={() => navigate("/?modal=register")}>Open Register Modal</button>
 
