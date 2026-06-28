@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { register } from "../../services/authServices.js";
+import { useNavigate } from "react-router-dom";
 
 import emailIcon from "../../assets/registration_modal_icons/mail.png";
 import idIcon from "../../assets/registration_modal_icons/id-card.png"
@@ -11,7 +12,7 @@ const USER_REGEX = /^[A-z][A-z0-9-_]{3,23}$/;
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
 const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
-export default function RegisterModal() {
+export default function RegisterModal({ onSwitch }) {
     const queryClient = useQueryClient();
 
     const [username, setUsername] = useState("");
@@ -35,6 +36,8 @@ export default function RegisterModal() {
 
     const [showPassword, setShowPassword] = useState(false);
     const [showMatch, setShowMatch] = useState(false);
+
+    const navigate = useNavigate();
 
     useEffect(() => {
         setValidUsername(USER_REGEX.test(username));
@@ -308,8 +311,20 @@ export default function RegisterModal() {
                             Register
                         </button>
                     </fieldset>
-
                 </form>
+
+                <div className={`flex items-center justify-center`}>
+                    <button
+                        type={"button"}
+                        className={`
+                            text-stone-600 hover:text-stone-900 dark:text-gray-300 dark:hover:text-white
+                            font-medium
+                            transition-colors`}
+                        onClick={onSwitch}
+                    >
+                        Already have an account? Sign in!
+                    </button>
+                </div>
             </div>
         </>
     )
