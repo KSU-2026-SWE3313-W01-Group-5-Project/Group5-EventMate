@@ -1,5 +1,5 @@
 import {NavLink} from "react-router-dom";
-import {useState} from "react";
+import {useState, useEffect} from "react";
 
 /*
     REUSABLE COMPONENTS
@@ -25,37 +25,42 @@ import {useState} from "react";
 export default function Navbar() {
     const [dropDownOpen, setDropdownOpen] = useState(false);
 
+    const [theme, setTheme] = useState(
+        localStorage.getItem("theme") || "light"
+    );
+
     const navigation = [
-        { name: "Home", link: "/", current: true },
-        { name: "Events", link: "/events", current: false },
+        {name: "Home", link: "/", current: true},
+        {name: "Events", link: "/events", current: false},
     ]
 
-    const rootElement = document.documentElement;
+    useEffect(() => {
+        const rootElement = document.documentElement;
 
-    if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage)) && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-        rootElement.classList.add('dark');
-    } else {
-        rootElement.classList.remove('dark');
-    }
+        if (theme === "dark") {
+            rootElement.classList.add("dark");
+            localStorage.setItem("theme", "dark");
+        } else {
+            rootElement.classList.remove("dark");
+            localStorage.setItem("theme", "light");
+        }
+    }, [theme]);
 
     const handleDarkMode = () => {
-        if (rootElement.classList.contains('dark')) {
-            rootElement.classList.remove('dark');
-            localStorage.setItem('theme', 'light');
-        } else {
-            rootElement.classList.add('dark');
-            localStorage.setItem('theme', 'dark');
-        }
+        setTheme((currentTheme) =>
+            currentTheme === "dark" ? "light" : "dark"
+        );
     }
 
     return (
-        <nav className="flex items-center justify-between bg-stone-100 text-stone-800 dark:bg-gray-800 px-6 py-4 dark:text-white transition-colors duration-300">
+        <nav
+            className="flex items-center justify-between bg-stone-100 text-stone-800 dark:bg-gray-800 px-6 py-4 dark:text-white transition-colors duration-300">
             <div className="flex gap-6">
                 {navigation.map((item) => (
                     <NavLink
                         key={item.name}
                         to={item.link}
-                        className={({ isActive }) =>
+                        className={({isActive}) =>
                             isActive
                                 ? "bg-stone-700 text-stone-50 dark:bg-gray-950/50 dark:text-white rounded-md px-3 py-2 text-sm font-medium transition-colors"
                                 : "text-stone-600 hover:bg-stone-200 hover:text-stone-900 dark:text-gray-300 dark:hover:bg-white/5 dark:hover:text-white rounded-md px-3 py-2 text-sm font-medium transition-colors"
@@ -85,7 +90,8 @@ export default function Navbar() {
                 {dropDownOpen && (
                     <>
                         <div className="fixed inset-0" onClick={() => setDropdownOpen(false)}/>
-                        <div className="absolute right-0 mt-2 w-48 bg-stone-50 border border-stone-200 dark:bg-gray-700 dark:border-gray-800 rounded-md shadow-lg overflow-hidden">
+                        <div
+                            className="absolute right-0 mt-2 w-48 bg-stone-50 border border-stone-200 dark:bg-gray-700 dark:border-gray-800 rounded-md shadow-lg overflow-hidden">
                             <NavLink
                                 to={"/"}
                                 className="block px-4 py-2 text-stone-700 hover:bg-stone-100 hover:text-stone-900 dark:hover:bg-gray-600 dark:text-stone-50 dark:hover:text-stone-200 transition-colors"

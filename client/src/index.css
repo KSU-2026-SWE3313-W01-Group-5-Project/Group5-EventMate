@@ -1,5 +1,11 @@
 @import "tailwindcss";
 
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+
+body {
+    font-family: 'Inter', sans-serif;
+}
+
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
@@ -8,7 +14,8 @@
     @keyframes slide-up {
         from {
             transform: translateY(300%);
-        } to {
+        }
+        to {
             transform: translateY(-25%);
         }
     }
@@ -20,7 +27,8 @@
     @keyframes slide-down {
         from {
             transform: translateY(0%);
-        } to {
+        }
+        to {
             transform: translateY(300%);
         }
     }
