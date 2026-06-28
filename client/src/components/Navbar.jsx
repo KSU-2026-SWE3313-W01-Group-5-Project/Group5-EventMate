@@ -32,31 +32,21 @@ export default function Navbar() {
     const [theme, setTheme] = useState(localStorage.getItem("theme") || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"));
 
     const navigation = [
-        { name: "Home", link: "/", current: true },
-        { name: "Events", link: "/events", current: false },
+        {name: "Home", link: "/", current: true},
+        {name: "Events", link: "/events", current: false},
     ]
 
     useEffect(() => {
         const rootElement = document.documentElement;
 
-        const savedTheme = localStorage.getItem("theme");
-
-        if (savedTheme === "dark" || (!savedTheme && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
-            rootElement.classList.add("dark");
-            localStorage.setItem("theme", "dark");
-        } else {
-            rootElement.classList.remove("dark");
-            localStorage.setItem("theme", "light");
-        }
-    }, []);
+        rootElement.classList.toggle("dark", theme === "dark");
+        localStorage.setItem("theme", theme);
+    }, [theme]);
 
     const handleDarkMode = () => {
-        const newTheme = theme === "dark" ? "light" : "dark";
-
-        setTheme(newTheme);
-        localStorage.setItem("theme", newTheme);
-
-        document.documentElement.classList.toggle("dark", newTheme === "dark");
+        setTheme((currentTheme) =>
+            currentTheme === "dark" ? "light" : "dark"
+        );
     }
 
     return (
@@ -74,7 +64,7 @@ export default function Navbar() {
                     <NavLink
                         key={item.name}
                         to={item.link}
-                        className={({ isActive }) =>
+                        className={({isActive}) =>
                             isActive
                                 ? `bg-stone-700 dark:bg-gray-950/50 
                                 text-stone-50 dark:text-white 
@@ -194,7 +184,7 @@ export default function Navbar() {
                                     text-stone-700 hover:text-stone-900 dark:text-stone-50 dark:hover:text-stone-200
                                     hover:bg-stone-100 dark:hover:bg-gray-600 transition-colors
                                     `}
-                                    >
+                                >
                                     Sign out
                                 </NavLink>
                             </div>
