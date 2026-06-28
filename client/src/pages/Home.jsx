@@ -1,9 +1,7 @@
 import {Link, useNavigate, useSearchParams} from "react-router-dom";
 import Navbar from "../components/Navbar.jsx";
-import LoginModal from "./modals/LoginModal.jsx";
-import Modal from "../components/Modal.jsx";
-import RegisterModal from "./modals/RegisterModal.jsx";
 import {useAuth} from "../context/AuthContext.jsx";
+import {AuthModal} from "./modals/AuthModal.jsx";
 
 /*
     Home PAGE
@@ -38,6 +36,7 @@ export default function Home() {
     const navigate = useNavigate();
 
     const modal = searchParams.get("modal");
+    const isOpen = modal === "login" || modal === "register";
 
     const handleLogout = () => {
         logout();
@@ -51,16 +50,7 @@ export default function Home() {
                 <h1>Home</h1>
                 <p>Welcome to the home page for this website!</p>
 
-                {modal === "login" && (
-                    <Modal onClose={() => navigate("/")}>
-                        <LoginModal />
-                    </Modal>
-                )}
-                {modal === "register" && (
-                    <Modal onClose={() => navigate("/")}>
-                        <RegisterModal />
-                    </Modal>
-                )}
+                <AuthModal modal={modal} isOpen={isOpen} navigate={navigate} />
 
                 <button className={"bg-gray-500"} onClick={() => navigate("/?modal=login")}>Open Login Modal</button>
                 <button className={"bg-gray-500"} onClick={() => navigate("/?modal=register")}>Open Register Modal</button>
