@@ -36,6 +36,14 @@ export default function Navbar() {
         { name: "Events", link: "/events", current: false },
     ]
 
+//  Reusable styling
+    const iconButton =
+        "bg-stone-700 dark:bg-gray-950/50 " +
+        "hover:bg-stone-200 dark:hover:bg-white/5 " +
+        "text-stone-600 hover:text-stone-900 dark:text-gray-300 dark:hover:text-white " +
+        "rounded-full px-3 py-2 transition-colors ";
+//  === Reusable styling
+
     useEffect(() => {
         const rootElement = document.documentElement;
 
@@ -90,12 +98,7 @@ export default function Navbar() {
             <div className="relative flex gap-4">
                 <button
                     onClick={() => handleDarkMode()}
-                    className={`
-                    bg-stone-700 dark:bg-gray-950/50
-                    rounded-full 
-                    px-3 py-2 
-                    transition-colors
-                    `}
+                    className={ iconButton }
                 >
                     <img
                         className={"h-5 w-auto object-contain dark:hidden"}
@@ -111,12 +114,7 @@ export default function Navbar() {
                 </button>
 
                 <button
-                    className={`
-                    bg-stone-700 dark:bg-gray-950/50
-                    rounded-full 
-                    px-3 py-2 
-                    transition-colors
-                    `}
+                    className={ iconButton }
                 >
                     <img
                         className={"h-5 w-auto object-contain"}
@@ -128,13 +126,7 @@ export default function Navbar() {
                 <div className="relative">
                     <button
                         onClick={() => setDropdownOpen(!dropDownOpen)}
-                        className={`
-                        flex items-center gap-2
-                        bg-stone-700 dark:bg-gray-950/50 
-                        rounded-full 
-                        px-3 py-2
-                        transition-colors
-                        `}
+                        className={ iconButton }
                     >
                         <img
                             className={"h-5 w-auto object-contain"}
