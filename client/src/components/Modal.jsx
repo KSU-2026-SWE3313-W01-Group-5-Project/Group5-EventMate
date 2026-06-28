@@ -1,28 +1,25 @@
 import {useEffect, useState} from "react";
 
-export default function Modal({ children, onClose }) {
+export default function Modal({ children, onClose, isOpen }) {
     const [visible, setVisible] = useState(false);
-    const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
-        requestAnimationFrame(() => {
-            setMounted(true);
-            setTimeout(() => {
-                setVisible(true);
-            }, 10);
-        })
-    }, [])
+        if (isOpen) {
+            setVisible(true);
+        } else {
+            setVisible(false);
+        }
+    }, [isOpen]);
 
     const handleClose = () => {
         setVisible(false);
 
         setTimeout(() => {
-            setMounted(false);
             onClose();
         }, 300)
     }
 
-    if (!mounted) return null;
+    if (!isOpen && !visible) return null;
 
     return (
         <div
@@ -41,7 +38,6 @@ export default function Modal({ children, onClose }) {
                     {children}
                 </div>
             </div>
-
         </div>
     )
 }

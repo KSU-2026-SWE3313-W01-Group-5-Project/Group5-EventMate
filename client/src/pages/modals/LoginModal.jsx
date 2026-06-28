@@ -7,7 +7,7 @@ import idIcon from "../../assets/registration_modal_icons/id-card.png"
 import passwordIcon from "../../assets/registration_modal_icons/padlock.png"
 import openEyeIcon from "../../assets/registration_modal_icons/open-eye.png"
 
-export default function LoginModal() {
+export default function LoginModal({ onSwitch }) {
     const {
         login,
         isLoggingIn,
@@ -162,6 +162,19 @@ export default function LoginModal() {
                         </button>
                     </fieldset>
                 </form>
+
+                <div className={`flex items-center justify-center`}>
+                    <button
+                        type={"button"}
+                        className={`
+                            text-stone-600 hover:text-stone-900 dark:text-gray-300 dark:hover:text-white
+                            font-medium
+                            transition-colors`}
+                        onClick={onSwitch}
+                    >
+                        Not signed up? Create an account!
+                    </button>
+                </div>
             </div>
         </>
     )
