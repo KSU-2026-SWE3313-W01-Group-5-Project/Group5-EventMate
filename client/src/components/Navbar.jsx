@@ -163,10 +163,11 @@ export default function Navbar() {
                                 `}
                             >
                                 <NavLink
-                                    to={"/"}
+                                    to={"/profile"}
                                     className={ styles.dropdownLink }
+                                    onClick={() => setDropdownOpen(false)}
                                 >
-                                    Your Profile
+                                    My Profile
                                 </NavLink>
 
                                 <NavLink
