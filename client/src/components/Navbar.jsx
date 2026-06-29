@@ -73,6 +73,7 @@ export default function Navbar() {
     return (
         <nav
             className={`
+            relative z-50
             flex items-center justify-between 
             bg-stone-100 dark:bg-gray-800
             text-stone-800 dark:text-white
@@ -150,13 +151,14 @@ export default function Navbar() {
 
                     {dropDownOpen && user && (
                         <>
-                            <div className="fixed inset-0" onClick={() => setDropdownOpen(false)}/>
+                            <div className="fixed inset-0 z-40" onClick={() => setDropdownOpen(false)}/>
                             <div
                                 className={`
                                 absolute right-0 mt-2 w-48 
                                 bg-stone-50 border border-stone-200 dark:bg-gray-700 dark:border-gray-800 
                                 rounded-md 
                                 shadow-lg 
+                                z-50
                                 overflow-hidden
                                 `}
                             >
