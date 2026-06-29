@@ -28,7 +28,7 @@ export default function Navbar() {
 //  Reusable styling
     const styles = {
         iconButton: `bg-stone-700 dark:bg-gray-950/50
-        hover:bg-stone-400 dark:hover:bg-white/5
+        hover:bg-stone-600 dark:hover:bg-white/5
         text-stone-600 hover:text-stone-900 dark:text-gray-300 dark:hover:text-white
         rounded-full px-3 py-2 transition-colors `,
 
@@ -140,18 +140,19 @@ export default function Navbar() {
                 <div className="relative">
                     <button
                         onClick={() => handleUserDropdown()}
-                        className={ styles.iconButton }
+                        className={ `${styles.iconButton} flex gap-2` }
                     >
                         <img
                             className={"h-5 w-auto object-contain"}
                             src={userIcon}
                             alt="user"
                         />
+                        {user ? <h2 className={"text-gray-300 dark:hover:text-white"}>{user.username}</h2> : null}
                     </button>
 
                     {dropDownOpen && user && (
                         <>
-                            <div className="fixed inset-0 z-40" onClick={() => setDropdownOpen(false)}/>
+                            <div className={"fixed inset-0 z-40"} onClick={() => setDropdownOpen(false)}/>
                             <div
                                 className={`
                                 absolute right-0 mt-2 w-48 

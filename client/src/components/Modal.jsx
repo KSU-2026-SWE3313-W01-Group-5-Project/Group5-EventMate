@@ -21,7 +21,6 @@ export default function Modal({ children, onClose, isOpen }) {
         }, 300)
     }
 
-
     const childWithProps =
         React.isValidElement(children)
             ? cloneElement(children, {

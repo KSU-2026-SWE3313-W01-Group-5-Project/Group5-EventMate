@@ -1,9 +1,21 @@
+/*
+-- Event Tables Start --
+*/
+
 CREATE TABLE events (
     id SERIAL PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
     description TEXT,
     event_date TIMESTAMP
 );
+
+/*
+-- Event Tables End --
+*/
+
+/*
+-- User Tables Start --
+*/
 
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
@@ -16,3 +28,7 @@ CREATE TABLE users (
 
     created_at TIMESTAMP DEFAULT NOW()
 );
+
+/*
+-- User Tables End --
+*/
