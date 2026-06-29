@@ -8,8 +8,6 @@ export async function login(credentials) {
         credentials
     );
 
-    console.log(response);
-
     return response.data;
 }
 

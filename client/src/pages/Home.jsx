@@ -32,17 +32,6 @@ export default function Home() {
         )
     }
 
-    const [searchParams] = useSearchParams();
-    const navigate = useNavigate();
-
-    const modal = searchParams.get("modal");
-    const isOpen = modal === "login" || modal === "register";
-
-    const handleLogout = () => {
-        logout();
-        navigate("/events");
-    }
-
     return (
         <>
             <Navbar />
@@ -50,13 +39,8 @@ export default function Home() {
                 <h1>Home</h1>
                 <p>Welcome to the home page for this website!</p>
 
-                <AuthModal modal={modal} isOpen={isOpen} navigate={navigate} />
-
-                <button className={"bg-gray-500"} onClick={() => navigate("/?modal=login")}>Open Login Modal</button>
-                <button className={"bg-gray-500"} onClick={() => navigate("/?modal=register")}>Open Register Modal</button>
-
                 {renderUser()}
-                <button onClick={handleLogout}>Logout</button>
+                <button onClick={logout}>Logout</button>
             </div>
         </>
     )
