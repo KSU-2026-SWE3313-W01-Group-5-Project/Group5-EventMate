@@ -3,7 +3,7 @@ import Navbar from "../components/Navbar.jsx";
 import {useAuth} from "../context/AuthContext.jsx";
 import {AuthModal} from "./modals/AuthModal.jsx";
 
-import heroImage from "../assets/hero/pexels-michael-brennan-173741263-14591832.jpg"
+import heroImage from "../assets/hero/homepage-hero.jpg"
 
 /*
     Home PAGE
@@ -13,7 +13,7 @@ import heroImage from "../assets/hero/pexels-michael-brennan-173741263-14591832.
 */
 
 export default function Home() {
-    const { user, isLoading, isError, logout } = useAuth();
+    const {user, isLoading, isError, logout} = useAuth();
 
     const renderUser = () => {
         if (isLoading) {
@@ -47,7 +47,7 @@ export default function Home() {
 
     return (
         <>
-            <Navbar />
+            <Navbar/>
 
             <main>
 
@@ -59,24 +59,26 @@ export default function Home() {
                         className="h-full w-full object-cover object-center"
                     />
 
-                    <div className="absolute inset-0 flex flex-col justify-center items-center text-white text-center bg-black/50">
+                    <div
+                        className="absolute inset-0 flex flex-col justify-center items-center text-white text-center bg-black/50">
                         <h1 className="text-5xl md:text-6xl lg:text-7xl mb-3 font-bold">Find Your Next Adventure</h1>
 
-
+                        <p className="max-w-3xl px-6 text-lg md:text-xl lg:text-2xl leading-relaxed text-stone-200">
+                            From live music and sports to art shows and local festivals, your next great moment is
+                            waiting.
+                            Join a community of explorers and experience the world together.
+                        </p>
                     </div>
-
-
 
                 </section>
             </main>
             <div className={"flex flex-col gap-8"}>
-                <h1>Home</h1>
-                <p>Welcome to the home page for this website!</p>
 
-                <AuthModal modal={modal} isOpen={isOpen} navigate={navigate} />
+                <AuthModal modal={modal} isOpen={isOpen} navigate={navigate}/>
 
                 <button className={"bg-gray-500"} onClick={() => navigate("/?modal=login")}>Open Login Modal</button>
-                <button className={"bg-gray-500"} onClick={() => navigate("/?modal=register")}>Open Register Modal</button>
+                <button className={"bg-gray-500"} onClick={() => navigate("/?modal=register")}>Open Register Modal
+                </button>
 
                 {renderUser()}
                 <button onClick={handleLogout}>Logout</button>

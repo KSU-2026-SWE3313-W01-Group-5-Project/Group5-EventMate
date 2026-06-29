@@ -1,11 +1,13 @@
-import {useEffect, useState} from "react";
+import React, {useEffect, useState, cloneElement} from "react";
 
 export default function Modal({ children, onClose, isOpen }) {
     const [visible, setVisible] = useState(false);
 
     useEffect(() => {
         if (isOpen) {
-            setVisible(true);
+            setTimeout(() => {
+                setVisible(true);
+            }, 10)
         } else {
             setVisible(false);
         }
@@ -18,6 +20,14 @@ export default function Modal({ children, onClose, isOpen }) {
             onClose();
         }, 300)
     }
+
+
+    const childWithProps =
+        React.isValidElement(children)
+            ? cloneElement(children, {
+                onRequestClose: handleClose,
+            })
+            : children;
 
     if (!isOpen && !visible) return null;
 
@@ -35,7 +45,7 @@ export default function Modal({ children, onClose, isOpen }) {
                     `}
                     onClick={(e) => e.stopPropagation()}
                 >
-                    {children}
+                    {childWithProps}
                 </div>
             </div>
         </div>

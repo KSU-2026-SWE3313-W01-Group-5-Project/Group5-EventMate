@@ -1,33 +1,22 @@
-import {NavLink} from "react-router-dom";
-import {useEffect, useState} from "react";
+import {NavLink, useNavigate, useSearchParams} from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useAuth } from "../context/AuthContext.jsx";
 
 import sunIcon from "../assets/navbar_icons/sun.png"
 import moonIcon from "../assets/navbar_icons/crescent-moon.png"
 import bellIcon from "../assets/navbar_icons/bell.png"
 import userIcon from "../assets/navbar_icons/user.png"
-
-/*
-    REUSABLE COMPONENTS
-
-    Components in this folder are:
-    - reusable UI pieces
-    - not full pages
-    - can (and probably should) appear on multiple routes
-
-    Example: Navbar, Buttons, Cards, Modals
-    This one, the navbar, is the main navigation bar you see on most websites, and because we will be putting it on almost every page, we can just turn it into a component
-    to save ourselves from having to recode it every time
-*/
-
-/*
-    I have added way more styling to this navbar component through the use of an extension called tailwind css, I definitely recommend looking into the docs as tailwind will make css styling
-    way smoother and significantly less of a pain for the entire project
-
-    A lot of this styling is tentative and just for me to get some early practice in with styling, but if everyone likes it im happy to continue a similar style
-    I also plan on replacing some of the text buttons with icons whenever we actually start decorating stuff
- */
+import {AuthModal} from "../pages/modals/AuthModal.jsx";
 
 export default function Navbar() {
+    const [searchParams, setSearchParams] = useSearchParams();
+    const navigate = useNavigate();
+
+    const modal = searchParams.get("modal");
+    const isOpen = modal === "login" || modal === "register";
+
+    const { user, logout } = useAuth();
+
     const [dropDownOpen, setDropdownOpen] = useState(false);
     const [theme, setTheme] = useState(localStorage.getItem("theme") || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"));
 
@@ -37,12 +26,18 @@ export default function Navbar() {
     ]
 
 //  Reusable styling
-    const iconButton =
-        "bg-stone-700 dark:bg-gray-950/50 " +
-        "hover:bg-stone-200 dark:hover:bg-white/5 " +
-        "text-stone-600 hover:text-stone-900 dark:text-gray-300 dark:hover:text-white " +
-        "rounded-full px-3 py-2 transition-colors ";
-//  === Reusable styling
+    const styles = {
+        iconButton: `bg-stone-700 dark:bg-gray-950/50
+        hover:bg-stone-400 dark:hover:bg-white/5
+        text-stone-600 hover:text-stone-900 dark:text-gray-300 dark:hover:text-white
+        rounded-full px-3 py-2 transition-colors `,
+
+        dropdownLink: `block px-4 py-2 
+        text-left w-full
+        text-stone-700 hover:text-stone-900 dark:text-stone-50 dark:hover:text-stone-200
+        hover:bg-stone-100 dark:hover:bg-gray-600 transition-colors`,
+    }
+//
 
     useEffect(() => {
         const rootElement = document.documentElement;
@@ -57,9 +52,28 @@ export default function Navbar() {
         );
     }
 
+    const handleUserDropdown = () => {
+        if (user) {
+            setDropdownOpen(!dropDownOpen)
+        } else {
+            setSearchParams(prev => {
+                const params = new URLSearchParams(prev);
+                params.set("modal", "login");
+                return params;
+            });
+        }
+    }
+
+    const handleLogout = () => {
+        logout();
+        navigate("/");
+        setDropdownOpen(false);
+    }
+
     return (
         <nav
             className={`
+            relative z-50
             flex items-center justify-between 
             bg-stone-100 dark:bg-gray-800
             text-stone-800 dark:text-white
@@ -98,7 +112,7 @@ export default function Navbar() {
             <div className="relative flex gap-4">
                 <button
                     onClick={() => handleDarkMode()}
-                    className={ iconButton }
+                    className={ styles.iconButton }
                 >
                     <img
                         className={"h-5 w-auto object-contain dark:hidden"}
@@ -114,7 +128,7 @@ export default function Navbar() {
                 </button>
 
                 <button
-                    className={ iconButton }
+                    className={ styles.iconButton }
                 >
                     <img
                         className={"h-5 w-auto object-contain"}
@@ -125,8 +139,8 @@ export default function Navbar() {
 
                 <div className="relative">
                     <button
-                        onClick={() => setDropdownOpen(!dropDownOpen)}
-                        className={ iconButton }
+                        onClick={() => handleUserDropdown()}
+                        className={ styles.iconButton }
                     >
                         <img
                             className={"h-5 w-auto object-contain"}
@@ -135,53 +149,44 @@ export default function Navbar() {
                         />
                     </button>
 
-                    {dropDownOpen && (
+                    {dropDownOpen && user && (
                         <>
-                            <div className="fixed inset-0" onClick={() => setDropdownOpen(false)}/>
+                            <div className="fixed inset-0 z-40" onClick={() => setDropdownOpen(false)}/>
                             <div
                                 className={`
                                 absolute right-0 mt-2 w-48 
                                 bg-stone-50 border border-stone-200 dark:bg-gray-700 dark:border-gray-800 
                                 rounded-md 
                                 shadow-lg 
+                                z-50
                                 overflow-hidden
                                 `}
                             >
                                 <NavLink
                                     to={"/"}
-                                    className={`
-                                    block px-4 py-2 
-                                    text-stone-700 hover:text-stone-900 dark:text-stone-50 dark:hover:text-stone-200
-                                    hover:bg-stone-100 dark:hover:bg-gray-600 transition-colors
-                                    `}
+                                    className={ styles.dropdownLink }
                                 >
                                     Your Profile
                                 </NavLink>
 
                                 <NavLink
                                     to={"/"}
-                                    className={`
-                                    block px-4 py-2 
-                                    text-stone-700 hover:text-stone-900 dark:text-stone-50 dark:hover:text-stone-200
-                                    hover:bg-stone-100 dark:hover:bg-gray-600 transition-colors
-                                    `}
+                                    className={ styles.dropdownLink }
                                 >
                                     Settings
                                 </NavLink>
 
-                                <NavLink
-                                    to={"/"}
-                                    className={`
-                                    block px-4 py-2 
-                                    text-stone-700 hover:text-stone-900 dark:text-stone-50 dark:hover:text-stone-200
-                                    hover:bg-stone-100 dark:hover:bg-gray-600 transition-colors
-                                    `}
-                                    >
+                                <button
+                                    onClick={handleLogout}
+                                    className={ styles.dropdownLink }
+                                >
                                     Sign out
-                                </NavLink>
+                                </button>
                             </div>
                         </>
                     )}
+
+                    <AuthModal modal={modal} isOpen={isOpen} />
                 </div>
 
             </div>
