@@ -35,9 +35,10 @@ export function AuthProvider({ children }) {
     const logout = () => {
         localStorage.removeItem("token");
 
-        queryClient.invalidateQueries({
-            queryKey: ["currentUser"],
-            updater: null
+        queryClient.setQueryData(["currentUser"], null);
+
+        queryClient.removeQueries({
+            queryKey: ["currentUser"]
         });
     }
 

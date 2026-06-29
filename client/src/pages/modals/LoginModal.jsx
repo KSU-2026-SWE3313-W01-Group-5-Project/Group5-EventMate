@@ -1,20 +1,17 @@
-import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import {useNavigate} from "react-router-dom";
 import {useAuth} from "../../context/AuthContext.jsx";
 
 import idIcon from "../../assets/registration_modal_icons/id-card.png"
 import passwordIcon from "../../assets/registration_modal_icons/padlock.png"
 import openEyeIcon from "../../assets/registration_modal_icons/open-eye.png"
+import {useSearchParams} from "react-router-dom";
 
-export default function LoginModal({ onSwitch }) {
+export default function LoginModal({ onSwitch, onRequestClose }) {
     const {
         login,
-        isLoggingIn,
-        logout
     } = useAuth();
 
-    const queryClient = useQueryClient();
+    const [searchParams, setSearchParams] = useSearchParams();
 
     const [username, setUsername] = useState("");
 
@@ -37,6 +34,10 @@ export default function LoginModal({ onSwitch }) {
             setPassword("");
 
             setErrorMessage("");
+
+            setTimeout(() => {
+                onRequestClose()
+            }, 1000);
         } catch (err) {
             if (!err?.response) {
                 setErrorMessage("No Server Response");

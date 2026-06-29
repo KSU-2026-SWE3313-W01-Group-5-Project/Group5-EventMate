@@ -1,4 +1,4 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { register } from "../../services/authServices.js";
 import { useNavigate } from "react-router-dom";
@@ -12,7 +12,7 @@ const USER_REGEX = /^[A-z][A-z0-9-_]{3,23}$/;
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
 const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
-export default function RegisterModal({ onSwitch }) {
+export default function RegisterModal({ onSwitch, onRequestClose }) {
     const queryClient = useQueryClient();
 
     const [username, setUsername] = useState("");
@@ -36,8 +36,6 @@ export default function RegisterModal({ onSwitch }) {
 
     const [showPassword, setShowPassword] = useState(false);
     const [showMatch, setShowMatch] = useState(false);
-
-    const navigate = useNavigate();
 
     useEffect(() => {
         setValidUsername(USER_REGEX.test(username));
