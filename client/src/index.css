@@ -4,4 +4,10 @@ body {
     font-family: 'Inter', sans-serif;
 }
 
+@layer base {
+    *, ::before, ::after {
+        @apply transition-colors duration-300;
+    }
+}
+
 @custom-variant dark (&:where(.dark, .dark *));

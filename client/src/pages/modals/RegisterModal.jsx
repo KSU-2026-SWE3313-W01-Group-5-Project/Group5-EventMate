@@ -110,7 +110,7 @@ export default function RegisterModal({ onSwitch, onRequestClose }) {
                 w-full max-w-md 
                 rounded-xl 
                 border border-stone-200 
-                bg-stone-50 dark:bg-gray-800 dark:border-gray-900 
+                bg-stone-50 dark:bg-zinc-800 dark:border-zinc-900 
                 shadow-lg p-8 
                 transition-colors duration-300
                 `} onClick={(e) => e.stopPropagation()}
@@ -301,8 +301,8 @@ export default function RegisterModal({ onSwitch, onRequestClose }) {
                             className={`
                             px-4 py-3
                             mt-2 rounded-md 
-                            bg-stone-800 dark:bg-gray-950/50 
-                            hover:bg-stone-700 dark:hover:bg-white/5 disabled:bg-stone-700/50 dark:disabled:bg-gray-950/25 
+                            bg-stone-800 dark:bg-zinc-950/50 
+                            hover:bg-stone-700 dark:hover:bg-white/5 disabled:bg-stone-700/50 dark:disabled:bg-zinc-950/25 
                             text-stone-50 font-medium
                             transition-colors`}
                         >
