@@ -1,22 +1,17 @@
 import Papa from 'papaparse';
 
-export async function fetchAndParseCSV(filePath) {
-    try {
-        const response = await fetch(filePath);
+import citiescsv from '../assets/datasets/cities.csv?url'
 
-        if (!response.ok) {
-            console.error(`Could not parse csv file: ${filePath}`);
-        }
-
-        const csvText = await response.text();
-
-        const result = Papa.parse(csvText, {
+export function fetchAndParseCitiesCSV() {
+    return new Promise((resolve, reject) => {
+        Papa.parse(citiescsv, {
+            download: true,
             header: true,
-            skipEmptyLines: true,
+            complete: (results) => {
+                console.log("Successfully loaded project CSV:", results.data);
+                resolve(results);
+            },
+            error: (error) => reject(error)
         });
-
-        return result.data;
-    } catch (err) {
-        console.error("Error fetching and parsing CSV:", err);
-    }
+    });
 }
