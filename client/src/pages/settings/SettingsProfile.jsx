@@ -1,30 +1,15 @@
 import {useState} from "react";
-import {fetchAndParseCitiesCSV} from "../../utils/parseCSV.js";
-
-async function loadCities() {
-    const groupedCities = {};
-
-    const csvData = await fetchAndParseCitiesCSV();
-
-    csvData.data.forEach(({ city, state_name, lat, lng}) => {
-        if (!groupedCities[state_name]) groupedCities[state_name] = [];
-        groupedCities[state_name].push({city, lat, lng});
-    })
-
-    return groupedCities;
-}
+import {useCities} from "../../hooks/useCities.js";
 
 export default function SettingsProfile() {
     const [selected, setSelected] = useState([]);
+    const { cities, loading } = useCities();
 
     const toggleInterest = (interest) => {
         setSelected(prev =>
         prev.includes(interest) ? prev.filter(i => i !== interest)
         : [...prev, interest]);
     }
-
-    const groupedCities = loadCities();
-    console.log("grouped cities:", groupedCities);
 
     const styles = {
         formInput: `flex px-4 py-3 gap-x-6 gap-y-2 rounded-md border border-stone-300 bg-white 
