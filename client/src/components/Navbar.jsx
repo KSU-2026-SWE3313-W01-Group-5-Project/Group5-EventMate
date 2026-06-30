@@ -27,7 +27,7 @@ export default function Navbar() {
 
 //  Reusable styling
     const styles = {
-        iconButton: `bg-stone-700 dark:bg-gray-950/50
+        iconButton: `bg-stone-700 dark:bg-zinc-900/50
         hover:bg-stone-600 dark:hover:bg-white/5
         text-stone-600 hover:text-stone-900 dark:text-gray-300 dark:hover:text-white
         rounded-full px-3 py-2 transition-colors `,
@@ -35,7 +35,7 @@ export default function Navbar() {
         dropdownLink: `block px-4 py-2 
         text-left w-full
         text-stone-700 hover:text-stone-900 dark:text-stone-50 dark:hover:text-stone-200
-        hover:bg-stone-100 dark:hover:bg-gray-600 transition-colors`,
+        hover:bg-stone-100 dark:hover:bg-zinc-600 transition-colors`,
     }
 //
 
@@ -75,7 +75,7 @@ export default function Navbar() {
             className={`
             relative z-50
             flex items-center justify-between 
-            bg-stone-100 dark:bg-gray-800
+            bg-stone-100 dark:bg-zinc-800
             text-stone-800 dark:text-white
             px-6 py-4 
             transition-colors duration-300
@@ -156,7 +156,7 @@ export default function Navbar() {
                             <div
                                 className={`
                                 absolute right-0 mt-2 w-48 
-                                bg-stone-50 border border-stone-200 dark:bg-gray-700 dark:border-gray-800 
+                                bg-stone-50 border border-stone-200 dark:bg-zinc-700 dark:border-zinc-800 
                                 rounded-md 
                                 shadow-lg 
                                 z-50
@@ -172,7 +172,7 @@ export default function Navbar() {
                                 </NavLink>
 
                                 <NavLink
-                                    to={"/"}
+                                    to={"settings"}
                                     className={ styles.dropdownLink }
                                 >
                                     Settings

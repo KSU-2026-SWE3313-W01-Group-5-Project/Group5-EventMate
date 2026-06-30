@@ -39,7 +39,6 @@ export default function Home() {
             <Navbar/>
 
             <main>
-
                 <section className="relative h-[80vh] min-h-200">
 
                     <img
