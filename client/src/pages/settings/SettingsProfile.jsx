@@ -1,7 +1,5 @@
 import {useState} from "react";
-import {fetchAndParseCSV} from "../../utils/parseCSV.js";
-
-const csvPath = 'client/src/assets/datasets/cities.csv'
+import LocationTypeahead from "../../components/LocationTypeahead.jsx";
 
 export default function SettingsProfile() {
     const [selected, setSelected] = useState([]);
@@ -12,17 +10,9 @@ export default function SettingsProfile() {
         : [...prev, interest]);
     }
 
-    // const csvData = fetchAndParseCSV(csvPath);
-    // const groupedCities = {};
-    //
-    // csvData.forEach(({ city, state_name, lat, lng }) => {
-    //     if (!groupedCities[state_name]) groupedCities[state_name] = [];
-    //     groupedCities[state_name].push({city, lat, lng});
-    // })
-
     const styles = {
         formInput: `flex px-4 py-3 gap-x-6 gap-y-2 rounded-md border border-stone-300 bg-white 
-        text-stone-800 placeholder:text-stone-400 focus-within:outline-none focus-within:ring-2 focus-within:ring-stone-500 
+        text-stone-800 placeholder:text-stone-400 focus-within:outline-none focus-within:ring-2 focus-within:ring-stone-300/75 
         transition-colors duration-300`,
     }
 
@@ -78,7 +68,7 @@ export default function SettingsProfile() {
                                                 ${isSelected ? `bg-stone-800 dark:bg-zinc-900/80
                                                 hover:bg-stone-700 dark:hover:bg-stone/500
                                                 text-stone-50 font-medium
-                                                transition-color` : `bg-stone-800 dark:bg-zinc-600/70
+                                                transition-color` : `bg-stone-800/50 dark:bg-zinc-600/70
                                                 hover:bg-stone-700 dark:hover:bg-stone/500
                                                 text-stone-50 font-medium
                                                 transition-color`
@@ -92,10 +82,7 @@ export default function SettingsProfile() {
                             </div>
                         </span>
 
-                        <span
-                            className={ styles.formInput }
-                        >
-                        </span>
+                        <LocationTypeahead />
                     </form>
                     <section className={`w-12 h-12 bg-blue-500 rounded-full flex justify-center`}>
 

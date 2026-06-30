@@ -3,6 +3,7 @@ import cors from 'cors';
 
 import eventRoutes from "./routes/events.js";
 import authRoutes from "./routes/auth.js";
+import citiesRoutes from "./routes/cities.js";
 
 const app = express();
 
@@ -11,6 +12,7 @@ app.use(express.json());
 
 app.use("/api/events", eventRoutes);
 app.use("/api/auth", authRoutes);
+app.use("/api/cities", citiesRoutes);
 
 app.get("/", (req, res) => {
     res.send("Server running!");

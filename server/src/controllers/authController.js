@@ -38,7 +38,7 @@ export async function registerUser(req, res) {
         const result = await pool.query(
             'INSERT INTO users (username, email, password_hash, verification_token)' +
             'VALUES ($1, $2, $3, $4)' +
-            'RETURNING id, username, email, verification_token',
+            'RETURNING public_id, username, email, verification_token',
             [username, email, hashedPassword, verificationToken]
         );
 
@@ -86,7 +86,7 @@ export async function getUser(req, res) {
         const userId = req.user.id;
 
         const result = await pool.query(
-            'SELECT id, username, email FROM users WHERE id = $1',
+            'SELECT public_id, username, email FROM users WHERE id = $1',
             [userId]
         );
 
