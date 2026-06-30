@@ -164,7 +164,7 @@ export default function Navbar() {
                                 `}
                             >
                                 <NavLink
-                                    to={"/profile"}
+                                    to={`/profile/${user.public_id}`}
                                     className={ styles.dropdownLink }
                                     onClick={() => setDropdownOpen(false)}
                                 >
