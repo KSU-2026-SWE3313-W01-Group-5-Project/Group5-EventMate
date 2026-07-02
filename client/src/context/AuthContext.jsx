@@ -8,39 +8,34 @@ const AuthContext = createContext(null);
 export function AuthProvider({ children }) {
     const queryClient = useQueryClient();
 
-    const {
-        data: user,
-        isLoading
-    } = useQuery({
+    const query = useQuery({
         queryKey: ["currentUser"],
         queryFn: authService.getCurrentUser,
 
         retry: false,
+    })
 
-        enabled: !!localStorage.getItem("token")
-    });
+    const user = query.data ?? null;
+    const isLoading = query.isLoading;
+    const isAuthenticated = !!query.data;
 
     const loginMutation = useMutation({
         mutationFn: authService.login,
 
         onSuccess: (data) => {
-            localStorage.setItem("token", data.token);
-
             queryClient.invalidateQueries({
                 queryKey: ["currentUser"],
             });
         }
     });
 
-    const logout = () => {
-        localStorage.removeItem("token");
+    const logoutMutation = useMutation({
+        mutationFn: authService.logout,
 
-        queryClient.setQueryData(["currentUser"], null);
-
-        queryClient.removeQueries({
-            queryKey: ["currentUser"]
-        });
-    }
+        onSuccess: (data) => {
+            queryClient.clear();
+        }
+    });
 
     const updateMutation = useMutation({
         mutationFn: (userSettings) => authService.updateUser(userSettings),
@@ -55,15 +50,15 @@ export function AuthProvider({ children }) {
     return <AuthContext.Provider
         value={{
             user,
-            isAuthenticated: !!user,
-            isLoading: isLoading,
+            isAuthenticated,
+            isLoading,
 
             login: loginMutation.mutateAsync,
             isLoggingIn: loginMutation.isPending,
 
             updateUser: updateMutation.mutateAsync,
 
-            logout
+            logout: logoutMutation.mutateAsync,
         }}
     >
         {children}
