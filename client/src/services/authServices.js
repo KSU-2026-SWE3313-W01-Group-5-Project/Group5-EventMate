@@ -61,3 +61,14 @@ export async function updateUser(userData) {
 
     return response.data;
 }
+
+export async function deleteUser() {
+    const response = await axios.delete(
+        `${BASE_URL}/me/update/delete`,
+        {
+            withCredentials: true,
+        }
+    )
+
+    return response.data;
+}

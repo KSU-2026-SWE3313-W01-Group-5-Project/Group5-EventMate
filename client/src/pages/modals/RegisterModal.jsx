@@ -90,7 +90,7 @@ export default function RegisterModal({ onSwitch, onRequestClose }) {
                         break;
 
                     case "EMAIL_TAKEN":
-                        setErrorMessage('Email Taken');
+                        setErrorMessage('An account with that email already exists');
                         break;
 
                     default:
