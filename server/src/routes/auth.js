@@ -5,7 +5,8 @@ import {
     loginUser,
     getUser,
     updateUser,
-    logout
+    logout,
+    deleteUser
 } from "../controllers/authController.js";
 import {authMiddleware} from "../middleware/authMiddleware.js";
 
@@ -16,6 +17,7 @@ router.post('/login', loginUser);
 router.get('/me', authMiddleware, getUser);
 router.patch('/me/update', authMiddleware, updateUser);
 router.post('/logout', logout);
+router.delete('/me/update/delete', authMiddleware, deleteUser);
 //router.get('/verify/:token', verifyEmail);
 
 

@@ -26,7 +26,7 @@ CREATE TABLE users (
     password_hash TEXT NOT NULL,
 
     bio TEXT,
-    interests TEXT[],
+    interests TEXT[] DEFAULT '{}',
     city TEXT,
     state TEXT,
 

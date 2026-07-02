@@ -135,7 +135,7 @@ export async function updateUser(req, res) {
         const userId = req.user.id;
         const requestedUpdates = req.body;
 
-        const allowedColumns = ['username', 'bio', 'interests', 'city', 'state'];
+        const allowedColumns = ['username', 'bio', 'interests', 'city', 'state', 'password', 'email'];
         const columnsToUpdate = [];
         const queryValues = [];
 
@@ -150,6 +150,48 @@ export async function updateUser(req, res) {
             return res.status(400).json({ error: "NO_VALID_SETTINGS_TO_UPDATE" });
         }
 
+        if (columnsToUpdate.includes("username")) {
+            const index = columnsToUpdate.indexOf("username");
+
+            const existingUser = await pool.query(
+                'SELECT username FROM users WHERE username = $1',
+                [queryValues[index]]
+            );
+
+            for (const user of existingUser.rows) {
+                if (user.username === queryValues[index]) {
+                    return res.status(409).json({
+                        error: "USERNAME_TAKEN"
+                    })
+                }
+            }
+        }
+
+        if (columnsToUpdate.includes("email")) {
+            const index = columnsToUpdate.indexOf("email");
+
+            const existingUser = await pool.query(
+                'SELECT email FROM users WHERE email = $1',
+                [queryValues[index]]
+            );
+
+            for (const user of existingUser.rows) {
+                if (user.email === queryValues[index]) {
+                    return res.status(409).json({
+                        error: "EMAIL_TAKEN"
+                    })
+                }
+            }
+        }
+
+        if (columnsToUpdate.includes("password")) {
+            const index = columnsToUpdate.indexOf("password");
+
+            columnsToUpdate[index] = "password_hash";
+
+            queryValues[index] = await hashPassword(queryValues[index]);
+        }
+
         const setClause = columnsToUpdate
             .map((col, index) => `"${col}" = $${index + 1}`)
             .join(', ');
@@ -161,7 +203,7 @@ export async function updateUser(req, res) {
             UPDATE users 
             SET ${setClause}
             WHERE id = ${userIdPlaceholder}
-            RETURNING username, bio, interests, city, state
+            RETURNING username, bio, interests, city, state, email
             `;
 
         const result = await pool.query(sqlQuery, queryValues);
@@ -174,5 +216,29 @@ export async function updateUser(req, res) {
     } catch (err) {
         console.error("Update user failed:", err);
         return res.status(500).json({ error: "INTERNAL_SERVER_ERROR" });
+    }
+}
+
+export async function deleteUser(req, res) {
+    try {
+        const userId = req.user.id;
+        console.log(userId);
+
+        const sqlQuery = `
+            DELETE FROM users
+            WHERE id = $1
+            RETURNING id;
+            `;
+
+        const result = await pool.query(sqlQuery, [userId]);
+
+        if (result.rowCount === 0) {
+            return res.status(404).json({ error: "USER_NOT_FOUND" });
+        }
+
+        return res.status(204).send();
+    } catch (err) {
+        console.error("Update deletion failed:", err);
+        return res.status(500).json({error: "INTERNAL_SERVER_ERROR"});
     }
 }

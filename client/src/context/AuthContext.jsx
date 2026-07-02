@@ -47,6 +47,10 @@ export function AuthProvider({ children }) {
         }
     });
 
+    const deleteMutation = useMutation({
+        mutationFn: authService.deleteUser,
+    });
+
     return <AuthContext.Provider
         value={{
             user,
@@ -59,6 +63,7 @@ export function AuthProvider({ children }) {
             updateUser: updateMutation.mutateAsync,
 
             logout: logoutMutation.mutateAsync,
+            deleteUser: deleteMutation.mutateAsync,
         }}
     >
         {children}
