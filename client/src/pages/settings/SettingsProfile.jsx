@@ -2,6 +2,8 @@ import {useEffect, useState} from "react";
 import LocationTypeahead from "../../components/LocationTypeahead.jsx";
 import {useAuth} from "../../context/AuthContext.jsx";
 
+import PencilIcon from "../../assets/Profile_icon/pencil.png"
+
 const availableInterests = ["Music", "Coding", "Gaming"]
 
 export default function SettingsProfile() {
@@ -139,7 +141,17 @@ export default function SettingsProfile() {
                             </button>
                         </span>
                     </form>
-                    <section className={`w-12 h-12 bg-blue-500 rounded-full flex justify-center`}>
+                    <section className={`flex items-center lg:pl-15 lg:pb-17 md:pl-12 md:pb-15 md:pr-3`}>
+                        <div className={` lg:w-65 lg:h-65 md:w-50 md:h-50 h-50 w-50  bg-stone-700 rounded-full 
+                        flex border-4 border-black hover:bg-stone-500 justify-center items-center group
+                        
+                        `}>
+                        <img
+                            src={PencilIcon}
+                            alt={'Pencil Icon'}
+                            className={`h-1/5 w-1/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 ease-in-out`}
+                        />
+                        </div>
 
                     </section>
                 </div>
