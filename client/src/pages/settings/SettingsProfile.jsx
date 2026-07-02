@@ -1,13 +1,13 @@
-import {useEffect, useState} from "react";
+import {useEffect, useState, useRef} from "react";
 import LocationTypeahead from "../../components/LocationTypeahead.jsx";
 import {useAuth} from "../../context/AuthContext.jsx";
 
-import PencilIcon from "../../assets/Profile_icon/pencil.png"
+import ProfileImageUpload from "../../components/ProfileImageUpload.jsx";
 
 const availableInterests = ["Music", "Coding", "Gaming"]
 
 export default function SettingsProfile() {
-    const { user, updateUser } = useAuth();
+    const {user, updateUser} = useAuth();
 
     const [selected, setSelected] = useState([]);
 
@@ -17,10 +17,14 @@ export default function SettingsProfile() {
     const [state, setState] = useState("");
     const [city, setCity] = useState("");
 
+    const [profileImagePreview, setProfileImagePreview] = useState(null);
+    const [profileImageFile, setProfileImageFile] = useState(null);
+
+
     const toggleInterest = (availableInterest) => {
         setSelected(prev =>
-        prev.includes(availableInterest) ? prev.filter(i => i !== availableInterest)
-        : [...prev, availableInterest]);
+            prev.includes(availableInterest) ? prev.filter(i => i !== availableInterest)
+                : [...prev, availableInterest]);
     }
 
     useEffect(() => {
@@ -40,27 +44,47 @@ export default function SettingsProfile() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        const settings = {
-            username: username,
-            bio: bio,
-            interests: interests,
-            state: state,
-            city: city,
+//      Ran into an issue. When uploading image files (jpg,png,etc.) it can't use JSON data
+//      Solution: use formData as it allows image files and the other profile fields -> line 67-87
+
+        const formData = new FormData();
+
+        if (username.trim()) formData.append("username", username)
+        if (bio.trim()) formData.append("bio", bio)
+        if (city.trim()) formData.append("city", city)
+        if (state.trim()) formData.append("state", state.trim())
+        if (profileImageFile) {
+            formData.append("profileImage", profileImageFile)
         }
 
-        const cleanSettings = Object.fromEntries(
-            Object.entries(settings).filter(([key, value]) => {
-                if (typeof value === "string") return value.trim() !== "";
-                if (Array.isArray(value)) return value.length > 0;
-                return true;
-            })
-        )
+        formData.append("interests", JSON.stringify(interests));
 
         try {
-            await updateUser(cleanSettings);
-        } catch (err) {
-            console.error("Error updating user settings:", err);
+            await updateUser(formData);
+        } catch (error) {
+            console.error("Error updating user profile:", error);
         }
+        // const settings = {
+        //     username: username,
+        //     bio: bio,
+        //     interests: interests,
+        //     state: state,
+        //     city: city,
+        // }
+        //
+        // const cleanSettings = Object.fromEntries(
+        //     Object.entries(settings).filter(([key, value]) => {
+        //         if (typeof value === "string") return value.trim() !== "";
+        //         if (Array.isArray(value)) return value.length > 0;
+        //         return true;
+        //     })
+        // )
+        //
+        // try {
+        //     await updateUser(cleanSettings);
+        // } catch (err) {
+        //     console.error("Error updating user settings:", err);
+        // }
     }
 
     return (
@@ -76,7 +100,7 @@ export default function SettingsProfile() {
                 <div className={`flex`}>
                     <form onSubmit={handleSubmit} className={`flex flex-col m-5 p-5 gap-15 min-w-1/2`}>
                         <span
-                            className={ styles.formInput }
+                            className={styles.formInput}
                         >
                             <h1>Change Username</h1>
                             <input
@@ -87,7 +111,7 @@ export default function SettingsProfile() {
                         </span>
 
                         <span
-                            className={ styles.formInput }
+                            className={styles.formInput}
                         >
                             <h1>Change Bio</h1>
                             <textarea
@@ -98,7 +122,7 @@ export default function SettingsProfile() {
                         </span>
 
                         <span
-                            className={ styles.formInput + `flex items-center` }
+                            className={styles.formInput + `flex items-center`}
                         >
                             <h1>Set Interests</h1>
                             <div className={`flex flex-wrap gap-2`}>
@@ -119,7 +143,7 @@ export default function SettingsProfile() {
                                                 hover:bg-stone-700 dark:hover:bg-stone/500
                                                 text-stone-50 font-medium
                                                 transition-color`
-                                                }
+                                            }
                                             `}
                                         >
                                             {availableInterest}
@@ -129,7 +153,7 @@ export default function SettingsProfile() {
                             </div>
                         </span>
 
-                        <LocationTypeahead user={user} setState={setState} setCity={setCity} />
+                        <LocationTypeahead user={user} setState={setState} setCity={setCity}/>
 
                         <span className={`justify-start`}>
                             <button
@@ -141,19 +165,13 @@ export default function SettingsProfile() {
                             </button>
                         </span>
                     </form>
-                    <section className={`flex items-center lg:pl-15 lg:pb-17 md:pl-12 md:pb-15 md:pr-3`}>
-                        <div className={` lg:w-65 lg:h-65 md:w-50 md:h-50 h-50 w-50  bg-stone-700 rounded-full 
-                        flex border-4 border-black hover:bg-stone-500 justify-center items-center group
-                        
-                        `}>
-                        <img
-                            src={PencilIcon}
-                            alt={'Pencil Icon'}
-                            className={`h-1/5 w-1/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 ease-in-out`}
-                        />
-                        </div>
 
-                    </section>
+                    <ProfileImageUpload
+                        profileImagePreview={profileImagePreview}
+                        setProfileImagePreview={setProfileImagePreview}
+                        setProfileImageFile={setProfileImageFile}
+                    />
+
                 </div>
 
             </div>
