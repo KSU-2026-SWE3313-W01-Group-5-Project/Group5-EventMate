@@ -42,6 +42,16 @@ export function AuthProvider({ children }) {
         });
     }
 
+    const updateMutation = useMutation({
+        mutationFn: (userSettings) => authService.updateUser(userSettings),
+
+        onSuccess: (data) => {
+            queryClient.invalidateQueries({
+                queryKey: ["currentUser"],
+            })
+        }
+    });
+
     return <AuthContext.Provider
         value={{
             user,
@@ -50,6 +60,8 @@ export function AuthProvider({ children }) {
 
             login: loginMutation.mutateAsync,
             isLoggingIn: loginMutation.isPending,
+
+            updateUser: updateMutation.mutateAsync,
 
             logout
         }}

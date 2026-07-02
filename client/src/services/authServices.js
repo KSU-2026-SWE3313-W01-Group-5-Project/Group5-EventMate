@@ -34,3 +34,17 @@ export async function getCurrentUser() {
 
     return response.data;
 }
+
+export async function updateUser(userData) {
+    const token = localStorage.getItem("token");
+
+    const response = await axios.patch(
+        `${BASE_URL}/me/update`,
+        userData,
+        {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        }
+    );
+}
