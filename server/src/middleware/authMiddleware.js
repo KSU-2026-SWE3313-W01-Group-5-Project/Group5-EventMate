@@ -1,16 +1,10 @@
 import jwt from 'jsonwebtoken';
 
 export const authMiddleware = (req, res, next) => {
-    const authHeader = req.headers.authorization;
-
-    if (!authHeader) {
-        return res.status(401).json({ error: "NO_TOKEN" });
-    }
-
-    const token = authHeader.split(' ')[1];
+    const token = req.cookies.token;
 
     if (!token) {
-        return res.status(401).json({ error: "INVALID_TOKEN_FORMAT" });
+        return res.status(401).json({ error: "UNAUTHORIZED" });
     }
 
     try {

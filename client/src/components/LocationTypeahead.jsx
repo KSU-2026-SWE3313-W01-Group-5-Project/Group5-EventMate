@@ -1,7 +1,7 @@
 import {useEffect, useRef, useState} from "react";
 import {useCities} from "../hooks/useCities.js";
 
-export default function LocationTypeahead() {
+export default function LocationTypeahead({setState, setCity, user}) {
     const [stateInputValue, setStateInputValue] = useState("");
     const [stateFiltered, setStateFiltered] = useState([]);
 
@@ -17,6 +17,7 @@ export default function LocationTypeahead() {
     const handleStateInputChange = (e) => {
         const value = e.target.value;
         setStateInputValue(value);
+        setState(value);
 
         if (value.trim() === '') {
             setStateFiltered([]);
@@ -34,22 +35,20 @@ export default function LocationTypeahead() {
 
     const handleStateSelect = (value) => {
         setStateInputValue(value);
+        setState(value);
         setStateIsOpen(false);
     }
 
     const handleCityInputChange = (e) => {
         const value = e.target.value;
         setCityInputValue(value);
+        setCity(value);
 
         if (value.trim() === '') {
             setCityFiltered([]);
             setCityIsOpen(false);
             return;
         }
-
-        const cityList = cities[stateInputValue];
-
-        console.log(cityList);
 
         const matched = Array.from(
             new Set(
@@ -67,6 +66,7 @@ export default function LocationTypeahead() {
 
     const handleCitySelect = (value) => {
         setCityInputValue(value);
+        setCity(value);
         setCityIsOpen(false);
     }
 
@@ -104,7 +104,7 @@ export default function LocationTypeahead() {
                         value={stateInputValue}
                         onChange={handleStateInputChange}
                         className="w-full focus:outline-none"
-                        placeholder="Type to search states..."
+                        placeholder={user.state ? user.state : "Type to search states..."}
                     />
 
                     {stateIsOpen && stateFiltered.length > 0 && (
@@ -128,7 +128,7 @@ export default function LocationTypeahead() {
                         value={cityInputValue}
                         onChange={handleCityInputChange}
                         className="flex-1 focus:outline-none"
-                        placeholder="Type to search cities..."
+                        placeholder={user.city ? user.city : "Type to search cities..."}
                         disabled={stateInputValue.length === 0}
                     />
 

@@ -55,30 +55,41 @@ export async function registerUser(req, res) {
 }
 
 export async function loginUser(req, res) {
-    const { username, password } = req.body;
+    try {
+        const { username, password } = req.body;
 
-    const selectedUser = await pool.query(
-        'SELECT id, password_hash FROM users WHERE username = $1',
-        [username]
-    );
+        const selectedUser = await pool.query(
+            'SELECT id, password_hash FROM users WHERE username = $1',
+            [username]
+        );
 
-    if (selectedUser.rows.length === 0) {
-        return res.status(401).json({ error: "INVALID_CREDENTIALS" });
+        if (selectedUser.rows.length === 0) {
+            return res.status(401).json({ error: "INVALID_CREDENTIALS" });
+        }
+
+        const user = selectedUser.rows[0];
+        const valid = await comparePasswords(password, user.password_hash);
+
+        if (!valid) {
+            return res.status(401).json({ error: "INVALID_CREDENTIALS" });
+        }
+
+        const jwtToken = generateToken(user);
+
+        return res.status(200)
+            .cookie('token', jwtToken, {
+                httpOnly: true,
+                secure: false,
+                sameSite: 'lax',
+                path: '/',
+                maxAge: 7 * 24 * 60 * 60 * 1000,
+            })
+            .json({ message: "Login successful" });
+    } catch (err) {
+        console.error("Authentication Error:", err);
+        res.status(500).json({ error: "INTERNAL_SERVER_ERROR" });
     }
 
-    const user = selectedUser.rows[0];
-    const valid = await comparePasswords(password, user.password_hash);
-
-    if (!valid) {
-        return res.status(401).json({ error: "INVALID_CREDENTIALS" });
-    }
-
-    const token = generateToken(user);
-
-    return res.status(200).json({
-        message: "Login Successful",
-        token: token
-    });
 }
 
 export async function getUser(req, res) {
@@ -86,7 +97,7 @@ export async function getUser(req, res) {
         const userId = req.user.id;
 
         const result = await pool.query(
-            'SELECT public_id, username, email FROM users WHERE id = $1',
+            'SELECT public_id, username, email, bio, interests, city, state FROM users WHERE id = $1',
             [userId]
         );
 
@@ -94,9 +105,74 @@ export async function getUser(req, res) {
             return res.status(404).json({ error: "USER_NOT_FOUND" });
         }
 
-        res.status(200).json(result.rows[0])
+        res.status(200)
+            .setHeader("Cache-Control", "no-store")
+            .json(result.rows[0]);
     } catch (err) {
         console.error("Getting user failed:", err);
         res.status(500).json({ error: "INTERNAL_SERVER_ERROR" });
+    }
+}
+
+export async function logout(req, res) {
+    try {
+        return res.status(200)
+            .clearCookie('token', {
+                httpOnly: true,
+                secure: false,
+                sameSite: 'lax',
+                path: '/',
+                domain: 'localhost',
+            })
+            .json({ message: "Logout successful" });
+    } catch (err) {
+        res.status(500).json({ error: "INTERNAL_SERVER_ERROR" });
+    }
+}
+
+export async function updateUser(req, res) {
+    try {
+        const userId = req.user.id;
+        const requestedUpdates = req.body;
+
+        const allowedColumns = ['username', 'bio', 'interests', 'city', 'state'];
+        const columnsToUpdate = [];
+        const queryValues = [];
+
+        Object.keys(requestedUpdates).forEach(key => {
+            if (allowedColumns.includes(key)) {
+                columnsToUpdate.push(key);
+                queryValues.push(requestedUpdates[key]);
+            }
+        });
+
+        if (columnsToUpdate.length === 0) {
+            return res.status(400).json({ error: "NO_VALID_SETTINGS_TO_UPDATE" });
+        }
+
+        const setClause = columnsToUpdate
+            .map((col, index) => `"${col}" = $${index + 1}`)
+            .join(', ');
+
+        queryValues.push(userId);
+        const userIdPlaceholder = `$${queryValues.length}`;
+
+        const sqlQuery = `
+            UPDATE users 
+            SET ${setClause}
+            WHERE id = ${userIdPlaceholder}
+            RETURNING username, bio, interests, city, state
+            `;
+
+        const result = await pool.query(sqlQuery, queryValues);
+
+        if (result.rowCount === 0) {
+            return res.status(404).json({ error: "USER_NOT_FOUND" });
+        }
+
+        return res.status(200).json(result.rows[0]);
+    } catch (err) {
+        console.error("Update user failed:", err);
+        return res.status(500).json({ error: "INTERNAL_SERVER_ERROR" });
     }
 }

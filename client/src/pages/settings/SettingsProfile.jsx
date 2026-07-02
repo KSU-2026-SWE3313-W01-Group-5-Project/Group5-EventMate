@@ -1,14 +1,33 @@
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import LocationTypeahead from "../../components/LocationTypeahead.jsx";
+import {useAuth} from "../../context/AuthContext.jsx";
+
+const availableInterests = ["Music", "Coding", "Gaming"]
 
 export default function SettingsProfile() {
+    const { user, updateUser } = useAuth();
+
     const [selected, setSelected] = useState([]);
 
-    const toggleInterest = (interest) => {
+    const [username, setUsername] = useState("");
+    const [bio, setBio] = useState("");
+    const [interests, setInterests] = useState([]);
+    const [state, setState] = useState("");
+    const [city, setCity] = useState("");
+
+    const toggleInterest = (availableInterest) => {
         setSelected(prev =>
-        prev.includes(interest) ? prev.filter(i => i !== interest)
-        : [...prev, interest]);
+        prev.includes(availableInterest) ? prev.filter(i => i !== availableInterest)
+        : [...prev, availableInterest]);
     }
+
+    useEffect(() => {
+        setSelected(user.interests);
+    }, [])
+
+    useEffect(() => {
+        setInterests(selected);
+    }, [selected]);
 
     const styles = {
         formInput: `flex px-4 py-3 gap-x-6 gap-y-2 rounded-md border border-stone-300 bg-white 
@@ -16,7 +35,31 @@ export default function SettingsProfile() {
         transition-colors duration-300`,
     }
 
-    const interests = ["Music", "Coding", "Gaming"]
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        const settings = {
+            username: username,
+            bio: bio,
+            interests: interests,
+            state: state,
+            city: city,
+        }
+
+        const cleanSettings = Object.fromEntries(
+            Object.entries(settings).filter(([key, value]) => {
+                if (typeof value === "string") return value.trim() !== "";
+                if (Array.isArray(value)) return value.length > 0;
+                return true;
+            })
+        )
+
+        try {
+            await updateUser(cleanSettings);
+        } catch (err) {
+            console.error("Error updating user settings:", err);
+        }
+    }
 
     return (
         <>
@@ -29,14 +72,15 @@ export default function SettingsProfile() {
                 </h1>
 
                 <div className={`flex`}>
-                    <form className={`flex flex-col gap-4 min-w-1/2`}>
+                    <form onSubmit={handleSubmit} className={`flex flex-col m-5 p-5 gap-15 min-w-1/2`}>
                         <span
                             className={ styles.formInput }
                         >
                             <h1>Change Username</h1>
                             <input
                                 className={"focus:outline-none flex-1"}
-                                placeholder={"Username"}
+                                placeholder={user.username}
+                                onChange={(e) => setUsername(e.target.value)}
                             />
                         </span>
 
@@ -46,7 +90,8 @@ export default function SettingsProfile() {
                             <h1>Change Bio</h1>
                             <textarea
                                 className={"focus:outline-none flex-1"}
-                                placeholder={"Bio"}
+                                placeholder={user.bio}
+                                onChange={(e) => setBio(e.target.value)}
                             />
                         </span>
 
@@ -55,17 +100,17 @@ export default function SettingsProfile() {
                         >
                             <h1>Set Interests</h1>
                             <div className={`flex flex-wrap gap-2`}>
-                                {interests.map(interest => {
-                                    const isSelected = selected.includes(interest);
+                                {availableInterests.map(availableInterest => {
+                                    const isSelected = selected.includes(availableInterest);
 
                                     return (
                                         <button
-                                            key={interest}
+                                            key={availableInterest}
                                             type={'button'}
-                                            onClick={() => toggleInterest(interest)}
+                                            onClick={() => toggleInterest(availableInterest)}
                                             className={`
                                                 px-4 py-2 rounded-lg
-                                                ${isSelected ? `bg-stone-800 dark:bg-zinc-900/80
+                                                ${isSelected ? `bg-zinc-900/80 dark:bg-zinc-900/80
                                                 hover:bg-stone-700 dark:hover:bg-stone/500
                                                 text-stone-50 font-medium
                                                 transition-color` : `bg-stone-800/50 dark:bg-zinc-600/70
@@ -75,14 +120,24 @@ export default function SettingsProfile() {
                                                 }
                                             `}
                                         >
-                                            {interest}
+                                            {availableInterest}
                                         </button>
                                     )
                                 })}
                             </div>
                         </span>
 
-                        <LocationTypeahead />
+                        <LocationTypeahead user={user} setState={setState} setCity={setCity} />
+
+                        <span className={`justify-start`}>
+                            <button
+                                key={`submit`}
+                                type={`submit`}
+                                className={styles.formInput}
+                            >
+                                Save Changes
+                            </button>
+                        </span>
                     </form>
                     <section className={`w-12 h-12 bg-blue-500 rounded-full flex justify-center`}>
 

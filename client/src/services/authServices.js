@@ -5,7 +5,10 @@ const BASE_URL = "http://localhost:3000/api/auth";
 export async function login(credentials) {
     const response = await axios.post(
         `${BASE_URL}/login`,
-        credentials
+        credentials,
+        {
+            withCredentials: true,
+        }
     );
 
     return response.data;
@@ -21,14 +24,38 @@ export async function register(userData) {
 }
 
 export async function getCurrentUser() {
-    const token = localStorage.getItem("token");
-
     const response = await axios.get(
         `${BASE_URL}/me`,
         {
-            headers: {
-                Authorization: `Bearer ${token}`
+            withCredentials: true,
+        }
+    );
+
+    return response.data;
+}
+
+export async function logout() {
+    try {
+        const response = await axios.post(
+            `${BASE_URL}/logout`,
+            {},
+            {
+                withCredentials: true,
             }
+        )
+
+        return response.data;
+    } catch (err) {
+        console.log("Logout error:", err);
+    }
+}
+
+export async function updateUser(userData) {
+    const response = await axios.patch(
+        `${BASE_URL}/me/update`,
+        userData,
+        {
+            withCredentials: true,
         }
     );
 

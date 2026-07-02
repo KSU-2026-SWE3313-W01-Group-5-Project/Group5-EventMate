@@ -25,6 +25,11 @@ CREATE TABLE users (
     email VARCHAR(100) UNIQUE NOT NULL,
     password_hash TEXT NOT NULL,
 
+    bio TEXT,
+    interests TEXT[],
+    city TEXT,
+    state TEXT,
+
     is_verified BOOLEAN DEFAULT FALSE,
     verification_token TEXT,
 
