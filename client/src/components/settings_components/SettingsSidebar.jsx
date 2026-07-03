@@ -2,7 +2,7 @@ import { NavLink } from "react-router-dom";
 
 const pages = [
     { name: "Profile", path: "profile" },
-    { name: "Preferences", path: "preferences" },
+    { name: "Event Preferences", path: "preferences" },
     { name: "Security", path: "security" },
 ]
 

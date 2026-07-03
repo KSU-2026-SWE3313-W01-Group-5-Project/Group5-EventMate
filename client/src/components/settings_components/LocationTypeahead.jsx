@@ -1,5 +1,5 @@
 import {useEffect, useRef, useState} from "react";
-import {useCities} from "../hooks/useCities.js";
+import {useCities} from "../../hooks/useCities.js";
 
 export default function LocationTypeahead({setState, setCity, user}) {
     const [stateInputValue, setStateInputValue] = useState("");

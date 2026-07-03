@@ -172,7 +172,7 @@ export default function Navbar() {
                                 </NavLink>
 
                                 <NavLink
-                                    to={"settings"}
+                                    to={"/settings"}
                                     className={ styles.dropdownLink }
                                 >
                                     Settings

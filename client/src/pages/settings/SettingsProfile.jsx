@@ -1,8 +1,8 @@
 import {useEffect, useState, useRef} from "react";
-import LocationTypeahead from "../../components/LocationTypeahead.jsx";
+import LocationTypeahead from "../../components/settings_components/LocationTypeahead.jsx";
 import {useAuth} from "../../context/AuthContext.jsx";
 
-import ProfileImageUpload from "../../components/ProfileImageUpload.jsx";
+import ProfileImageUpload from "../../components/settings_components/ProfileImageUpload.jsx";
 
 const availableInterests = ["Music", "Coding", "Gaming"]
 
