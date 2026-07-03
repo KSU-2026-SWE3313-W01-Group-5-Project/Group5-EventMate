@@ -5,6 +5,7 @@ import cookieParser from 'cookie-parser';
 import eventRoutes from "./routes/events.js";
 import authRoutes from "./routes/auth.js";
 import citiesRoutes from "./routes/cities.js";
+import usersRoutes from "./routes/users.js";
 
 const app = express();
 
@@ -19,6 +20,9 @@ app.use(cookieParser());
 app.use("/api/events", eventRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/cities", citiesRoutes);
+app.use("/api/users", usersRoutes)
+
+app.use('/uploads', express.static('uploads'));
 
 app.get("/", (req, res) => {
     res.send("Server running!");

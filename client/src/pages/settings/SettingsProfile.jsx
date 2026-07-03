@@ -3,6 +3,8 @@ import LocationTypeahead from "../../components/settings_components/LocationType
 import {useAuth} from "../../context/AuthContext.jsx";
 
 import ProfileImageUpload from "../../components/settings_components/ProfileImageUpload.jsx";
+import {getUserProfile} from "../../services/userServices.js";
+import getUserProfilePicture from "../../utils/getUserProfilePicture.js";
 
 const availableInterests = ["Music", "Coding", "Gaming"]
 
@@ -20,7 +22,6 @@ export default function SettingsProfile() {
     const [profileImagePreview, setProfileImagePreview] = useState(null);
     const [profileImageFile, setProfileImageFile] = useState(null);
 
-
     const toggleInterest = (availableInterest) => {
         setSelected(prev =>
             prev.includes(availableInterest) ? prev.filter(i => i !== availableInterest)
@@ -29,6 +30,7 @@ export default function SettingsProfile() {
 
     useEffect(() => {
         setSelected(user.interests);
+        setProfileImagePreview(getUserProfilePicture(user.profile_picture_url));
     }, [])
 
     useEffect(() => {
@@ -44,9 +46,6 @@ export default function SettingsProfile() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-//      Ran into an issue. When uploading image files (jpg,png,etc.) it can't use JSON data
-//      Solution: use formData as it allows image files and the other profile fields -> line 67-87
-
         const formData = new FormData();
 
         if (username.trim()) formData.append("username", username)
@@ -60,31 +59,10 @@ export default function SettingsProfile() {
         formData.append("interests", JSON.stringify(interests));
 
         try {
-            await updateUser(formData);
+            await updateUser(Object.fromEntries(formData));
         } catch (error) {
             console.error("Error updating user profile:", error);
         }
-        // const settings = {
-        //     username: username,
-        //     bio: bio,
-        //     interests: interests,
-        //     state: state,
-        //     city: city,
-        // }
-        //
-        // const cleanSettings = Object.fromEntries(
-        //     Object.entries(settings).filter(([key, value]) => {
-        //         if (typeof value === "string") return value.trim() !== "";
-        //         if (Array.isArray(value)) return value.length > 0;
-        //         return true;
-        //     })
-        // )
-        //
-        // try {
-        //     await updateUser(cleanSettings);
-        // } catch (err) {
-        //     console.error("Error updating user settings:", err);
-        // }
     }
 
     return (

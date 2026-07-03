@@ -25,6 +25,7 @@ CREATE TABLE users (
     email VARCHAR(100) UNIQUE NOT NULL,
     password_hash TEXT NOT NULL,
 
+    profile_picture_url TEXT DEFAULT 'default-profile.png',
     bio TEXT,
     interests TEXT[] DEFAULT '{}',
     city TEXT,

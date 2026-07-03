@@ -1,4 +1,4 @@
-import {useState, useRef} from "react";
+import {useState, useRef, useEffect} from "react";
 import PencilIcon from "../../assets/profile_icons/pencil.png"
 
 export default function ProfileImageUpload({
@@ -25,7 +25,7 @@ export default function ProfileImageUpload({
             <div
                 onClick={() => fileInputRef.current.click()}
                 className={`relative overflow-hidden lg:w-65 lg:h-65 md:w-50 md:h-50 h-50 w-50 rounded-full
-                        flex border-3 bg-stone-100 border-stone-200 dark:bg-zinc-900 dark:border-zinc-800 hover:bg-stone-100 dark:hover:bg-zync-500 justify-center items-center group cursor-pointer shadow-2xl`}
+                        flex border-3 bg-stone-100 border-stone-200 dark:bg-zinc-900 dark:border-zinc-800 hover:bg-stone-200 dark:hover:bg-zync-500 justify-center items-center group cursor-pointer shadow-2xl`}
             >
                 {profileImagePreview && (
                     <img

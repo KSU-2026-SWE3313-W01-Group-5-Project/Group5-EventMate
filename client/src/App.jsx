@@ -8,6 +8,7 @@ import SettingsProfile from "./pages/settings/SettingsProfile.jsx";
 import Preferences from "./pages/settings/Preferences.jsx";
 import Security from "./pages/settings/Security.jsx";
 import {useAuth} from "./context/AuthContext.jsx";
+import ProtectedRoute from "./components/settings_components/ProtectedRoute.jsx";
 
 /*
     APP COMPONENT
@@ -28,19 +29,17 @@ export default function App() {
             <Route path={"/"} element={<Home />}/>
             <Route path={"events"} element={<Events />}/>
 
-            { user ?
-                <>
-                    <Route path={"settings"} element={<Settings />}>
-                        <Route index element={<Navigate to={"profile"} replace={true} />} />
+            <Route element={<ProtectedRoute />}>
+                <Route path={"settings"} element={<Settings />}>
+                    <Route index element={<Navigate to={"profile"} replace={true} />} />
 
-                        <Route path={"profile"} element={<SettingsProfile />}></Route>
-                        <Route path={"preferences"} element={<Preferences />}></Route>
-                        <Route path={"security"} element={<Security />}></Route>
-                    </Route>
-                    <Route path={"profile/:uuid"} element={<Profile />}/>
-                </>
-                : null
-            }
+                    <Route path={"profile"} element={<SettingsProfile />}></Route>
+                    <Route path={"preferences"} element={<Preferences />}></Route>
+                    <Route path={"security"} element={<Security />}></Route>
+                </Route>
+                <Route path={"profile/"} element={<Profile />}/>
+            </Route>
+
         </Routes>
     )
 }
