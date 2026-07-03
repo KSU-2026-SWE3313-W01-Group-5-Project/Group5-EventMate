@@ -1,10 +1,11 @@
 import axios from "axios";
 
-const BASE_URL = "http://localhost:3000/api/auth";
+const AUTH_BASE_URL = "http://localhost:3000/api/auth";
+const USERS_BASE_URL = "http://localhost:3000/api/users";
 
 export async function login(credentials) {
     const response = await axios.post(
-        `${BASE_URL}/login`,
+        `${AUTH_BASE_URL}/login`,
         credentials,
         {
             withCredentials: true,
@@ -16,7 +17,7 @@ export async function login(credentials) {
 
 export async function register(userData) {
     const response = await axios.post(
-        `${BASE_URL}/register`,
+        `${AUTH_BASE_URL}/register`,
         userData
     );
 
@@ -25,7 +26,7 @@ export async function register(userData) {
 
 export async function getCurrentUser() {
     const response = await axios.get(
-        `${BASE_URL}/me`,
+        `${USERS_BASE_URL}/me`,
         {
             withCredentials: true,
         }
@@ -37,7 +38,7 @@ export async function getCurrentUser() {
 export async function logout() {
     try {
         const response = await axios.post(
-            `${BASE_URL}/logout`,
+            `${AUTH_BASE_URL}/logout`,
             {},
             {
                 withCredentials: true,
@@ -52,7 +53,7 @@ export async function logout() {
 
 export async function updateUser(userData) {
     const response = await axios.patch(
-        `${BASE_URL}/me/update`,
+        `${USERS_BASE_URL}/me/update`,
         userData,
         {
             withCredentials: true,
@@ -64,7 +65,7 @@ export async function updateUser(userData) {
 
 export async function deleteUser() {
     const response = await axios.delete(
-        `${BASE_URL}/me/update/delete`,
+        `${USERS_BASE_URL}/me/update/delete`,
         {
             withCredentials: true,
         }

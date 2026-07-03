@@ -1,4 +1,4 @@
-import {NavLink, useNavigate, useSearchParams} from "react-router-dom";
+import {createSearchParams, NavLink, useNavigate, useSearchParams} from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext.jsx";
 
@@ -7,6 +7,7 @@ import moonIcon from "../assets/navbar_icons/crescent-moon.png"
 import bellIcon from "../assets/navbar_icons/bell.png"
 import userIcon from "../assets/navbar_icons/user.png"
 import {AuthModal} from "../pages/modals/AuthModal.jsx";
+import getUserProfilePicture from "../utils/getUserProfilePicture.js";
 
 export default function Navbar() {
     const [searchParams, setSearchParams] = useSearchParams();
@@ -144,7 +145,7 @@ export default function Navbar() {
                     >
                         <img
                             className={"h-5 w-auto object-contain"}
-                            src={userIcon}
+                            src={user ? getUserProfilePicture(user.profile_picture_url) : userIcon}
                             alt="user"
                         />
                         {user ? <h2 className={"text-gray-300 dark:hover:text-white"}>{user.username}</h2> : null}
@@ -164,7 +165,7 @@ export default function Navbar() {
                                 `}
                             >
                                 <NavLink
-                                    to={`/profile/${user.username}`}
+                                    to={`/profile/?${createSearchParams({user: user.public_id})}`}
                                     className={ styles.dropdownLink }
                                     onClick={() => setDropdownOpen(false)}
                                 >
@@ -172,7 +173,7 @@ export default function Navbar() {
                                 </NavLink>
 
                                 <NavLink
-                                    to={"settings"}
+                                    to={"/settings"}
                                     className={ styles.dropdownLink }
                                 >
                                     Settings

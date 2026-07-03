@@ -1,5 +1,5 @@
 import Navbar from "../components/Navbar.jsx";
-import SettingsSidebar from "../components/SettingsSidebar.jsx";
+import SettingsSidebar from "../components/settings_components/SettingsSidebar.jsx";
 import {Outlet} from "react-router-dom";
 
 export default function Settings() {
