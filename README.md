@@ -55,4 +55,5 @@ This one is also a good section go over in call, the software you use will chang
 
 ---
 
-Eventually it might be cool to add a to-do list at the bottom of this readme, but we can also use the kanban i created in our github org, whatever works
+Eventually it might be cool to add a to-do list at the bottom of this readme, but we can also use the kanban i created in our github org, whatever works  
+Hi 
