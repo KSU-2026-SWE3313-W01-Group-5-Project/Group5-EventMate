@@ -7,6 +7,6 @@ export default defineConfig({
   plugins: [react(),
   tailwindcss()],
   server: {
-    allowedHosts: ['including-finishing-defining-consultant.trycloudflare.com']
+    allowedHosts: ['options-scotland-dat-committed.trycloudflare.com']
   }
 })

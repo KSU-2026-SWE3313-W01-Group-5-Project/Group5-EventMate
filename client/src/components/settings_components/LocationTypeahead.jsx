@@ -104,7 +104,7 @@ export default function LocationTypeahead({setState, setCity, user}) {
                         value={stateInputValue}
                         onChange={handleStateInputChange}
                         className="w-full focus:outline-none"
-                        placeholder={user.state ? user.state : "Type to search states..."}
+                        placeholder={user ? user.state : "Type to search states..."}
                     />
 
                     {stateIsOpen && stateFiltered.length > 0 && (
@@ -128,7 +128,7 @@ export default function LocationTypeahead({setState, setCity, user}) {
                         value={cityInputValue}
                         onChange={handleCityInputChange}
                         className="flex-1 focus:outline-none"
-                        placeholder={user.city ? user.city : "Type to search cities..."}
+                        placeholder={user ? user.city : "Type to search cities..."}
                         disabled={stateInputValue.length === 0}
                     />
 
