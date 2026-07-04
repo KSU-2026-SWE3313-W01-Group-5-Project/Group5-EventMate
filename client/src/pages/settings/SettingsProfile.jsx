@@ -59,7 +59,7 @@ export default function SettingsProfile() {
         formData.append("interests", JSON.stringify(interests));
 
         try {
-            await updateUser(Object.fromEntries(formData));
+            await updateUser(formData);
         } catch (error) {
             console.error("Error updating user profile:", error);
         }
@@ -77,7 +77,7 @@ export default function SettingsProfile() {
 
                 <div className={`flex`}>
                     <form onSubmit={handleSubmit} className={`flex flex-col m-5 p-5 gap-15 min-w-1/2`}>
-                        <span
+                        <div
                             className={styles.formInput}
                         >
                             <h1>Change Username</h1>
@@ -86,9 +86,9 @@ export default function SettingsProfile() {
                                 placeholder={user.username}
                                 onChange={(e) => setUsername(e.target.value)}
                             />
-                        </span>
+                        </div>
 
-                        <span
+                        <div
                             className={styles.formInput}
                         >
                             <h1>Change Bio</h1>
@@ -97,9 +97,9 @@ export default function SettingsProfile() {
                                 placeholder={user.bio}
                                 onChange={(e) => setBio(e.target.value)}
                             />
-                        </span>
+                        </div>
 
-                        <span
+                        <div
                             className={styles.formInput + `flex items-center`}
                         >
                             <h1>Set Interests</h1>
@@ -129,11 +129,11 @@ export default function SettingsProfile() {
                                     )
                                 })}
                             </div>
-                        </span>
+                        </div>
 
                         <LocationTypeahead user={user} setState={setState} setCity={setCity}/>
 
-                        <span className={`justify-start`}>
+                        <div className={`justify-start`}>
                             <button
                                 key={`submit`}
                                 type={`submit`}
@@ -141,7 +141,7 @@ export default function SettingsProfile() {
                             >
                                 Save Changes
                             </button>
-                        </span>
+                        </div>
                     </form>
 
                     <ProfileImageUpload

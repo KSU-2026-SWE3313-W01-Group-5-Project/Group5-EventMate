@@ -1,5 +1,6 @@
 import { createPool } from "../../db/index.js";
 import {hashPassword} from "../utils/hashPassword.js";
+import deleteFile from "../utils/deleteFile.js";
 
 const pool = createPool();
 
@@ -50,35 +51,31 @@ export async function getUser(req, res) {
 export async function updateUser(req, res) {
     try {
         const userId = req.user.id;
+
         const requestedUpdates = req.body;
 
-        const allowedColumns = ['username', 'bio', 'interests', 'city', 'state', 'password', 'email'];
-        const columnsToUpdate = [];
-        const queryValues = [];
-
-        console.log(requestedUpdates);
+        const allowedColumns = ['username', 'bio', 'interests', 'city', 'state', 'password', 'email', 'profile_picture_url'];
 
         Object.keys(requestedUpdates).forEach(key => {
-            if (allowedColumns.includes(key)) {
-                columnsToUpdate.push(key);
-                queryValues.push(requestedUpdates[key]);
+            if (!allowedColumns.includes(key)) {
+                delete requestedUpdates.key;
             }
         });
 
-        if (columnsToUpdate.length === 0) {
+        if (requestedUpdates.length === 0) {
             return res.status(400).json({ error: "NO_VALID_SETTINGS_TO_UPDATE" });
         }
 
-        if (columnsToUpdate.includes("username")) {
-            const index = columnsToUpdate.indexOf("username");
-
+        if (requestedUpdates.username) {
             const existingUser = await pool.query(
                 'SELECT username FROM users WHERE username = $1',
-                [queryValues[index]]
+                [requestedUpdates.username]
             );
 
             for (const user of existingUser.rows) {
-                if (user.username === queryValues[index]) {
+                if (user.username === requestedUpdates.username) {
+                    await deleteFile(req.file.path);
+
                     return res.status(409).json({
                         error: "USERNAME_TAKEN"
                     })
@@ -86,16 +83,14 @@ export async function updateUser(req, res) {
             }
         }
 
-        if (columnsToUpdate.includes("email")) {
-            const index = columnsToUpdate.indexOf("email");
-
+        if (requestedUpdates.email) {
             const existingUser = await pool.query(
                 'SELECT email FROM users WHERE email = $1',
-                [queryValues[index]]
+                [requestedUpdates.email]
             );
 
             for (const user of existingUser.rows) {
-                if (user.email === queryValues[index]) {
+                if (user.email === requestedUpdates.email) {
                     return res.status(409).json({
                         error: "EMAIL_TAKEN"
                     })
@@ -103,21 +98,47 @@ export async function updateUser(req, res) {
             }
         }
 
-        if (columnsToUpdate.includes("password")) {
-            const index = columnsToUpdate.indexOf("password");
+        if (requestedUpdates.password) {
+            Object.keys(requestedUpdates).forEach(key => {
+                if (key === "password") {
+                    requestedUpdates.password_hash = requestedUpdates[key];
+                    delete requestedUpdates.password;
+                }
+            })
 
-            columnsToUpdate[index] = "password_hash";
-
-            queryValues[index] = await hashPassword(queryValues[index]);
+            requestedUpdates.password_hash = await hashPassword(requestedUpdates.password_hash);
         }
 
-        if (columnsToUpdate.includes("interests")) {
-            const index = columnsToUpdate.indexOf("interests");
-
-            queryValues[index] = JSON.parse(queryValues[index]);
+        if (requestedUpdates.interests) {
+            requestedUpdates.interests = JSON.parse(requestedUpdates.interests);
         }
 
-        const setClause = columnsToUpdate
+        if (req.file) {
+            const previousProfilePicture = await pool.query(
+                'SELECT profile_picture_url FROM users WHERE id = $1',
+                [userId]
+            );
+
+            const userProfilePictureUrl = `${previousProfilePicture.rows[0].profile_picture_url}`;
+
+            if (!(userProfilePictureUrl === "default-profile.png")) {
+                await deleteFile(`uploads/profile_images/${previousProfilePicture.rows[0].profile_picture_url}`);
+            }
+
+            Object.keys(requestedUpdates).forEach(key => {
+                if (key === "profileImage") {
+                    requestedUpdates.profile_picture_url = requestedUpdates[key];
+                    delete requestedUpdates.profileImage;
+                }
+            })
+
+            requestedUpdates.profile_picture_url = `${req.file.filename}`;
+        }
+
+        const columns = Object.keys(requestedUpdates);
+        const queryValues = Object.values(requestedUpdates);
+
+        const setClause = columns
             .map((col, index) => `"${col}" = $${index + 1}`)
             .join(', ');
 
@@ -128,7 +149,7 @@ export async function updateUser(req, res) {
             UPDATE users 
             SET ${setClause}
             WHERE id = ${userIdPlaceholder}
-            RETURNING username, bio, interests, city, state, email
+            RETURNING username, bio, interests, city, state, email, profile_picture_url
             `;
 
         const result = await pool.query(sqlQuery, queryValues);
@@ -147,13 +168,23 @@ export async function updateUser(req, res) {
 export async function deleteUser(req, res) {
     try {
         const userId = req.user.id;
-        console.log(userId);
 
         const sqlQuery = `
             DELETE FROM users
             WHERE id = $1
             RETURNING id;
             `;
+
+        const userProfilePicture = await pool.query(
+            'SELECT profile_picture_url FROM users WHERE id = $1',
+            [userId]
+        );
+
+        const userProfilePictureUrl = `${userProfilePicture.rows[0].profile_picture_url}`;
+
+        if (!(userProfilePictureUrl === "default-profile.png")) {
+            await deleteFile(`uploads/profile_images/${userProfilePicture.rows[0].profile_picture_url}`);
+        }
 
         const result = await pool.query(sqlQuery, [userId]);
 

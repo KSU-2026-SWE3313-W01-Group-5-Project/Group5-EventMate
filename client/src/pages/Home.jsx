@@ -14,6 +14,7 @@ import heroImage from "../assets/hero/homepage-hero.jpg"
 
 export default function Home() {
     const {user, isLoading, isError, logout} = useAuth();
+    const navigate = useNavigate();
 
     const renderUser = () => {
         if (isLoading) {
@@ -63,6 +64,8 @@ export default function Home() {
             <div className={"flex flex-col gap-8"}>
 
                 {renderUser()}
+
+                <button onClick={() => navigate('/profile/?user=9874c882-9943-4eeb-b0e3-14dd2c061169')}>view profile 803a330c-dbae-4bf7-9e78-5a7da9543a13</button>
             </div>
         </>
     )
