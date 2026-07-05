@@ -30,11 +30,11 @@ export default function ProfileHeader({ displayedUser }) {
             `}>
                 <div className={`flex flex-col gap-0.5`}>
                     <h1 className={`text-lg font-bold`}>{displayedUser.username}</h1>
-                    <h1 className={`text-sm`}>{displayedUser.username}</h1>
+                    <h1 className={`text-sm`}>{displayedUser.firstname} {displayedUser.lastname}</h1>
                     <h1 className={`text-sm`}>{displayedUser.city}, {displayedUser.state}</h1>
                     <h1 className={`text-sm`}>Interests: {displayedUser.interests.join(", ")}</h1>
                 </div>
-                <text>{displayedUser.bio}</text>
+                <p>{displayedUser.bio}</p>
             </div>
         </div>
     )

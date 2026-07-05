@@ -13,8 +13,8 @@ async function runSeed() {
         const seededHashPassword = await hashPassword('password');
 
         await pool.query(`
-            INSERT INTO users (username, email, password_hash, created_at)
-            VALUES ('dylan', 'dylan@dylan.com', $1, NOW())`,
+            INSERT INTO users (firstname, lastname, username, email, password_hash, created_at)
+            VALUES ('Dylan', 'Kooby', 'dylan', 'dylan@dylan.com', $1, NOW())`,
             [seededHashPassword]
         );
 

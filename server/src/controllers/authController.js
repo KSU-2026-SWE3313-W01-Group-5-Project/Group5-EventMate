@@ -7,9 +7,9 @@ const pool = createPool();
 
 export async function registerUser(req, res) {
     try {
-        const { username, email, password } = req.body;
+        const { firstName, lastName, username, email, password } = req.body;
 
-        if (!username || !email || !password) {
+        if (!firstName || !lastName || !username || !email || !password) {
             return res.status(400).json({ message: "Please provide all required fields" });
         }
 
@@ -36,10 +36,10 @@ export async function registerUser(req, res) {
         const verificationToken = crypto.randomBytes(32).toString("hex");
 
         const result = await pool.query(
-            'INSERT INTO users (username, email, password_hash, verification_token)' +
-            'VALUES ($1, $2, $3, $4)' +
-            'RETURNING public_id, username, email, verification_token',
-            [username, email, hashedPassword, verificationToken]
+            'INSERT INTO users (firstname, lastname, username, email, password_hash, verification_token)' +
+            'VALUES ($1, $2, $3, $4, $5, $6)' +
+            'RETURNING public_id, firstname, lastname, username, email, verification_token',
+            [firstName, lastName, username, email, hashedPassword, verificationToken]
         );
 
         const user = result.rows[0];

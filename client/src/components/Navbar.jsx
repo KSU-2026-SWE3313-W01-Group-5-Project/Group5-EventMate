@@ -76,7 +76,7 @@ export default function Navbar() {
             className={`
             relative z-50
             flex items-center justify-between 
-            bg-stone-100 dark:bg-zinc-800
+            bg-stone-300/50 dark:bg-zinc-800
             text-stone-800 dark:text-white
             px-6 py-4 
             transition-colors duration-300
