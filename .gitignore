@@ -29,3 +29,6 @@ dist-ssr
 .env
 server/.env
 client/.env
+
+server/uploads/profile_images/*
+!server/uploads/profile_images/default-profile.png

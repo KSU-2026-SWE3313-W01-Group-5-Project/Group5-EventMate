@@ -3,7 +3,6 @@ import LocationTypeahead from "../../components/settings_components/LocationType
 import {useAuth} from "../../context/AuthContext.jsx";
 
 import ProfileImageUpload from "../../components/settings_components/ProfileImageUpload.jsx";
-import {getUserProfile} from "../../services/userServices.js";
 import getUserProfilePicture from "../../utils/getUserProfilePicture.js";
 
 const availableInterests = ["Music", "Coding", "Gaming"]
@@ -21,6 +20,9 @@ export default function SettingsProfile() {
 
     const [profileImagePreview, setProfileImagePreview] = useState(null);
     const [profileImageFile, setProfileImageFile] = useState(null);
+
+    const [errorMessage, setErrorMessage] = useState('');
+    const [success, setSuccess] = useState(false);
 
     const toggleInterest = (availableInterest) => {
         setSelected(prev =>
@@ -60,14 +62,49 @@ export default function SettingsProfile() {
 
         try {
             await updateUser(formData);
-        } catch (error) {
-            console.error("Error updating user profile:", error);
+
+            setSuccess(true);
+            setErrorMessage('');
+        } catch (err) {
+            if (!err?.response) {
+                setErrorMessage('No Server Response');
+            } else if (err.response?.status === 409) {
+                switch (err.response?.data?.error) {
+                    case "USERNAME_TAKEN":
+                        setErrorMessage('An account with that email already exists');
+                        break;
+
+                    default:
+                        setErrorMessage("Updating Settings Failed");
+                }
+            } else {
+                setErrorMessage('Updating Settings Failed');
+            }
         }
     }
 
     return (
         <>
             <div className={`max-w-full h-full flex flex-col gap-5`}>
+                {success && (
+                    <h1 className={"w-full px-4 py-3 rounded-md border border-green-200 bg-green-50 text-green-700 text-sm"}>
+                        Profile updated!
+                    </h1>
+                )}
+
+                {errorMessage && (
+                    <p className={`
+                    w-full 
+                    px-4 py-3  
+                    rounded-md 
+                    border border-red-200 bg-red-50
+                    text-red-700
+                    text-sm
+                    `}>
+                        {errorMessage}
+                    </p>
+                )}
+
                 <h1 className={`
                     text-xl font-semibold
                     text-stone-700 dark:text-white
@@ -132,7 +169,15 @@ export default function SettingsProfile() {
                             </div>
                         </div>
 
-                        <LocationTypeahead user={user} setState={setState} setCity={setCity}/>
+                        <div className="flex flex-col">
+                            <div
+                                className={styles.formInput}
+                            >
+                                <h1>Change Location</h1>
+
+                                <LocationTypeahead user={user} setState={setState} setCity={setCity} statePlaceholder={user.state} cityPlaceholder={user.city}/>
+                            </div>
+                        </div>
 
                         <div className={`justify-start`}>
                             <button

@@ -144,7 +144,7 @@ export default function Navbar() {
                         className={ `${styles.iconButton} flex gap-2` }
                     >
                         <img
-                            className={"h-5 w-auto object-contain"}
+                            className={"h-5 w-auto object-contain rounded-full"}
                             src={user ? getUserProfilePicture(user.profile_picture_url) : userIcon}
                             alt="user"
                         />

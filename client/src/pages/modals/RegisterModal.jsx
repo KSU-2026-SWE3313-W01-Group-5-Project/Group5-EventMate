@@ -85,6 +85,8 @@ export default function RegisterModal({ onSwitch, onRequestClose }) {
             setPassword('');
             setMatchPassword('');
             setEmail('');
+            setFirstName('');
+            setLastName('');
 
             setErrorMessage('');
         } catch (err) {

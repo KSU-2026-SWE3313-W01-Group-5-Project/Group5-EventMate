@@ -1,6 +1,29 @@
 import getUserProfilePicture from "../../utils/getUserProfilePicture.js";
+import {useEffect, useState} from "react";
 
 export default function ProfileHeader({ displayedUser }) {
+    const [formattedName, setFormattedName] = useState("");
+    const [formattedLocation, setFormattedLocation] = useState("");
+    const [formattedInterests, setFormattedInterests] = useState("");
+
+    useEffect(() => {
+        setFormattedName(displayedUser.firstname + " " + displayedUser.lastname);
+
+        if (displayedUser.city) {
+            if (displayedUser.state) {
+                setFormattedLocation(displayedUser.city + ", " + displayedUser.state);
+            } else {
+                setFormattedLocation(displayedUser.city);
+            }
+        } else if (displayedUser.state) {
+            setFormattedLocation(displayedUser.state);
+        }
+
+        if (displayedUser.interests.length > 0) {
+            setFormattedInterests("Interests: " + displayedUser.interests.join(", "));
+        }
+    })
+
     return (
         <div className={`flex
         text-stone-700 dark:text-white
@@ -30,9 +53,9 @@ export default function ProfileHeader({ displayedUser }) {
             `}>
                 <div className={`flex flex-col gap-0.5`}>
                     <h1 className={`text-lg font-bold`}>{displayedUser.username}</h1>
-                    <h1 className={`text-sm`}>{displayedUser.firstname} {displayedUser.lastname}</h1>
-                    <h1 className={`text-sm`}>{displayedUser.city}, {displayedUser.state}</h1>
-                    <h1 className={`text-sm`}>Interests: {displayedUser.interests.join(", ")}</h1>
+                    <h1 className={`text-sm`}>{formattedName}</h1>
+                    <h1 className={`text-sm`}>{formattedLocation}</h1>
+                    <h1 className={`text-sm`}>{formattedInterests}</h1>
                 </div>
                 <p>{displayedUser.bio}</p>
             </div>

@@ -1,7 +1,7 @@
 import {useEffect, useRef, useState} from "react";
 import {useCities} from "../../hooks/useCities.js";
 
-export default function LocationTypeahead({setState, setCity, user}) {
+export default function LocationTypeahead({statePlaceholder, cityPlaceholder, setState, setCity, user}) {
     const [stateInputValue, setStateInputValue] = useState("");
     const [stateFiltered, setStateFiltered] = useState([]);
 
@@ -11,6 +11,9 @@ export default function LocationTypeahead({setState, setCity, user}) {
     const [stateIsOpen, setStateIsOpen] = useState(false);
     const [cityIsOpen, setCityIsOpen] = useState(false);
     const containerRef = useRef(null);
+
+    const [statePlaceholderValue, setStatePlaceHolder] = useState(statePlaceholder);
+    const [cityPlaceholderValue, setCityPlaceHolder] = useState(cityPlaceholder);
 
     const { cities, loading } = useCities();
 
@@ -83,70 +86,55 @@ export default function LocationTypeahead({setState, setCity, user}) {
     }, []);
 
     return (
-        <div className="flex flex-col" ref={containerRef}>
-            <div
-                className="
-            flex
-            px-4 py-3 gap-x-6 gap-y-2
-            rounded-md
-            border border-stone-300
-            bg-white
-            text-stone-800
-            focus-within:ring-2 focus-within:ring-stone-500
-            transition-colors duration-300
-        "
-            >
-                <h1>Change Location</h1>
+        <>
+            <div className="relative flex-1">
+                <input
+                    type="text"
+                    value={stateInputValue}
+                    onChange={handleStateInputChange}
+                    className="w-full focus:outline-none"
+                    placeholder={statePlaceholderValue ? statePlaceholderValue.toString() : "Type to search states..."}
+                />
 
-                <div className="relative flex-1">
-                    <input
-                        type="text"
-                        value={stateInputValue}
-                        onChange={handleStateInputChange}
-                        className="w-full focus:outline-none"
-                        placeholder={user ? user.state : "Type to search states..."}
-                    />
-
-                    {stateIsOpen && stateFiltered.length > 0 && (
-                        <ul className="absolute left-0 top-full mt-1 w-full bg-white border border-stone-300 rounded-md shadow-lg z-10 max-h-60 overflow-y-auto">
-                            {stateFiltered.map(state => (
-                                <li
-                                    key={state}
-                                    onClick={() => handleStateSelect(state)}
-                                    className="px-3 py-2 hover:bg-stone-100 cursor-pointer"
-                                >
-                                    {state}
-                                </li>
-                            ))}
-                        </ul>
-                    )}
-                </div>
-
-                <div className="relative flex-1">
-                    <input
-                        type="text"
-                        value={cityInputValue}
-                        onChange={handleCityInputChange}
-                        className="flex-1 focus:outline-none"
-                        placeholder={user ? user.city : "Type to search cities..."}
-                        disabled={stateInputValue.length === 0}
-                    />
-
-                    {cityIsOpen && cityFiltered.length > 0 && (
-                        <ul className="absolute left-0 top-full mt-1 w-full bg-white border border-stone-300 rounded-md shadow-lg z-10 max-h-60 overflow-y-auto">
-                            {cityFiltered.map(city => (
-                                <li
-                                    key={city}
-                                    onClick={() => handleCitySelect(city)}
-                                    className="px-3 py-2 hover:bg-stone-100 cursor-pointer"
-                                >
-                                    {city}
-                                </li>
-                            ))}
-                        </ul>
-                    )}
-                </div>
+                {stateIsOpen && stateFiltered.length > 0 && (
+                    <ul className="absolute left-0 top-full mt-1 w-full bg-white border border-stone-300 rounded-md shadow-lg z-10 max-h-60 overflow-y-auto">
+                        {stateFiltered.map(state => (
+                            <li
+                                key={state}
+                                onClick={() => handleStateSelect(state)}
+                                className="px-3 py-2 hover:bg-stone-100 cursor-pointer"
+                            >
+                                {state}
+                            </li>
+                        ))}
+                    </ul>
+                )}
             </div>
-        </div>
+
+            <div className="relative flex-1">
+                <input
+                    type="text"
+                    value={cityInputValue}
+                    onChange={handleCityInputChange}
+                    className="flex-1 focus:outline-none"
+                    placeholder={cityPlaceholderValue ? cityPlaceholderValue.toString() : "Type to search cities..."}
+                    disabled={stateInputValue.length === 0}
+                />
+
+                {cityIsOpen && cityFiltered.length > 0 && (
+                    <ul className="absolute left-0 top-full mt-1 w-full bg-white border border-stone-300 rounded-md shadow-lg z-10 max-h-60 overflow-y-auto">
+                        {cityFiltered.map(city => (
+                            <li
+                                key={city}
+                                onClick={() => handleCitySelect(city)}
+                                className="px-3 py-2 hover:bg-stone-100 cursor-pointer"
+                            >
+                                {city}
+                            </li>
+                        ))}
+                    </ul>
+                )}
+            </div>
+        </>
     )
 }
