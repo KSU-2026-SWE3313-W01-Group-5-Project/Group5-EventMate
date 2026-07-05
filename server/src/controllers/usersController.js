@@ -9,7 +9,7 @@ export async function getUserProfile(req, res) {
         const userPublicId = req.query.userUUID;
 
         const result = await pool.query(
-            'SELECT public_id, username, profile_picture_url, bio, interests, city, state FROM users WHERE public_id = $1',
+            'SELECT public_id, username, firstname, lastname, profile_picture_url, bio, interests, city, state FROM users WHERE public_id = $1',
             [userPublicId],
         );
 
@@ -31,7 +31,7 @@ export async function getUser(req, res) {
         const userId = req.user.id;
 
         const result = await pool.query(
-            'SELECT public_id, username, email, bio, profile_picture_url, interests, city, state FROM users WHERE id = $1',
+            'SELECT public_id, username, email, firstname, lastname, bio, profile_picture_url, interests, city, state FROM users WHERE id = $1',
             [userId]
         );
 

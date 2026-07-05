@@ -21,12 +21,15 @@ CREATE TABLE users (
     id SERIAL PRIMARY KEY,
     public_id UUID DEFAULT gen_random_uuid() UNIQUE,
 
+    firstname VARCHAR(50) NOT NULL,
+    lastname VARCHAR(50) NOT NULL,
+
     username VARCHAR(50) UNIQUE NOT NULL,
     email VARCHAR(100) UNIQUE NOT NULL,
     password_hash TEXT NOT NULL,
 
     profile_picture_url TEXT DEFAULT 'default-profile.png',
-    bio TEXT,
+    bio VARCHAR(150),
     interests TEXT[] DEFAULT '{}',
     city TEXT,
     state TEXT,

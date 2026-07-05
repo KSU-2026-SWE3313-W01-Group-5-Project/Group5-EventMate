@@ -95,6 +95,7 @@ export default function SettingsProfile() {
                             <textarea
                                 className={"focus:outline-none flex-1"}
                                 placeholder={user.bio}
+                                maxLength={150}
                                 onChange={(e) => setBio(e.target.value)}
                             />
                         </div>
