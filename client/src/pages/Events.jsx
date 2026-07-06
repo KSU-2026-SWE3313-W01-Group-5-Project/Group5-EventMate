@@ -1,19 +1,15 @@
+/**
+ * Events Page
+ *
+ * Nothing really going on here yet. Eventually this page will be turned into the user dashboard.
+ *
+ * This will probably become the most complicated page on the site.
+ */
+
 import {Link} from "react-router-dom";
 import {getEvents} from "../services/eventServices.js";
 import {useQuery} from "@tanstack/react-query";
 import Navbar from "../components/Navbar.jsx";
-
-/*
-    EVENTS PAGE
-
-    This page:
-    - Fetches events from backend
-    - Displays list of events
-    - Will later support joining events, creating events, etc.
-
-    This is a good example of how we will actually connect with the backend (server folder) and pull data from it using the files in services/ (eventServices for this one)
-    This is a bit more complicated than the Home page...
-*/
 
 export default function Events() {
     const { data: events, isLoading, isError, error } = useQuery({

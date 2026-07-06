@@ -1,3 +1,10 @@
+/**
+ * parseCSV utility function
+ *
+ * Responsible for accepting the CSV data from the backend, caching it, and filtering out just the names of the cities and
+ * states and their lat/longs.
+ */
+
 import parseCSV from "./parseCSV.js";
 
 let cachedCities = null;

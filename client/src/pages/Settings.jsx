@@ -1,3 +1,9 @@
+/**
+ * Settings Page
+ *
+ * Holds the Sidebar component and the Outlet section that renders each individual settings page.
+ */
+
 import Navbar from "../components/Navbar.jsx";
 import SettingsSidebar from "../components/settings_components/SettingsSidebar.jsx";
 import {Outlet} from "react-router-dom";

@@ -1,3 +1,19 @@
+/**
+ * RegisterModal Modal
+ *
+ * Handles user registration by allowing users to register a new account.
+ *
+ * Manages form state for username, password, matchpassword (confirmation password), email, first name, and last name.
+ *
+ * @param {Function} params.onSwitch - passed from the AuthModal wrapper, allows the register and login modals to seamlessly
+ * swap between each other
+ *
+ * I got inspiration for a lot of the functionality for both this RegisterModal and LoginModal from a youtube video I found
+ * that was showcasing a registration form that I really liked. The regexes, error messages, and individual field focus system
+ * all came from his example. A lot of the styling choices I made with these modals are inspired by a random website I found on
+ * the internet that also had a login/register form that I really liked the look of.
+ */
+
 import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { register } from "../../services/authServices.js";
@@ -13,10 +29,7 @@ const USER_REGEX = /^[A-z][A-z0-9-_]{3,23}$/;
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
 const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
-export default function RegisterModal({ onSwitch, onRequestClose }) {
-    const queryClient = useQueryClient();
-
-    // auth states
+export default function RegisterModal({ onSwitch }) {
     const [username, setUsername] = useState("");
     const [validUsername, setValidUsername] = useState(false);
     const [userFocus, setUserFocus] = useState(false);

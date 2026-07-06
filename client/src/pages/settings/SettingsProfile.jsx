@@ -1,3 +1,20 @@
+/**
+ * SettingsProfile Settings Sub-page
+ *
+ * Allows users to update their profile information including:
+ * - Username
+ * - Bio
+ * - Interests (multi-select (same multi-select system that is in the Preferences sub-page))
+ * - Imported page components:
+ *      - Location (city/state)
+ *      - Profile picture upload
+ *
+ * This settings page will look different from the other two in the way it sends data to the backend. We had to use a
+ * FormData object instead of the typical JSON objects that the other two pages use because of the addition of a file upload.
+ * FormData allows us to support both JSON fields and files, which are then parsed out in the backend! We mainly did
+ * this to avoid the need for separate API calls for profile image changes.
+ */
+
 import {useEffect, useState, useRef} from "react";
 import LocationTypeahead from "../../components/settings_components/LocationTypeahead.jsx";
 import {useAuth} from "../../context/AuthContext.jsx";
@@ -5,7 +22,14 @@ import {useAuth} from "../../context/AuthContext.jsx";
 import ProfileImageUpload from "../../components/settings_components/ProfileImageUpload.jsx";
 import getUserProfilePicture from "../../utils/getUserProfilePicture.js";
 
-const availableInterests = ["Music", "Coding", "Gaming"]
+// These are mostly arbitrary interest categories that I came up with off the top of my head.
+// These are to fulfill the requirement for this project to allow users to set up profiles with their interests.
+// Feel free to add any other interests you think users should be able to include.
+const availableInterests = [
+    "Music",
+    "Coding",
+    "Gaming"
+]
 
 export default function SettingsProfile() {
     const {user, updateUser} = useAuth();
@@ -24,12 +48,16 @@ export default function SettingsProfile() {
     const [errorMessage, setErrorMessage] = useState('');
     const [success, setSuccess] = useState(false);
 
+    // Same toggleInterest function as the Preferences sub-page (I wrote this one first) except for the fact that this one
+    // can only toggleInterests for the single multi-select element on this page. The function in preferences can handle
+    // all the multi-selects from one function.
     const toggleInterest = (availableInterest) => {
         setSelected(prev =>
             prev.includes(availableInterest) ? prev.filter(i => i !== availableInterest)
                 : [...prev, availableInterest]);
     }
 
+    // getUserProfilePicture comes from a util function that turns the profile_picture_url into a usable string for <img>'s
     useEffect(() => {
         setSelected(user.interests);
         setProfileImagePreview(getUserProfilePicture(user.profile_picture_url));
@@ -50,6 +78,7 @@ export default function SettingsProfile() {
 
         const formData = new FormData();
 
+        // Only sends fields to the backend that have actually had changes made.
         if (username.trim()) formData.append("username", username)
         if (bio.trim()) formData.append("bio", bio)
         if (city.trim()) formData.append("city", city)
