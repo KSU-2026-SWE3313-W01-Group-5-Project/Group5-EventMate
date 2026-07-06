@@ -1,59 +1,55 @@
-# EventMate - Project Setup Guide
-What we are using to build this app:  
-Frontend: React (Vite)  
-Backend: Node.js + Express  
-Database: PostgreSQL  
-API: Rest + Axios  
-Auth: JWT + bcrypt (hashing passwords)  
+# EventMate 
+## Backend Scripts & Utilities
 
-**DISCLAIMER**: the file layout of the project might look really complicated at the beginning, but I will explain what each file/module/part does in detail to anyone that wants to hear about it. I am aiming to have this project be very organized from the start so we can minimize junk code as much as possible. I promise it is not as complicated as it may look.  
+This section documents all custom backend scripts and utilities built to manage, seed, and maintain the database and server environment.
 
-I am going through the process of adding comments to every file/piece of code I have written so far to explain how everything works, atleast at a basic level
+### Available Scripts
 
-## Getting Started
-### 1. Clone the Repo (we should have gotten everyone setup with this, but just in case)  
-```
-git clone <repo-url> (url is accessed by clicking the green Code button and copying the SSH url) 
-cd EventMate
-```
+#### `npm run dev`
+Starts the backend server in development mode using nodemon.
 
-### 2. Install dependencies (one of the most important steps)
-**Frontend**
-```
-cd client
-npm install
-```
-**Backend**
-```
-cd ../server
-npm install
-```
+- Watches for file changes
+- Automatically restarts server
+- Runs on: http://localhost:3000
 
-### 3. Running the project (open two terminals, one for backend, one for frontend)
-**Starting the backend**
-```
-cd server
-npm run dev
-```
-Runs on (open in a web browser, api endpoints can be added to the end to see different tables): 
-> http://localhost:3000  
-> API Example: http://localhost:3000/api/events
+#### `npm run resetDb`
+Resets the database by dropping and recreating all tables.
 
-**Staring the frontend**
-```
-cd client
-npm run dev
-```
-Runs on (also in a web browser):
-> http://localhost:5173
+- Clears all existing data and reruns the schema
+- Mainly used when changes to the schema are made
 
-### 4. Setting up Environment Variables
-I think this section will be best to go over in a call to be honest, it's not very complicated but there are some details that are important
+#### `npm run runSeed`
+Seeds the database with initial test data.
 
-### 5. Setting up the database
-This one is also a good section go over in call, the software you use will change depending on Windows/Mac, so...
+#### `npm run truncateDb`
+Clears all data from the database but does not delete or reset tables
+
+#### `npm run runSchema`
+Runs the schema on its own. 
+
+- Used for initial database creation on a fresh clone.  
+
+---
+## Recent Updates / Commit Log
+
+This section is used to document recent changes to the project in a structured format.
 
 ---
 
-Eventually it might be cool to add a to-do list at the bottom of this readme, but we can also use the kanban i created in our github org, whatever works  
-Hi 
+### Commit Title: Added a bunch of comments to every frontend component so far
+**Date:** 2026-07-06
+
+#### What changed:
+- Added informative comments to all frontend components
+- Improved consistency of explanations across UI components, modals, pages, and context files
+
+#### Why this change was made:
+- To improve code readability and help group mates understand every part of the frontend system
+- To improve the quality of the frontend codebase and get some practice with regular commenting of files
+
+#### Files changed:
+- All major frontend components (Navbar, Modals, Settings pages, Auth components, etc.)
+- Context and service files where relevant
+
+#### Notes / Side Effects:
+- No functional changes were made.

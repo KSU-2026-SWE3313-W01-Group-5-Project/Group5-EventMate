@@ -1,3 +1,24 @@
+/**
+ * Security Settings Sub-page
+ *
+ * Allows users to update more sensitive account information, including password and email, as well as delete their account.
+ *
+ * This page performs the same password validation as the registration modal and ensures that emails are in the correct format.
+ * Eventually if and when I added my email verification system into the project so we can hit the email notifications bonus requirement,
+ * this page will also have to control reverifying a user's new email.
+ *
+ * This page is also where the DeleteAccountModal is used.
+ *
+ * Because this page handles sensitive user data, it includes multiple validation states (same as registration modal), confirmation
+ * UI features, and safeguards.
+ *
+ * Design Note:
+ * This page separates concerns between "update settings" and "account deletion" by putting deletion inside a dedicated modal.
+ * This prevents accidental submission overlap and enforces an explicit user confirmation step for permanent deletion.
+ *
+ * ~ I am also really in love with my modal system, haha.
+ */
+
 import {useEffect, useState} from "react";
 import {useAuth} from "../../context/AuthContext.jsx";
 import {useQueryClient} from "@tanstack/react-query";
@@ -64,6 +85,8 @@ export default function Security() {
             email: email,
         }
 
+        // Remove empty or invalid values before sending update request.
+        // Prevents overwriting existing fields with empty strings.
         const cleanSettings = Object.fromEntries(
             Object.entries(settings).filter(([key, value]) => {
                 if (typeof value === "string") return value.trim() !== "";
@@ -82,6 +105,8 @@ export default function Security() {
 
             setErrorMessage('');
         } catch (err) {
+
+            // Same error handling and message-creating for users as the login and registration modals (and other settings)
             if (!err?.response) {
                 setErrorMessage('No Server Response');
             } else if (err.response?.status === 409) {
@@ -99,6 +124,21 @@ export default function Security() {
         }
     }
 
+    /**
+     * This one is an interesting feature I imagined and implemented. I realized that, originally, if I just logged the user
+     * out immediately after they deleted their account, the only confirmation of their account being deleted they would get
+     * is being instantly navigated back to the home page and logged out. I really did not like that, so I changed the delete
+     * mutation in AuthContext to not invalidate the cache immediately.
+     *
+     * The way the system now works is, whenever a user deletes their account through the DeleteAccountModal, the success message
+     * pops up on the modal and the modal indicates that the user's account has actually been deleted. Then, whenever the user
+     * clicks anywhere else on the screen to close the modal (same system as every other modal), it tells this function that
+     * the user has both closed the modal AND has actually deleted their account, not just opened it to see what it is without
+     * deleting.
+     *
+     * After that, this function will then call logout from authContext to clear the cache of the deleted account, navigate to home,
+     * and the user will be happy with their clear confirmation of account deletion.
+     */
     const handleAccountDeletionClose = (e) => {
         setShowAccountDeletion(false);
 
@@ -110,6 +150,10 @@ export default function Security() {
 
     return (
         <>
+            {/* Much of this styling/structure was copied from the SettingsProfile (first settings page we built) and just
+                changed to fit the purpose of this page. The same thing happened for the preferences page.
+
+                Same goes for the password/confirm password and email inputs. Copied from the registration modal */}
             <div className={`max-w-full h-full flex flex-col gap-5`}>
                 {success && (
                     <h1 className={"w-full px-4 py-3 rounded-md border border-green-200 bg-green-50 text-green-700 text-sm"}>

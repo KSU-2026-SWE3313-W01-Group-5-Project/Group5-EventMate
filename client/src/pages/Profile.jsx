@@ -1,8 +1,22 @@
+/**
+ * Profile Page
+ *
+ * This page is not fully completed yet, but it does render the ProfileHeader information correctly so far.
+ * We are planning on adding a bottom section to user's profiles that has a list of all events they have attended.
+ *
+ * I guess we will also add a connect button once we work on the connections system, maybe a message button if you are
+ * connected with them, and maybe some more information in the header to display how many connections/events/whatever else
+ * they have.
+ *
+ * The one different thing about how user information is obtained on this page, we use the getUserProfile function instead of just
+ * getUser because we only want this page to have access to the public profile data. If we used getUser, the profile page would also
+ * have access to each user's more sensitive data, which could be exploited by anyone that visits this page.
+ */
+
 import Navbar from "../components/Navbar.jsx";
 import {useSearchParams} from "react-router-dom";
 import {getUserProfile} from "../services/userServices.js";
 import {useQuery} from "@tanstack/react-query";
-import getUserProfilePicture from "../utils/getUserProfilePicture.js";
 import ProfileHeader from "../components/profile_components/ProfileHeader.jsx";
 
 export default function Profile() {

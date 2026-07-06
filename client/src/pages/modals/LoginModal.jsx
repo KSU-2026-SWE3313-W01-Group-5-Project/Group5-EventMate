@@ -1,17 +1,28 @@
+/**
+ * LoginModal Modal
+ *
+ * Handles user authentication by allowing users to log into their account using an authContext function.
+ *
+ * Manages form state for username and password, handles login submission, and provides basic UI feedback for success
+ * and error states (the success and error feedback was copy-pasted for all 3 modals (and other parts of the site)).
+ *
+ * @param {Function} params.onSwitch - passed from the AuthModal wrapper, allows the register and login modals to seamlessly
+ * swap between each other
+ *
+ * @param {Function} params.onRequestClose - passed from the Modal wrapper (which receives it from AuthModal), but this allows
+ * the LoginModal modal to tell the Modal.jsx wrapper when to animate closing automatically because the LoginModal closes itself
+ * after a user logs in successfully.
+ */
+
 import { useState } from "react";
 import {useAuth} from "../../context/AuthContext.jsx";
 
 import idIcon from "../../assets/registration_modal_icons/id-card.png"
 import passwordIcon from "../../assets/registration_modal_icons/padlock.png"
 import openEyeIcon from "../../assets/registration_modal_icons/open-eye.png"
-import {useSearchParams} from "react-router-dom";
 
 export default function LoginModal({ onSwitch, onRequestClose }) {
-    const {
-        login,
-    } = useAuth();
-
-    const [searchParams, setSearchParams] = useSearchParams();
+    const { login } = useAuth();
 
     const [username, setUsername] = useState("");
 

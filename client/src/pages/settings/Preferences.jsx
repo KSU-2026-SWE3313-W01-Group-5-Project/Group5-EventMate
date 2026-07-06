@@ -1,7 +1,30 @@
+/**
+ * Preferences Settings Sub-Page
+ *
+ * Allows users to configure their event filtering preferences that control how EventMate personalizes their event feed.
+ *
+ * Preferences includ:
+ * - Event type
+ * - Sub-category filtering
+ * - Location-based filtering
+ * - Proximity filtering based on that location
+ * - Toggling the automatic filtering on or off
+ *
+ * I intentionally designed the UI to be state-drive and conditionally render sections based on user selections (eg, music
+ * categories only appear if the user has selected "Music" as a type to filter for)
+ *
+ * Location and category selections are built using local state and will later be sent to the backend via an API call.
+ * This is the next thing on the to-do list and I will update my comments once that is done.
+ */
+
 import {useState} from "react";
 import LocationTypeahead from "../../components/settings_components/LocationTypeahead.jsx";
 import {useAuth} from "../../context/AuthContext.jsx";
 
+/**
+ * These event types constant arrays are most of the categories I felt were applicable to take from TicketMaster's API.
+ * We put them in arrays for the same reason as other pages, it makes it very easy to update and change categories in the future.
+ */
 const EVENT_TYPES = [
     "Music",
     "Sports",
@@ -9,8 +32,6 @@ const EVENT_TYPES = [
     "Miscellaneous"
 ];
 
-// these are "some" of the sub categories i was able to find from the ticketmaster api
-// do distance with a haversine formula
 const MUSIC_CATEGORIES = [
     "Alternative",
     "Ballads/Romantic",
@@ -80,6 +101,7 @@ const ARTS_CATEGORIES = [
     "Variety"
 ];
 
+// Kind of arbitrary numbers, I guess these are standard options, I just googled what to offer as options for proximity filtering
 const DISTANCE_OPTIONS = [
     10,
     25,
@@ -107,8 +129,11 @@ export default function Preferences() {
     const [success, setSuccess] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
 
+    // Location must be fully defined (both city and state) before enabling distance filtering.
     const locationSelected = stateFilter != null && cityFilter != null;
 
+    // Toggles an item with a multi-select array (same functionality as in SettingsProfile.jsx, I just made this one reusable
+    // for any toggle element).
     const toggleSelection = (value, setter) => {
         setter(prev =>
             prev.includes(value)
@@ -127,12 +152,22 @@ export default function Preferences() {
         e.preventDefault();
 
         try {
+            // Builds a normalized preferences object for the backend. Only includes subcategories if their parent event type
+            // is selected. This is to prevent a bug where a user can select an event type, choose subcategories, then deselect
+            // the event type and the subcategories are still sent.
             const preferences = {
                 autoFilter: autoFilterEnabled,
                 eventTypes: selectedEventTypes,
+
+                // Only include music categories if Music is selected.
                 musicCategories: (selectedEventTypes.includes("Music") ? selectedMusic : []),
+
+                // Only include sports categories if Sports is selected.
                 sportsCategories: (selectedEventTypes.includes("Sports") ? selectedSports : []),
+
+                // Only include arts categories if Arts & Theatre is selected.
                 artsCategories: (selectedEventTypes.includes("Arts & Theatre") ? selectedArts : []),
+
                 maxDistance: distance,
                 cityFilter: cityFilter,
                 stateFilter: stateFilter,
@@ -209,6 +244,8 @@ export default function Preferences() {
                     </button>
                 </div>
 
+                {/* Another fieldset disabling rule. This disables all preference controls when auto-filtering is turned off.
+                    Also visually fades the UI and prevents all interaction events. */}
                 <fieldset disabled={!autoFilterEnabled} className={`flex flex-col gap-10 max-w-3xl ${!autoFilterEnabled && `opacity-50 pointer-events-none select-none`} transition-opacity duration-300`}>
                     <div className={`${styles.formInput} items-center flex-wrap`}>
                         <h1 className={'min-w-40'}>Event Types</h1>
@@ -353,6 +390,7 @@ export default function Preferences() {
                         </div>
                     )}
 
+                    {/* The classname here allows the proximity filtering section to stay disabled as long as locations are not selected */}
                     <div className={`${styles.formInput} ${!locationSelected && `opacity-50 pointer-events-none select-none`} items-center flex-wrap`}>
                         <h1 className={'min-w-40'}>Maximum Distance</h1>
 
@@ -396,6 +434,9 @@ export default function Preferences() {
                         <div className={styles.formInput}>
                             <h1>Preferred Location</h1>
 
+                            {/* Currently the placeholders are just set as null because the backend has not been configured to
+                                save user event filtering preferences. Eventually these will be replaced with the actual data
+                                from the database. */}
                             <LocationTypeahead user={user} setState={setStateFilter} setCity={setCityFilter} statePlaceholder={null} cityPlaceholder={null}/>
                         </div>
                     </div>

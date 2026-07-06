@@ -1,10 +1,20 @@
+/**
+ * DeleteAccountModal Modal
+ *
+ * Handles permanent account deletion for authenticated users.
+ *
+ * Requires the user to manually type their username as a safety check before allowing deletion to prevent
+ * accidental account loss (I took this idea from similar websites I have seen, for example, GitHub requires you to type the name
+ * of your repository before you can delete it)
+ *
+ * On successful deletion, the modal triggers the parent callback onDeleted, which will be described in that file.
+ */
+
 import {useEffect, useState} from "react";
 import {useAuth} from "../../context/AuthContext.jsx";
 
-export default function DeleteAccountModal({ onRequestClose, onDeleted }) {
-    const {
-        deleteUser, user
-    } = useAuth();
+export default function DeleteAccountModal({ onDeleted }) {
+    const { deleteUser, user } = useAuth();
 
     const [username, setUsername] = useState("");
 
@@ -13,21 +23,31 @@ export default function DeleteAccountModal({ onRequestClose, onDeleted }) {
     const [errorMessage, setErrorMessage] = useState("");
     const [success, setSuccess] = useState(false);
 
+    // Enables the delete button only when the typed username exactly matches the authenticated user's username.
     useEffect(() => {
         setValidUsername(username === user.username);
     }, [username]);
 
+    /**
+     * Handles the account deletion request.
+     *
+     * Prevents default form submission, calls the global deleteUser mutation from AuthContext, and updates the UI state based
+     * on success or failure.
+     */
     const handleDeletion = async (e) => {
         e.preventDefault();
 
         try {
             await deleteUser();
 
+            // Once the account has been deleted, this locks the form to prevent further input and calls the parent's function onDeleted
             setSuccess(true);
             setErrorMessage("");
 
             onDeleted();
         } catch (err) {
+
+            // Differentiates between network failures and server rejections to give the user a bit more useful of an error message.
             if (!err?.response) {
                 setErrorMessage("No Server Response");
             } else {
@@ -49,6 +69,8 @@ export default function DeleteAccountModal({ onRequestClose, onDeleted }) {
                 transition-colors duration-300
                 `} onClick={(e) => e.stopPropagation()}
             >
+
+                {/* Success and error message rendering */}
                 {success && (
                     <h1 className={"w-full px-4 py-3 rounded-md border border-green-200 bg-green-50 text-green-700 text-sm"}>
                         Account deleted successfully.
@@ -73,6 +95,9 @@ export default function DeleteAccountModal({ onRequestClose, onDeleted }) {
                 </h1>
 
                 <form onSubmit={handleDeletion}>
+
+                    {/* We use a fieldset here inside of the form because that disabled tag allows us to disable all user clicks, inputs */}
+                    {/* mouse events, etc etc etc whenever the success state is true */}
                     <fieldset disabled={success} className={"flex flex-col gap-4"}>
                         <p className="text-center text-xl font-bold uppercase tracking-wide text-red-600">
                             Permanently Delete Your Account
@@ -109,6 +134,7 @@ export default function DeleteAccountModal({ onRequestClose, onDeleted }) {
                             />
                         </div>
 
+                        {/* As you can see, this button is disabled until a valid username is entered into the form (see the states) */}
                         <button
                             type={"submit"}
                             disabled={!validUsername}

@@ -1,3 +1,11 @@
+/**
+ * Navbar Component
+ *
+ * This is the most reused component on our website so far, it appears at the top of every single page.
+ * Along with navigation between pages on our site, this component manages the dark mode selector, authentication modals (register, sign-in),
+ * the user's dropdown menu for settings/profile/logout, and eventually notifications (if we have time to add that bonus feature).
+ */
+
 import {createSearchParams, NavLink, useNavigate, useSearchParams} from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext.jsx";
@@ -10,23 +18,32 @@ import {AuthModal} from "../pages/modals/AuthModal.jsx";
 import getUserProfilePicture from "../utils/getUserProfilePicture.js";
 
 export default function Navbar() {
-    const [searchParams, setSearchParams] = useSearchParams();
-    const navigate = useNavigate();
 
+    // Should be familiar by now, gets the currently authenticated user and logout function from Auth Context
+    const { user, logout } = useAuth();
+
+    // Used to determine whether an authentication modal should be open.
+    // The current modal is specified through the URL's query parameters (https://ourwebsite.com/?modal=login for example)
+    const [searchParams, setSearchParams] = useSearchParams();
     const modal = searchParams.get("modal");
     const isOpen = modal === "login" || modal === "register";
 
-    const { user, logout } = useAuth();
-
+    // Controls whether the account dropdown menu is visible
     const [dropDownOpen, setDropdownOpen] = useState(false);
+
+    // Stores the user's preferred color theme.
+    // Defaults to the previously saved preferrence from the localStorage in the browser, or the operating system's preference if none is saved
     const [theme, setTheme] = useState(localStorage.getItem("theme") || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"));
 
+    // Handles navigating with react-router and defines every page displayed in the main navigation. Rendering from an array makes adding and removing
+    // pages in the future very simple. Same logic as the settings sidebar page's array.
+    const navigate = useNavigate();
     const navigation = [
         { name: "Home", link: "/", current: true },
         { name: "Events", link: "/events", current: false },
     ]
 
-//  Reusable styling
+    //  Shared tailwind class strings to cut down on file length by shortening duplicate styling
     const styles = {
         iconButton: `bg-stone-700 dark:bg-zinc-900/50
         hover:bg-stone-600 dark:hover:bg-white/5
@@ -38,8 +55,8 @@ export default function Navbar() {
         text-stone-700 hover:text-stone-900 dark:text-stone-50 dark:hover:text-stone-200
         hover:bg-stone-100 dark:hover:bg-zinc-600 transition-colors`,
     }
-//
 
+    // Applies the selected dark/light theme to the root HTML element and stores the user's preference in localStorage so it persists
     useEffect(() => {
         const rootElement = document.documentElement;
 
@@ -47,12 +64,17 @@ export default function Navbar() {
         localStorage.setItem("theme", theme);
     }, [theme]);
 
+    // Toggles between light and dark mode
     const handleDarkMode = () => {
         setTheme((currentTheme) =>
             currentTheme === "dark" ? "light" : "dark"
         );
     }
 
+    /**
+     * Opens the account dropdown if the user is logged in.
+     * Otherwise, opens the login modal by updating the URL search parameters.
+     */
     const handleUserDropdown = () => {
         if (user) {
             setDropdownOpen(!dropDownOpen)
@@ -65,6 +87,7 @@ export default function Navbar() {
         }
     }
 
+    // Signs the current user out, returns them to the homepage, and closes the account dropdown.
     const handleLogout = () => {
         logout();
         navigate("/");
@@ -82,6 +105,8 @@ export default function Navbar() {
             transition-colors duration-300
             `}
         >
+
+            {/* Main site navigation (the main pages on the left of the navbar) */}
             <div className="flex gap-6">
                 {navigation.map((item) => (
                     <NavLink
@@ -106,11 +131,15 @@ export default function Navbar() {
                 ))}
             </div>
 
+            {/* Temporary placeholder text until we design an EventMate logo */}
             <div className="text-stone-700 dark:text-white font-bold text-lg absolute left-1/2 -translate-x-1/2">
                 Placeholder logo
             </div>
 
+            {/* Navbar utility buttons */}
             <div className="relative flex gap-4">
+
+                {/* Dark mode toggle */}
                 <button
                     onClick={() => handleDarkMode()}
                     className={ styles.iconButton }
@@ -128,6 +157,7 @@ export default function Navbar() {
                     />
                 </button>
 
+                {/* Placeholder for future notifications functionality */}
                 <button
                     className={ styles.iconButton }
                 >
@@ -138,6 +168,7 @@ export default function Navbar() {
                     />
                 </button>
 
+                {/* Opens either the account dropdown or the login modal */}
                 <div className="relative">
                     <button
                         onClick={() => handleUserDropdown()}
@@ -151,8 +182,11 @@ export default function Navbar() {
                         {user ? <h2 className={"text-gray-300 dark:hover:text-white"}>{user.username}</h2> : null}
                     </button>
 
+                    {/* User account dropdown menu */}
                     {dropDownOpen && user && (
                         <>
+
+                            {/* Another one of those invisible full-screen overlays that closes the dropdown when clicked on */}
                             <div className={"fixed inset-0 z-40"} onClick={() => setDropdownOpen(false)}/>
                             <div
                                 className={`
@@ -189,9 +223,9 @@ export default function Navbar() {
                         </>
                     )}
 
+                    {/* Authentication modal rendered once and controller through the URL query parameter, see pages/modals/AuthModal.jsx */}
                     <AuthModal modal={modal} isOpen={isOpen} />
                 </div>
-
             </div>
         </nav>
     )

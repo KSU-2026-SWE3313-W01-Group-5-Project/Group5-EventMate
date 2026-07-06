@@ -1,16 +1,15 @@
-import {Link, useNavigate, useSearchParams} from "react-router-dom";
+/**
+ * Home Page
+ *
+ * There will be some changes to this page going forward but probably nothing else major. We are playing with the idea
+ * of having an element that displays random top events or something for everyone to see, we will see.
+ */
+
+import {useNavigate} from "react-router-dom";
 import Navbar from "../components/Navbar.jsx";
 import {useAuth} from "../context/AuthContext.jsx";
-import {AuthModal} from "./modals/AuthModal.jsx";
 
 import heroImage from "../assets/hero/homepage-hero.jpg"
-
-/*
-    Home PAGE
-
-    This is a very basic example of a page. Obviously we will fill this home page out with a lot more in the future.
-    See below for an example of how JSX looks.
-*/
 
 export default function Home() {
     const {user, isLoading, isError, logout} = useAuth();
