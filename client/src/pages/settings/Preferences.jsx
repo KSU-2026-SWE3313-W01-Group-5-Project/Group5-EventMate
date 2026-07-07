@@ -17,7 +17,7 @@
  * This is the next thing on the to-do list and I will update my comments once that is done.
  */
 
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import LocationTypeahead from "../../components/settings_components/LocationTypeahead.jsx";
 import {useAuth} from "../../context/AuthContext.jsx";
 
@@ -111,7 +111,8 @@ const DISTANCE_OPTIONS = [
 ];
 
 export default function Preferences() {
-    const {user} = useAuth();
+    const {user, updatePreferences, isLoading} = useAuth();
+    const userPreferences = user.preferences;
 
     const [autoFilterEnabled, setAutoFilterEnabled] = useState(false);
 
@@ -121,7 +122,7 @@ export default function Preferences() {
     const [selectedArts, setSelectedArts] = useState([]);
 
     const [showDistanceDropdown, setShowDistanceDropdown] = useState(false);
-    const [distance, setDistance] = useState(DISTANCE_OPTIONS[0]);
+    const [distance, setDistance] = useState(null);
 
     const [stateFilter, setStateFilter] = useState(null);
     const [cityFilter, setCityFilter] = useState(null);
@@ -142,6 +143,20 @@ export default function Preferences() {
         );
     };
 
+    useEffect(() => {
+        setAutoFilterEnabled(userPreferences.auto_filter_enabled);
+
+        setSelectedEventTypes(userPreferences.event_types);
+        setSelectedMusic(userPreferences.music_categories);
+        setSelectedSports(userPreferences.sports_categories);
+        setSelectedArts(userPreferences.arts_categories);
+
+        setDistance(userPreferences.max_distance);
+
+        setStateFilter(userPreferences.state_filter);
+        setCityFilter(userPreferences.city_filter);
+    }, [])
+
     const styles = {
         formInput: `flex px-4 py-3 gap-x-6 gap-y-2 rounded-md border border-stone-300 bg-white 
         text-stone-800 placeholder:text-stone-400 focus-within:outline-none focus-within:ring-2 focus-within:ring-stone-300/75 
@@ -155,27 +170,29 @@ export default function Preferences() {
             // Builds a normalized preferences object for the backend. Only includes subcategories if their parent event type
             // is selected. This is to prevent a bug where a user can select an event type, choose subcategories, then deselect
             // the event type and the subcategories are still sent.
+            // You may notice that all variables in this object are named in snake_case instead of camelCase. This is so the fields
+            // can automatically match the columns in our table so we do not have to do any tedious parsing in the backend.
             const preferences = {
-                autoFilter: autoFilterEnabled,
-                eventTypes: selectedEventTypes,
+                auto_filter_enabled: autoFilterEnabled,
+                event_types: selectedEventTypes,
 
                 // Only include music categories if Music is selected.
-                musicCategories: (selectedEventTypes.includes("Music") ? selectedMusic : []),
+                music_categories: (selectedEventTypes.includes("Music") ? selectedMusic : []),
 
                 // Only include sports categories if Sports is selected.
-                sportsCategories: (selectedEventTypes.includes("Sports") ? selectedSports : []),
+                sports_categories: (selectedEventTypes.includes("Sports") ? selectedSports : []),
 
                 // Only include arts categories if Arts & Theatre is selected.
-                artsCategories: (selectedEventTypes.includes("Arts & Theatre") ? selectedArts : []),
+                arts_categories: (selectedEventTypes.includes("Arts & Theatre") ? selectedArts : []),
 
-                maxDistance: distance,
-                cityFilter: cityFilter,
-                stateFilter: stateFilter,
+                max_distance: distance,
+                city_filter: cityFilter,
+                state_filter: stateFilter,
             };
 
             console.log(preferences);
-            //await updatePreferences(preferences);
-            // this function doesnt exist yet
+
+            await updatePreferences(preferences);
 
             setSuccess(true);
             setErrorMessage("");
@@ -187,6 +204,8 @@ export default function Preferences() {
             }
         }
     };
+
+    if (isLoading) return <span>Loading...</span>
 
     return (
         <div className={"max-w-full h-full flex flex-col gap-5"}>
@@ -437,7 +456,7 @@ export default function Preferences() {
                             {/* Currently the placeholders are just set as null because the backend has not been configured to
                                 save user event filtering preferences. Eventually these will be replaced with the actual data
                                 from the database. */}
-                            <LocationTypeahead user={user} setState={setStateFilter} setCity={setCityFilter} statePlaceholder={null} cityPlaceholder={null}/>
+                            <LocationTypeahead user={user} setState={setStateFilter} setCity={setCityFilter} statePlaceholder={userPreferences.state_filter} cityPlaceholder={userPreferences.city_filter}/>
                         </div>
                     </div>
 

@@ -1,6 +1,8 @@
 import { createPool } from "../../db/index.js";
 import {hashPassword} from "../utils/hashPassword.js";
 import deleteFile from "../utils/deleteFile.js";
+import fs from "fs";
+import sharp from "sharp";
 
 const pool = createPool();
 
@@ -31,7 +33,24 @@ export async function getUser(req, res) {
         const userId = req.user.id;
 
         const result = await pool.query(
-            'SELECT public_id, username, email, firstname, lastname, bio, profile_picture_url, interests, city, state FROM users WHERE id = $1',
+            `SELECT 
+                u.public_id, u.username, u.email, u.firstname, u.lastname,
+                u.bio, u.profile_picture_url, u.interests, u.city, u.state,
+                
+                jsonb_build_object(
+                    'auto_filter_enabled', p.auto_filter_enabled,
+                    'event_types', p.event_types,
+                    'music_categories', p.music_categories,
+                    'sports_categories', p.sports_categories,
+                    'arts_categories', p.arts_categories,
+                    'max_distance', p.max_distance,
+                    'city_filter', p.city_filter,
+                    'state_filter', p.state_filter
+                ) AS preferences
+
+                FROM users u
+                LEFT JOIN user_preferences p ON u.id = p.user_id
+                WHERE u.id = $1`,
             [userId]
         );
 
@@ -58,11 +77,11 @@ export async function updateUser(req, res) {
 
         Object.keys(requestedUpdates).forEach(key => {
             if (!allowedColumns.includes(key)) {
-                delete requestedUpdates.key;
+                delete requestedUpdates[key];
             }
         });
 
-        if (requestedUpdates.length === 0) {
+        if (Object.keys(requestedUpdates).length === 0) {
             return res.status(400).json({ error: "NO_VALID_SETTINGS_TO_UPDATE" });
         }
 
@@ -132,6 +151,18 @@ export async function updateUser(req, res) {
                 }
             })
 
+            const imagePath = req.file.path;
+            const tempPath = `${imagePath}-temp`
+
+            await sharp(imagePath)
+                .resize(512, 512, {
+                    fit: 'cover',
+                    position: 'center'
+                })
+                .toFile(tempPath);
+
+            fs.renameSync(tempPath, imagePath);
+
             requestedUpdates.profile_picture_url = `${req.file.filename}`;
         }
 
@@ -139,7 +170,7 @@ export async function updateUser(req, res) {
         const queryValues = Object.values(requestedUpdates);
 
         const setClause = columns
-            .map((col, index) => `"${col}" = $${index + 1}`)
+            .map((col, index) => `${col} = $${index + 1}`)
             .join(', ');
 
         queryValues.push(userId);
@@ -161,6 +192,54 @@ export async function updateUser(req, res) {
         return res.status(200).json(result.rows[0]);
     } catch (err) {
         console.error("Update user failed:", err);
+        return res.status(500).json({ error: "INTERNAL_SERVER_ERROR" });
+    }
+}
+
+export async function updateUserPreferences(req, res) {
+    try {
+        const userId = req.user.id;
+
+        const requestedUpdates = req.body;
+
+        const allowedColumns = ['auto_filter_enabled', 'event_types', 'music_categories', 'sports_categories', 'arts_categories', 'max_distance', 'city_filter', 'state_filter'];
+
+        Object.keys(requestedUpdates).forEach(key => {
+            if (!allowedColumns.includes(key)) {
+                delete requestedUpdates[key];
+            }
+        });
+
+        if (Object.keys(requestedUpdates).length === 0) {
+            return res.status(400).json({ error: "NO_VALID_PREFERENCES_TO_UPDATE" });
+        }
+
+        const columns = Object.keys(requestedUpdates);
+        const queryValues = Object.values(requestedUpdates);
+
+        const setClause = columns
+            .map((col, index) => `${col} = $${index + 1}`)
+            .join(', ');
+
+        queryValues.push(userId);
+        const userIdPlaceholder = `$${queryValues.length}`;
+
+        const sqlQuery = `
+            UPDATE user_preferences
+            SET ${setClause}
+            WHERE user_id = ${userIdPlaceholder}
+            RETURNING auto_filter_enabled, event_types, music_categories, sports_categories, arts_categories, max_distance, city_filter, state_filter
+            `;
+
+        const result = await pool.query(sqlQuery, queryValues);
+
+        if (result.rowCount === 0) {
+            return res.status(404).json({ error: "PREFERNCES_NOT_FOUND" });
+        }
+
+        return res.status(200).json(result.rows[0]);
+    } catch (err) {
+        console.error("Update user preferences failed:", err);
         return res.status(500).json({ error: "INTERNAL_SERVER_ERROR" });
     }
 }

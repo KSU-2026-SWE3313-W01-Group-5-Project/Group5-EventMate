@@ -32,24 +32,27 @@ Runs the schema on its own.
 ---
 ## Recent Updates / Commit Log
 
-This section is used to document recent changes to the project in a structured format.
+This section is used to document recent changes to the project in a structured format and so everyone can find the changes in one place.
 
 ---
 
-### Commit Title: Added a bunch of comments to every frontend component so far
-**Date:** 2026-07-06
+<summary><b>2026-07-07: Backend functionality added for event preferences & minor refactoring of frontend API files</b></summary>
+
+#### What changed:
+- Added in the full functionality for the user event preferences settings page so user's can actually save their filter now
+- Added in a new table to the database called user_preferences that is a reference to the users table
+- Installed a new package called Sharp that the backend now uses to resize user's uploaded images to be 512x512 squares
+
+
+- Moved all user API functions to the user services file
+- Reduced redundancy within the API functions by creating a pattern  API 'object'
+
+---
+
+<details>
+<summary><b>2026-07-06: Added a bunch of comments to every frontend component so far</b></summary>
 
 #### What changed:
 - Added informative comments to all frontend components
 - Improved consistency of explanations across UI components, modals, pages, and context files
-
-#### Why this change was made:
-- To improve code readability and help group mates understand every part of the frontend system
-- To improve the quality of the frontend codebase and get some practice with regular commenting of files
-
-#### Files changed:
-- All major frontend components (Navbar, Modals, Settings pages, Auth components, etc.)
-- Context and service files where relevant
-
-#### Notes / Side Effects:
-- No functional changes were made.
+</details>
