@@ -65,8 +65,6 @@ export function AuthProvider({ children }) {
     const isLoading = query.isLoading;
     const isAuthenticated = !!query.data;
 
-    console.log(user);
-
     /**
      * Handles user login using @tanstack/react-query's useMutation function.
      *
