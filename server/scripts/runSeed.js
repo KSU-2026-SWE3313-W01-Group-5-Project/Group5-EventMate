@@ -12,10 +12,15 @@ async function runSeed() {
 
         const seededHashPassword = await hashPassword('password');
 
-        await pool.query(`
+        const dummyUser = await pool.query(`
             INSERT INTO users (firstname, lastname, username, email, password_hash, created_at)
-            VALUES ('Dylan', 'Kooby', 'dylan', 'dylan@dylan.com', $1, NOW())`,
+            VALUES ('Dylan', 'Kooby', 'dylan', 'dylan@dylan.com', $1, NOW())
+            RETURNING id`,
             [seededHashPassword]
+        );
+
+        await pool.query(`
+            INSERT INTO user_preferences (user_id) VALUES ($1)`, [dummyUser.rows[0].id]
         );
 
         console.log("Databases seeded!")

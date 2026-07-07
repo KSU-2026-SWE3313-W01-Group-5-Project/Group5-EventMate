@@ -40,6 +40,23 @@ CREATE TABLE users (
     created_at TIMESTAMP DEFAULT NOW()
 );
 
+CREATE TABLE user_preferences (
+    user_id INT PRIMARY KEY,
+
+    auto_filter_enabled BOOLEAN DEFAULT FALSE,
+
+    event_types TEXT[] DEFAULT '{}',
+    music_categories TEXT[] DEFAULT '{}',
+    sports_categories TEXT[] DEFAULT '{}',
+    arts_categories TEXT[] DEFAULT '{}',
+
+    max_distance INT,
+    city_filter TEXT,
+    state_filter TEXT,
+
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+)
+
 /*
 -- User Tables End --
 */

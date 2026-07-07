@@ -38,15 +38,19 @@ export async function registerUser(req, res) {
         const result = await pool.query(
             'INSERT INTO users (firstname, lastname, username, email, password_hash, verification_token)' +
             'VALUES ($1, $2, $3, $4, $5, $6)' +
-            'RETURNING public_id, firstname, lastname, username, email, verification_token',
+            'RETURNING id',
             [firstName, lastName, username, email, hashedPassword, verificationToken]
         );
 
-        const user = result.rows[0];
+        const userId = result.rows[0].id;
+
+        await pool.query(
+            'INSERT INTO user_preferences (user_id) VALUES ($1)',
+            [userId]
+        )
 
         return res.status(201).json({
             message: "Account created!",
-            user
         })
     } catch (err) {
         console.error("Registration failed:", err);

@@ -27,6 +27,7 @@ import { createContext, useContext } from 'react';
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 import * as authService from "../services/authServices.js"
+import * as userService from "../services/userServices.js"
 
 // Creates the global authentication context that can be accessed anywhere in the application using useAuth()
 const AuthContext = createContext(null);
@@ -54,7 +55,7 @@ export function AuthProvider({ children }) {
      */
     const query = useQuery({
         queryKey: ["currentUser"],
-        queryFn: authService.getCurrentUser,
+        queryFn: userService.getCurrentUser,
 
         retry: false,
     })
@@ -100,7 +101,7 @@ export function AuthProvider({ children }) {
      * the latest profile information.
      */
     const updateMutation = useMutation({
-        mutationFn: (userSettings) => authService.updateUser(userSettings),
+        mutationFn: (userSettings) => userService.updateUser(userSettings),
 
         onSuccess: (data) => {
             queryClient.invalidateQueries({
@@ -109,9 +110,19 @@ export function AuthProvider({ children }) {
         }
     });
 
-    // Permanently deletes the authenticated user's account.
+    // Same as above, just for the user preferences table instead.
+    const updatePreferencesMutation = useMutation({
+        mutationFn: (userPreferences) => userService.updateUserPreferences(userPreferences),
+
+        onSuccess: (data) => {
+            queryClient.invalidateQueries({
+                queryKey: ["currentUser"],
+            })
+        }
+    })
+
     const deleteMutation = useMutation({
-        mutationFn: authService.deleteUser,
+        mutationFn: userService.deleteUser,
     });
 
     // Makes the authentication state and helper functions available to every component wrapped by AuthProvider (see main.jsx)
@@ -125,6 +136,7 @@ export function AuthProvider({ children }) {
             isLoggingIn: loginMutation.isPending,
 
             updateUser: updateMutation.mutateAsync,
+            updatePreferences: updatePreferencesMutation.mutateAsync,
 
             logout: logoutMutation.mutateAsync,
             deleteUser: deleteMutation.mutateAsync,
