@@ -64,7 +64,7 @@ export default function Home() {
 
                 {renderUser()}
 
-                <button onClick={() => navigate('/profile/?user=9874c882-9943-4eeb-b0e3-14dd2c061169')}>view profile 803a330c-dbae-4bf7-9e78-5a7da9543a13</button>
+                <button onClick={() => navigate('/profile/?user=e75e1b94-804b-40f0-bbbe-cea9d9b5a8b3')}>view profile 803a330c-dbae-4bf7-9e78-5a7da9543a13</button>
             </div>
         </>
     )

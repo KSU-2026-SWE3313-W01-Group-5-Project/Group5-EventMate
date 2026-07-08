@@ -15,7 +15,7 @@
  * this to avoid the need for separate API calls for profile image changes.
  */
 
-import {useEffect, useState, useRef} from "react";
+import {useEffect, useState} from "react";
 import LocationTypeahead from "../../components/settings_components/LocationTypeahead.jsx";
 import {useAuth} from "../../context/AuthContext.jsx";
 
@@ -26,9 +26,27 @@ import getUserProfilePicture from "../../utils/getUserProfilePicture.js";
 // These are to fulfill the requirement for this project to allow users to set up profiles with their interests.
 // Feel free to add any other interests you think users should be able to include.
 const availableInterests = [
-    "Music",
+    "Beauty & Fashion",
     "Coding",
-    "Gaming"
+    "Collecting",
+    "Cooking & Baking",
+    "Design",
+    "Fitness & Exercise",
+    "Gaming",
+    "Graphic Arts",
+    "Health & Wellness",
+    "Home Improvement (DIY)",
+    "Movies & TV",
+    "Music",
+    "Performing Arts",
+    "Pets",
+    "Reading",
+    "Sports",
+    "Spirituality",
+    "Technology",
+    "Travel",
+    "Volunteering",
+    "Working on Cars"
 ]
 
 export default function SettingsProfile() {

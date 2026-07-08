@@ -14,16 +14,13 @@
  * the internet that also had a login/register form that I really liked the look of.
  */
 
-import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { register } from "../../services/authServices.js";
-import { useNavigate } from "react-router-dom";
 
 import emailIcon from "../../assets/registration_modal_icons/mail.png";
 import idIcon from "../../assets/registration_modal_icons/id-card.png"
 import passwordIcon from "../../assets/registration_modal_icons/padlock.png"
 import openEyeIcon from "../../assets/registration_modal_icons/open-eye.png"
-import LocationTypeahead from "../../components/settings_components/LocationTypeahead.jsx";
 
 const USER_REGEX = /^[A-z][A-z0-9-_]{3,23}$/;
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;

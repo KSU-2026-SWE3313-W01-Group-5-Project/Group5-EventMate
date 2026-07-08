@@ -21,7 +21,6 @@
 
 import {useEffect, useState} from "react";
 import {useAuth} from "../../context/AuthContext.jsx";
-import {useQueryClient} from "@tanstack/react-query";
 
 import emailIcon from "../../assets/registration_modal_icons/mail.png";
 import passwordIcon from "../../assets/registration_modal_icons/padlock.png"

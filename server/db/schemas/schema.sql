@@ -3,11 +3,50 @@
 */
 
 CREATE TABLE events (
-    id SERIAL PRIMARY KEY,
-    title VARCHAR(255) NOT NULL,
-    description TEXT,
-    event_date TIMESTAMP
+    id TEXT PRIMARY KEY,
+    name TEXT NOT NULL,
+    description TEXT NOT NULL,
+
+    start_datetime TIMESTAMPTZ,
+    timezone TEXT,
+    status TEXT,
+
+    image_url TEXT,
+
+    venue_id TEXT,
+
+    segment TEXT,
+    genre TEXT,
+    subgenre TEXT,
+
+    showings TEXT[] DEFAULT '{}',
+
+    last_seen_at TIMESTAMPTZ DEFAULT NOW(),
+
+    FOREIGN KEY (venue_id) REFERENCES venues(id)
 );
+
+CREATE TABLE venues (
+    id TEXT PRIMARY KEY,
+    name TEXT,
+
+    city TEXT,
+    state TEXT,
+    country TEXT,
+
+    latitude DOUBLE PRECISION,
+    longitude DOUBLE PRECISION
+)
+
+CREATE TABLE event_registrations (
+    user_id INT NOT NULL,
+    event_id TEXT NOT NULL,
+
+    PRIMARY KEY (user_id, event_id),
+
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (event_id) REFERENCES events(id) ON DELETE CASCADE,
+)
 
 /*
 -- Event Tables End --
