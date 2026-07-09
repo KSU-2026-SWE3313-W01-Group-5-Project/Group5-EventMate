@@ -264,7 +264,7 @@ export default function Preferences() {
                 </div>
 
                 {/* Another fieldset disabling rule. This disables all preference controls when auto-filtering is turned off.
-                    Also visually fades the UI and prevents all interaction events. */}
+                    Also, visually fades the UI and prevents all interaction events. */}
                 <fieldset disabled={!autoFilterEnabled} className={`flex flex-col gap-10 max-w-3xl ${!autoFilterEnabled && `opacity-50 pointer-events-none select-none`} transition-opacity duration-300`}>
                     <div className={`${styles.formInput} items-center flex-wrap`}>
                         <h1 className={'min-w-40'}>Event Types</h1>

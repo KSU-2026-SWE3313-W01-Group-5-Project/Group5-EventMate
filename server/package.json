@@ -10,7 +10,8 @@
     "runSchema": "node scripts/runSchema.js",
     "runSeed": "node scripts/runSeed.js",
     "truncateDb": "node scripts/truncateDb.js",
-    "resetDb": "node scripts/resetDb.js"
+    "resetDb": "node scripts/resetDb.js",
+    "syncEvents": "node scripts/syncEvents.js"
   },
   "keywords": [],
   "author": "",
