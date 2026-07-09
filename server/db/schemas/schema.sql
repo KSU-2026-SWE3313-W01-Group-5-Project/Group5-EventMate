@@ -1,58 +1,4 @@
 /*
--- Event Tables Start --
-*/
-
-CREATE TABLE events (
-    id TEXT PRIMARY KEY,
-    name TEXT NOT NULL,
-    description TEXT NOT NULL,
-
-    start_datetime TIMESTAMPTZ,
-    timezone TEXT,
-    status TEXT,
-
-    image_url TEXT,
-
-    venue_id TEXT,
-
-    segment TEXT,
-    genre TEXT,
-    subgenre TEXT,
-
-    showings TEXT[] DEFAULT '{}',
-
-    last_seen_at TIMESTAMPTZ DEFAULT NOW(),
-
-    FOREIGN KEY (venue_id) REFERENCES venues(id)
-);
-
-CREATE TABLE venues (
-    id TEXT PRIMARY KEY,
-    name TEXT,
-
-    city TEXT,
-    state TEXT,
-    country TEXT,
-
-    latitude DOUBLE PRECISION,
-    longitude DOUBLE PRECISION
-)
-
-CREATE TABLE event_registrations (
-    user_id INT NOT NULL,
-    event_id TEXT NOT NULL,
-
-    PRIMARY KEY (user_id, event_id),
-
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-    FOREIGN KEY (event_id) REFERENCES events(id) ON DELETE CASCADE,
-)
-
-/*
--- Event Tables End --
-*/
-
-/*
 -- User Tables Start --
 */
 
@@ -94,8 +40,64 @@ CREATE TABLE user_preferences (
     state_filter TEXT,
 
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-)
+);
 
 /*
 -- User Tables End --
+*/
+
+/*
+-- Event Tables Start --
+*/
+
+CREATE TABLE venues (
+    id TEXT PRIMARY KEY,
+    name TEXT,
+
+    city TEXT,
+    state TEXT,
+    country TEXT,
+
+    latitude DOUBLE PRECISION,
+    longitude DOUBLE PRECISION
+);
+
+CREATE TABLE events (
+    id TEXT PRIMARY KEY,
+    canonical_key TEXT,
+
+    name TEXT NOT NULL,
+    description TEXT NOT NULL,
+
+    start_datetime TIMESTAMPTZ,
+    timezone TEXT,
+    status TEXT,
+
+    image_url TEXT,
+
+    venue_id TEXT,
+
+    segment TEXT,
+    genre TEXT,
+    subgenre TEXT,
+
+    occurrences TIMESTAMPTZ[] NOT NULL DEFAULT '{}',
+
+    last_seen_at TIMESTAMPTZ DEFAULT NOW(),
+
+    FOREIGN KEY (venue_id) REFERENCES venues(id)
+);
+
+CREATE TABLE event_registrations (
+    user_id INT NOT NULL,
+    event_id TEXT NOT NULL,
+
+    PRIMARY KEY (user_id, event_id),
+
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (event_id) REFERENCES events(id) ON DELETE CASCADE
+);
+
+/*
+-- Event Tables End --
 */

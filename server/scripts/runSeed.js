@@ -5,11 +5,6 @@ const pool = createPool();
 
 async function runSeed() {
     try {
-        await pool.query(`
-            INSERT INTO events (title, description, event_date)
-            VALUES ('Welcome Event', 'First event in database', NOW());
-        `);
-
         const seededHashPassword = await hashPassword('password');
 
         const dummyUser = await pool.query(`
