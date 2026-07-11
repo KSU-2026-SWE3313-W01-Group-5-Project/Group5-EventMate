@@ -21,38 +21,21 @@ Resets the database by dropping and recreating all tables.
 #### `npm run runSeed`
 Seeds the database with initial test data.
 
-#### `npm run truncateDb`
-Clears all data from the database but does not delete or reset tables
-
 #### `npm run runSchema`
-Runs the schema on its own. 
+Runs the schema on its own.
 
-- Used for initial database creation on a fresh clone.  
+- Used for initial database creation on a fresh clone.
 
----
-## Recent Updates / Commit Log
+### When running both scripts below, leave the {} out of the command:
+#### `npm run truncateDb -- --table={table}`
+Clears all data from the database but does not delete or reset tables
+You can now truncate by table if you do not want to clear all data from the entire database.
+Alternatively, you can also run 'npm run truncateDb -- --all' to truncate the full database.
 
-This section is used to document recent changes to the project in a structured format and so everyone can find the changes in one place.
-
----
-
-<summary><b>2026-07-07: Backend functionality added for event preferences & minor refactoring of frontend API files</b></summary>
-
-#### What changed:
-- Added in the full functionality for the user event preferences settings page so user's can actually save their filter now
-- Added in a new table to the database called user_preferences that is a reference to the users table
-- Installed a new package called Sharp that the backend now uses to resize user's uploaded images to be 512x512 squares
-
-
-- Moved all user API functions to the user services file
-- Reduced redundancy within the API functions by creating a pattern  API 'object'
-
----
-
-<details>
-<summary><b>2026-07-06: Added a bunch of comments to every frontend component so far</b></summary>
-
-#### What changed:
-- Added informative comments to all frontend components
-- Improved consistency of explanations across UI components, modals, pages, and context files
-</details>
+#### `npm run syncEvents -- --mode={mode}`
+This command pulls events and fills the database from the external api (ticketmaster). The specific modes are as follows:
+- music (syncs 200 events from each individual subcategory from the music general category from ticketmaster)
+- sports (same as above but for sports categories)
+- arts (same as above but for arts & theatre categories)
+- quick (syncs just 200 events from each general category (200 music type, 200 sports type, 200 arts type))
+- full (syncs 200 events from each subcategory)
