@@ -25,6 +25,7 @@ import {useAuth} from "../../context/AuthContext.jsx";
  * These event types constant arrays are most of the categories I felt were applicable to take from TicketMaster's API.
  * We put them in arrays for the same reason as other pages, it makes it very easy to update and change categories in the future.
  */
+
 const EVENT_TYPES = [
     "Music",
     "Sports",
@@ -34,72 +35,83 @@ const EVENT_TYPES = [
 
 const MUSIC_CATEGORIES = [
     "Alternative",
-    "Ballads/Romantic",
-    "Blues",
     "Classical",
     "Country",
     "Dance/Electronic",
-    "Folk",
     "Hip-Hop/Rap",
-    "Holiday",
     "Jazz",
     "Latin",
-    "Medieval/Renaissance",
     "Metal",
-    "New Age",
     "Other",
     "Pop",
     "R&B",
-    "Reggae",
-    "Religious",
     "Rock",
-    "World"
 ];
 
 const SPORTS_CATEGORIES = [
     "Baseball",
     "Basketball",
     "Boxing",
-    "Equestrian",
-    "eSports",
     "Football",
     "Golf",
-    "Gymnastics",
     "Hockey",
-    "Ice Skating",
-    "Indoor Soccer",
-    "Lacrosse",
-    "Martial Arts",
     "Motorsports/Racing",
-    "Rodeo",
-    "Rugby",
     "Soccer",
-    "Softball",
-    "Swimming",
     "Tennis",
-    "Track & Field",
-    "Volleyball"
 ];
 
 const ARTS_CATEGORIES = [
     "Broadway",
-    "Classical",
     "Comedy",
-    "Cultural",
     "Dance",
-    "Espectaculo",
     "Fashion",
     "Fine Art",
-    "Magic & Illusion",
-    "Miscellaneous",
-    "Multimedia",
     "Music",
     "Opera",
     "Performance Art",
-    "Puppetry",
     "Theatre",
-    "Variety"
 ];
+
+/**
+ * Here are a bunch of extra categories that I took out because I felt there were way too many, but Ticketmaster does support
+ * these extra ones as well:
+ *
+ * MUSIC_CATEGORIES:
+ * "Ballads/Romantic",
+ * "Blues",
+ * "Folk",
+ * "Holiday",
+ * "Medieval/Renaissance",
+ * "New Age",
+ * "Reggae",
+ * "Religious",
+ * "World"
+ *
+ * SPORTS_CATEGORIES:
+ * "Equestrian",
+ * "eSports",
+ * "Gymnastics",
+ * "Ice Skating",
+ * "Indoor Soccer",
+ * "Lacrosse",
+ * "Martial Arts",
+ * "Rodeo",
+ * "Rugby",
+ * "Softball",
+ * "Swimming",
+ * "Track & Field",
+ * "Volleyball"
+ *
+ * ARTS_CATEGORIES:
+ * "Classical",
+ * "Cultural",
+ * "Espectaculo",
+ * "Magic & Illusions",
+ * "Miscellaneous",
+ * "Multimedia",
+ * "Puppetry",
+ * "Variety"
+ */
 
 // Kind of arbitrary numbers, I guess these are standard options, I just googled what to offer as options for proximity filtering
 const DISTANCE_OPTIONS = [
