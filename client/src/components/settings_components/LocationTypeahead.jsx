@@ -14,7 +14,7 @@
  * This is passed in from the parent component instead of always using the user's
  * current state because different pages may want to display different values.
  * For example, the Profile Settings page should display the user's current
- * location, while the Event Preferences page should display the user's preferred
+ * location, while the EventDetails.jsx Preferences page should display the user's preferred
  * event location filter.
  *
  * @param {string} props.cityPlaceholder - Same as above, but for the city input.
