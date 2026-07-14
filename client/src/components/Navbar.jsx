@@ -40,7 +40,7 @@ export default function Navbar() {
     const navigate = useNavigate();
     const navigation = [
         { name: "Home", link: "/", current: true },
-        { name: "Events", link: "/events", current: false },
+        { name: "Dashboard", link: "/dashboard", current: false },
     ]
 
     //  Shared tailwind class strings to cut down on file length by shortening duplicate styling
@@ -54,6 +54,18 @@ export default function Navbar() {
         text-left w-full
         text-stone-700 hover:text-stone-900 dark:text-stone-50 dark:hover:text-stone-200
         hover:bg-stone-100 dark:hover:bg-zinc-600 transition-colors`,
+
+        navButtonActive: `bg-stone-700 dark:bg-zinc-950/50 
+        text-stone-50 dark:text-white 
+        rounded-md px-3 py-2 
+        text-sm font-medium 
+        transition-colors`,
+
+        navButtonInactive: `hover:bg-stone-200 dark:hover:bg-white/5 
+        text-stone-600 hover:text-stone-900 dark:text-gray-300 dark:hover:text-white 
+        rounded-md px-3 py-2 
+        text-sm font-medium 
+        transition-colors`
     }
 
     // Applies the selected dark/light theme to the root HTML element and stores the user's preference in localStorage so it persists
@@ -108,27 +120,30 @@ export default function Navbar() {
 
             {/* Main site navigation (the main pages on the left of the navbar) */}
             <div className="flex gap-6">
-                {navigation.map((item) => (
-                    <NavLink
-                        key={item.name}
-                        to={item.link}
-                        className={({ isActive }) =>
-                            isActive
-                                ? `bg-stone-700 dark:bg-zinc-950/50 
-                                text-stone-50 dark:text-white 
-                                rounded-md px-3 py-2 
-                                text-sm font-medium 
-                                transition-colors`
-                                : `hover:bg-stone-200 dark:hover:bg-white/5 
-                                text-stone-600 hover:text-stone-900 dark:text-gray-300 dark:hover:text-white 
-                                rounded-md px-3 py-2 
-                                text-sm font-medium 
-                                transition-colors`
-                        }
-                    >
-                        {item.name}
-                    </NavLink>
-                ))}
+                <NavLink
+                    key={"home"}
+                    to={"/"}
+                    className={({ isActive }) =>
+                        isActive
+                            ? styles.navButtonActive
+                            : styles.navButtonInactive
+                    }
+                >
+                    Home
+                </NavLink>
+
+                <NavLink
+                    key={"dashboard"}
+                    to={"/dashboard"}
+                    hidden={!user}
+                    className={({ isActive }) =>
+                        isActive
+                            ? styles.navButtonActive
+                            : styles.navButtonInactive
+                    }
+                >
+                    Dashboard
+                </NavLink>
             </div>
 
             {/* Temporary placeholder text until we design an EventMate logo */}

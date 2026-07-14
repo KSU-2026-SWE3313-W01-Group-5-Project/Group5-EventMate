@@ -29,7 +29,7 @@
 import {Navigate, Route, Routes} from "react-router-dom";
 
 import Home from "./pages/Home.jsx";
-import Events from "./pages/Events.jsx";
+import Dashboard from "./pages/Dashboard.jsx";
 import Profile from "./pages/Profile.jsx";
 import Settings from "./pages/Settings.jsx";
 import SettingsProfile from "./pages/settings/SettingsProfile.jsx";
@@ -44,9 +44,10 @@ export default function App() {
     return (
         <Routes>
             <Route path={"/"} element={<Home />}/>
-            <Route path={"events"} element={<Events />}/>
 
             <Route element={<ProtectedRoute />}>
+                <Route path={"dashboard"} element={<Dashboard />}/>
+
                 <Route path={"settings"} element={<Settings />}>
                     <Route index element={<Navigate to={"profile"} replace={true} />} />
 
