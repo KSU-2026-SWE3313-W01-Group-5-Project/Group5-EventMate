@@ -7,6 +7,6 @@ export default defineConfig({
   plugins: [react(),
   tailwindcss()],
   server: {
-    allowedHosts: ['options-scotland-dat-committed.trycloudflare.com']
+    allowedHosts: ['centered-mapping-spring-cart.trycloudflare.com']
   }
 })

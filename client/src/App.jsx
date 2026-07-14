@@ -45,8 +45,10 @@ export default function App() {
         <Routes>
             <Route path={"/"} element={<Home />}/>
 
+            {/* move back into protected route after code with me */}
+            <Route path={"dashboard"} element={<Dashboard />}/>
+
             <Route element={<ProtectedRoute />}>
-                <Route path={"dashboard"} element={<Dashboard />}/>
 
                 <Route path={"settings"} element={<Settings />}>
                     <Route index element={<Navigate to={"profile"} replace={true} />} />

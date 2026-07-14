@@ -24,7 +24,6 @@ export default function SettingsSidebar() {
     return (
         <section className={`
         flex flex-col
-        
         text-stone-700 dark:text-white
         bg-stone-100 dark:bg-zinc-800/50 dark:border-zinc-800
         border-2 border-stone-200 

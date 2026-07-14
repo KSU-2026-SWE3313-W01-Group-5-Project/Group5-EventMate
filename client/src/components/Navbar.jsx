@@ -132,10 +132,10 @@ export default function Navbar() {
                     Home
                 </NavLink>
 
+                {/* make hidden again after codewithme with !user in a hidden tag */}
                 <NavLink
                     key={"dashboard"}
                     to={"/dashboard"}
-                    hidden={!user}
                     className={({ isActive }) =>
                         isActive
                             ? styles.navButtonActive

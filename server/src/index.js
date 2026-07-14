@@ -10,7 +10,10 @@ import usersRoutes from "./routes/users.js";
 const app = express();
 
 app.use(cors({
-    origin: "http://localhost:5173",
+    origin: [
+        "http://localhost:5173",
+        "https://centered-mapping-spring-cart.trycloudflare.com"
+    ],
     credentials: true,
 }));
 
