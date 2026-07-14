@@ -35,7 +35,7 @@ export default function Dashboard() {
     );
 
     return (
-        <div className={`flex flex-col h-screen bg-stone-50 dark:bg-zinc-900 `}>
+        <div className={`flex flex-col h-screen bg-stone-50 dark:bg-zinc-900 overflow-hidden`}>
             <Navbar />
             <main className={`flex flex-1 min-h-0 overflow-hidden`}>
                 <EventFeed events={events} />

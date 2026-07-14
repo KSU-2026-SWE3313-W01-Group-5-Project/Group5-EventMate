@@ -18,13 +18,13 @@ export default function EventFeed({events}) {
                 grid-cols-2
                 gap-4
                 flex-1
+                pt-2 pr-3
                 auto-rows-[16rem]
                 min-h-0
                 overflow-y-auto
                 scrollbar scrollbar-thin
                 scrollbar-thumb-zinc-800 scrollbar-track-transparent
                 dark:scrollbar-thumb-stone-100
-                pr-3
             `}>
                 {events.map(event => (
                     <EventCard key={event.id} event={event} />
