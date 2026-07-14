@@ -1,5 +1,5 @@
 /**
- * Event API Service Layer
+ * EventDetails.jsx API Service Layer
  *
  * No actual logic here yet, this will be added in the next major development 'sprint'
  */

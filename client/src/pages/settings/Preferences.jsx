@@ -4,7 +4,7 @@
  * Allows users to configure their event filtering preferences that control how EventMate personalizes their event feed.
  *
  * Preferences includ:
- * - Event type
+ * - EventDetails.jsx type
  * - Sub-category filtering
  * - Location-based filtering
  * - Proximity filtering based on that location

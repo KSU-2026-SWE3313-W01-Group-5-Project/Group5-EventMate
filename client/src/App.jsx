@@ -14,7 +14,7 @@
  *
  * Nested Routes:
  * - Profile settings
- * - Event preferences
+ * - EventDetails.jsx preferences
  * - Security settings
  *
  * We use nested routes to keep the settings UI modular while all being on the same shared layout page.

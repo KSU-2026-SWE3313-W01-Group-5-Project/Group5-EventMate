@@ -1,4 +1,4 @@
-export default function EventCard({event}) {
+export default function EventCard({event, onViewEvent }) {
     if (!event) {
         return null
     }
@@ -14,7 +14,7 @@ export default function EventCard({event}) {
                     transition-transform duration-300"
                     // style={{width: 256, aspectRatio: 16 / 9}}
                     src={event.image_url}
-                    alt={"Event Image"}
+                    alt={"EventDetails.jsx Image"}
                 />
                 <div className={`absolute inset-0 bg-gradient-to-t from-black/40
                 to-transparent`}>
@@ -36,6 +36,7 @@ export default function EventCard({event}) {
 
                 <button
                     type="button"
+                    onClick={onViewEvent}
                     className={`w-full mt-auto bg-zinc-500 rounded-lg px-4 py-2
                     text-sm font-bold text-white
                     transition-colors
@@ -61,7 +62,7 @@ export default function EventCard({event}) {
             <img
                 style={{width:512, aspectRatio:16/9}}
                 src={event.image_url}
-                alt={"Event Image"}/>
+                alt={"EventDetails.jsx Image"}/>
             <p>{event.venue_id}</p>
             <p>{event.segment}</p>
             <p>{event.genre}</p>
