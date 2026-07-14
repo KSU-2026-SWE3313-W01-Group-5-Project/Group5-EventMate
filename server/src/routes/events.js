@@ -15,5 +15,4 @@ const router = express.Router();
 
 router.get('/', getEvents);
 
-
 export default router;

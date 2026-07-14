@@ -26,6 +26,11 @@ Runs the schema on its own.
 
 - Used for initial database creation on a fresh clone.
 
+### `npm run runSwagger`
+Just a script/plugin I was testing while researching for the SDS doc.
+This script generates an interactive Swagger/OpenAPI spec file from our backend's code.  
+Basically, it automatically maps out all of our API endpoints, request bodies, and response codes, which may help us get the information to write an API section in our SDS doc (if needed).
+
 ### When running both scripts below, leave the {} out of the command:
 #### `npm run truncateDb -- --table={table}`
 Clears all data from the database but does not delete or reset tables

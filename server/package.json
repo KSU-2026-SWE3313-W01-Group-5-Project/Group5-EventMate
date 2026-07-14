@@ -11,7 +11,8 @@
     "runSeed": "node scripts/runSeed.js",
     "truncateDb": "node scripts/truncateDb.js",
     "resetDb": "node scripts/resetDb.js",
-    "syncEvents": "node scripts/syncEvents.js"
+    "syncEvents": "node scripts/syncEvents.js",
+    "runSwagger": "node scripts/runSwagger.js"
   },
   "keywords": [],
   "author": "",
@@ -27,7 +28,8 @@
     "jsonwebtoken": "^9.0.3",
     "multer": "^2.2.0",
     "pg": "^8.21.0",
-    "sharp": "^0.35.3"
+    "sharp": "^0.35.3",
+    "swagger-autogen": "^2.23.7"
   },
   "devDependencies": {
     "nodemon": "^3.1.14"
