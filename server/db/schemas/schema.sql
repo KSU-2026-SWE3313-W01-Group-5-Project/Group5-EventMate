@@ -69,7 +69,6 @@ CREATE TABLE events (
     name TEXT NOT NULL,
     description TEXT NOT NULL,
 
-    start_datetime TIMESTAMPTZ,
     timezone TEXT,
     status TEXT,
 
@@ -100,4 +99,58 @@ CREATE TABLE event_registrations (
 
 /*
 -- Event Tables End --
+*/
+
+/*
+-- Connections Tables Start --
+*/
+
+CREATE TABLE connections (
+    id SERIAL PRIMARY KEY,
+
+    sender_id INT NOT NULL,
+    receiver_id INT NOT NULL,
+
+    status TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT NOW(),
+
+    FOREIGN KEY (sender_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (receiver_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE messages (
+    id SERIAL PRIMARY KEY,
+    connection_id INT NOT NULL,
+
+    sender_id INT NOT NULL,
+    content TEXT NOT NULL,
+
+    sent_at TIMESTAMPTZ DEFAULT NOW(),
+
+    FOREIGN KEY (connection_id) REFERENCES connections(id),
+    FOREIGN KEY (sender_id) REFERENCES users(id)
+);
+
+/*
+-- Connections Tables End --
+*/
+
+/*
+-- Extra Tables Start --
+*/
+
+CREATE TABLE notifications (
+    id SERIAL PRIMARY KEY,
+    user_id INT NOT NULL,
+
+    type TEXT NOT NULL,
+    is_read BOOLEAN DEFAULT FALSE,
+
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+/*
+-- Extra Tables End --
 */

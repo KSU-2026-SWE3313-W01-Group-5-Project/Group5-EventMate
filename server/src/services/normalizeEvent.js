@@ -4,15 +4,6 @@ export default function normalizeEvent(tmEvent, canonicalKey) {
     const venueData = tmEvent._embedded?.venues?.[0];
     const classificationData = tmEvent.classifications?.[0];
 
-    console.log({
-        name: tmEvent.name,
-        type: tmEvent.type,
-        classifications: tmEvent.classifications,
-        promoter: tmEvent.promoter,
-        attractions: tmEvent._embedded?.attractions,
-        products: tmEvent.products,
-    });
-
     const image = tmEvent.images?.find(img => img.ratio === "16_9" && img.width >= 1024) ?? tmEvent.images?.[0];
 
     const venue = {
@@ -33,7 +24,6 @@ export default function normalizeEvent(tmEvent, canonicalKey) {
         name: tmEvent.name,
         description: generateDescription(tmEvent),
 
-        start_datetime: tmEvent.dates?.start?.dateTime,
         timezone: tmEvent.dates?.timezone,
         status: tmEvent.dates?.status,
 

@@ -1,6 +1,6 @@
-export async function fetchTicketmasterEvents() {
+export async function fetchTicketmasterEvents(classification) {
     try {
-        const res = await fetch(`https://app.ticketmaster.com/discovery/v2/events/?apikey=${process.env.TICKET_MASTER_KEY}&size=50&countryCode=US&page=0&classificationName=Music`);
+        const res = await fetch(`https://app.ticketmaster.com/discovery/v2/events/?apikey=${process.env.TICKET_MASTER_KEY}&size=200&countryCode=US&page=0&classificationName=${classification}`);
 
         const data = await res.json();
 

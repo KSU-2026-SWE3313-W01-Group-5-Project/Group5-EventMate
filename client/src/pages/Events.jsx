@@ -38,12 +38,29 @@ export default function Events() {
                 <h1>Events</h1>
                 <p>Welcome to the events page!</p>
 
-                {events.map(event => (
-                    <div key={event.id}>
-                        <h3>{event.title}</h3>
-                        <p>{event.description}</p>
-                    </div>
-                ))}
+                <div className={`flex flex-col gap-4`}>
+                    {events.map(event => (
+                        <div key={event.id}>
+                            <h3>{event.name}</h3>
+                            <p>{event.description}</p>
+                            <p>{event.timezone}</p>
+                            <p>{event.status}</p>
+                            <img
+                                style={{width:512, aspectRatio:16/9}}
+                                src={event.image_url}
+                                alt={"Event Image"}/>
+                            <p>{event.venue_id}</p>
+                            <p>{event.segment}</p>
+                            <p>{event.genre}</p>
+                            <p>{event.subgenre}</p>
+                            <p>{event.last_seen_at}</p>
+                            {event.occurrences.map(occurrence => (
+                                <p>{occurrence}</p>
+                            ))}
+                        </div>
+                    ))}
+                </div>
+
                 <Link to="/">Return to home</Link>
             </div>
         </>

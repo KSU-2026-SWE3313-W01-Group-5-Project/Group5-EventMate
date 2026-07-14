@@ -114,7 +114,7 @@ export default function Navbar() {
                         to={item.link}
                         className={({ isActive }) =>
                             isActive
-                                ? `bg-stone-700 dark:bg-gray-950/50 
+                                ? `bg-stone-700 dark:bg-zinc-950/50 
                                 text-stone-50 dark:text-white 
                                 rounded-md px-3 py-2 
                                 text-sm font-medium 
