@@ -10,6 +10,9 @@ import {Link} from "react-router-dom";
 import {getEvents} from "../services/eventServices.js";
 import {useQuery} from "@tanstack/react-query";
 import Navbar from "../components/Navbar.jsx";
+import EventFeed from "../components/dashboard_components/EventFeed.jsx";
+import ConnectionsList from "../components/dashboard_components/ConnectionsList.jsx";
+import ManageEvents from "../components/dashboard_components/ManageEvents.jsx";
 
 export default function Dashboard() {
     const { data: events, isLoading, isError, error } = useQuery({
@@ -32,39 +35,16 @@ export default function Dashboard() {
     );
 
     return (
-        <>
+        <div className={`flex flex-col h-screen bg-stone-50 dark:bg-zinc-900 `}>
             <Navbar />
-            <div>
-                <h1>Events</h1>
-                <p>Welcome to the events page!</p>
+            <main className={`flex flex-1 min-h-0 overflow-hidden`}>
+                <EventFeed events={events} />
 
-                <Link to="/">Return to home</Link>
-            </div>
-        </>
+                <section className={`flex flex-col flex-1`}>
+                    <ManageEvents />
+                    <ConnectionsList />
+                </section>
+            </main>
+        </div>
     )
 }
-
-/*
-<div className={`flex flex-col gap-4`}>
-    {events.map(event => (
-        <div key={event.id}>
-            <h3>{event.name}</h3>
-            <p>{event.description}</p>
-            <p>{event.timezone}</p>
-            <p>{event.status}</p>
-            <img
-                style={{width:512, aspectRatio:16/9}}
-                src={event.image_url}
-                alt={"Event Image"}/>
-            <p>{event.venue_id}</p>
-            <p>{event.segment}</p>
-            <p>{event.genre}</p>
-            <p>{event.subgenre}</p>
-            <p>{event.last_seen_at}</p>
-            {event.occurrences.map(occurrence => (
-                <p>{occurrence}</p>
-            ))}
-        </div>
-    ))}
-</div>
- */
