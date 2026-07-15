@@ -16,7 +16,9 @@ export default function EventFeed({events}) {
         <div className={`
             relative flex flex-col
             text-stone-700 dark:text-white
-            bg-stone-100 dark:bg-zinc-800/50 dark:border-zinc-800
+            bg-stone-100 dark:bg-zinc-800/70 dark:border-zinc-800 
+            hover:bg-zinc-300
+            hover:dark:bg-zinc-700
             border-2 border-stone-200 
             shadow-lg
             overflow-hidden
@@ -26,7 +28,9 @@ export default function EventFeed({events}) {
             gap-6
             transition-colors duration-300
         `}>
-            <h1>Event Feed</h1>
+            <h2 className="text-lg tracking-tight font-bold">
+                Event Feed
+            </h2>
 
             <section>
                 <label htmlFor="event-search" className="sr-only">
@@ -42,7 +46,7 @@ export default function EventFeed({events}) {
                     className="
                     rounded-full w-full
                     px-4 py-1
-                    bg-zinc-300/50
+                    bg-zinc-400/50
                     dark:bg-zinc-500
                     "
                 />
