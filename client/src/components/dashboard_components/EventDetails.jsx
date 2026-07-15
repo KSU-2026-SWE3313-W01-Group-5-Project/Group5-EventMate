@@ -20,6 +20,7 @@ export default function EventDetails({ event, onClose }) {
         flex flex-col
         overflow-hidden
         text-stone-900
+        bg-zinc-300
         dark:bg-zinc-900
         dark:text-white`}>
 

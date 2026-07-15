@@ -5,6 +5,13 @@ import EventDetails from "../dashboard_components/EventDetails.jsx";
 export default function EventFeed({events}) {
 
     const [selectedEvent, setSelectedEvent] = useState(null);
+
+    const [searchTerm, setSearchTerm] = useState("");
+
+    const filteredEvents = events.filter((event) =>
+        event.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
     return (
         <div className={`
             relative flex flex-col
@@ -19,7 +26,29 @@ export default function EventFeed({events}) {
             gap-6
             transition-colors duration-300
         `}>
-            <h1>EventFeed</h1>
+            <h1>Event Feed</h1>
+
+            <section>
+                <label htmlFor="event-search" className="sr-only">
+                    Search Events
+                </label>
+
+                <input
+                    id="event-search"
+                    type="search"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    placeholder="Search Events..."
+                    className="
+                    rounded-full w-full
+                    px-4 py-1
+                    bg-zinc-300/50
+                    dark:bg-zinc-500
+                    "
+                />
+
+            </section>
+
             <ul className={`grid    
                 grid-cols-2
                 gap-4
@@ -32,7 +61,8 @@ export default function EventFeed({events}) {
                 scrollbar-thumb-zinc-800 scrollbar-track-transparent
                 dark:scrollbar-thumb-stone-100
             `}>
-                {events.map(event => (
+
+                {filteredEvents.map(event => (
                     <EventCard
                         key={event.id}
                         event={event}

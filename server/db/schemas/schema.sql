@@ -47,7 +47,7 @@ CREATE TABLE user_preferences (
 */
 
 /*
--- Event Tables Start --
+-- EventDetails.jsx Tables Start --
 */
 
 CREATE TABLE venues (
@@ -98,7 +98,7 @@ CREATE TABLE event_registrations (
 );
 
 /*
--- Event Tables End --
+-- EventDetails.jsx Tables End --
 */
 
 /*
