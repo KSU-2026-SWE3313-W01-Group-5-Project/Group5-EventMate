@@ -1,16 +1,18 @@
 import { useState } from 'react'
 import EventCard from "../dashboard_components/EventCard.jsx";
 import EventDetails from "../dashboard_components/EventDetails.jsx";
+import { useSearchParams } from "react-router-dom";
 
-export default function EventFeed({events}) {
-
-    const [selectedEvent, setSelectedEvent] = useState(null);
-
+export default function EventFeed({eventData}) {
+    const [searchParams, setSearchParams] = useSearchParams();
     const [searchTerm, setSearchTerm] = useState("");
 
-    const filteredEvents = events.filter((event) =>
+    const filteredEvents = eventData.events.filter((event) =>
         event.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
+
+    const selectedEventId = searchParams.get("event");
+    const selectedEvent = eventData.events.find((event) => event.id === selectedEventId);
 
     return (
         <div className={`
@@ -70,7 +72,7 @@ export default function EventFeed({events}) {
                     <EventCard
                         key={event.id}
                         event={event}
-                        onViewEvent={() => setSelectedEvent(event)}
+                        onViewEvent={() => {setSearchParams({ event: event.id })}}
                     />
                 ))}
             </ul>
@@ -78,7 +80,11 @@ export default function EventFeed({events}) {
             {selectedEvent && (
                 <EventDetails
                     event={selectedEvent}
-                    onClose={() => setSelectedEvent(null)}
+                    onClose={() => {
+                        const params = new URLSearchParams(searchParams);
+                        params.delete("event");
+                        setSearchParams(params)
+                    }}
                 />
             )}
         </div>
