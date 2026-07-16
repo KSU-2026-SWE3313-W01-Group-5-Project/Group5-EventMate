@@ -3,11 +3,13 @@ import { useState } from 'react';
 export default function EventDetails({ event, onClose }) {
     const [selectedDate, setSelectedDate] = useState("");
 
+    console.log("running")
+
     const occurrences = event.occurrences ?? [] ;
 
     function handleSignUp() {
         if (!selectedDate) {
-            return;
+            return null;
         }
     }
 
@@ -22,7 +24,8 @@ export default function EventDetails({ event, onClose }) {
         text-stone-900
         bg-zinc-300
         dark:bg-zinc-900
-        dark:text-white`}>
+        dark:text-white
+        `}>
 
             <div className="relative h-[38%] shrink-0 overflow-hidden">
                 <img
@@ -59,7 +62,9 @@ export default function EventDetails({ event, onClose }) {
                 ×
             </button>
 
-            <div className="flex min-h-0 flex-1 flex-col overflow-y-auto p-6">
+            <div className={`flex min-h-0 flex-1 flex-col overflow-y-auto p-6 gap-3 scrollbar scrollbar-thin
+                scrollbar-thumb-zinc-800 scrollbar-track-transparent
+                dark:scrollbar-thumb-stone-100`}>
                 <div className="flex-1">
                     <h2 className="text-2xl font-bold">
                         {event.name}
@@ -127,8 +132,8 @@ export default function EventDetails({ event, onClose }) {
                     shrink-0
                     border-t border-stone-300
                     pl-5 pr-5 pb-5 pt-3
-                 
                     dark:bg-zinc-700
+                    rounded-lg
                 `}>
                     <label
                         htmlFor={`event-details-${event.id}`}

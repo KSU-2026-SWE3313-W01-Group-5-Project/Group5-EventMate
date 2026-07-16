@@ -6,9 +6,15 @@
 
 import axios from 'axios';
 
-const BASE_URL = "http://localhost:3000/api/events";
+const EVENTS_BASE_URL = "http://localhost:3000/api/events";
 
-export async function getEvents() {
-    const res = await axios.get(BASE_URL);
-    return res.data;
+const api = axios.create({
+    baseURL: EVENTS_BASE_URL,
+    withCredentials: true
+})
+
+export async function getEvents(page) {
+    const response = await api.get('/', { params: { page } });
+
+    return response.data;
 }

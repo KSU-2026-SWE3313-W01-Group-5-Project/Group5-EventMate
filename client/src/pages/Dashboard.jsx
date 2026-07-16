@@ -1,12 +1,7 @@
 /**
- * Events Page
- *
- * Nothing really going on here yet. Eventually this page will be turned into the user dashboard.
- *
- * This will probably become the most complicated page on the site.
+ * Dashboard Page
  */
 
-import {Link} from "react-router-dom";
 import {getEvents} from "../services/eventServices.js";
 import {useQuery} from "@tanstack/react-query";
 import Navbar from "../components/Navbar.jsx";
@@ -15,9 +10,9 @@ import ConnectionsList from "../components/dashboard_components/ConnectionsList.
 import ManageEvents from "../components/dashboard_components/ManageEvents.jsx";
 
 export default function Dashboard() {
-    const { data: events, isLoading, isError, error } = useQuery({
-        queryKey: ["events"],
-        queryFn: getEvents,
+    const { data: eventData, isLoading, isError, error } = useQuery({
+        queryKey: ["events", 1],
+        queryFn: () => getEvents(1),
     })
 
     if (isLoading) return (
@@ -38,7 +33,7 @@ export default function Dashboard() {
         <div className={`flex flex-col h-screen bg-stone-50 dark:bg-zinc-900 overflow-hidden`}>
             <Navbar />
             <main className={`flex flex-1 min-h-0 overflow-hidden`}>
-                <EventFeed events={events} />
+                <EventFeed eventData={eventData} />
 
                 <section className={`flex flex-col flex-1`}>
                     <ManageEvents />

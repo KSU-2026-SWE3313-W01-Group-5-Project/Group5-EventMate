@@ -41,7 +41,7 @@ export default function EventCard({event, onViewEvent }) {
                     text-sm font-bold text-white
                     transition-colors
                     hover:bg-zinc-700
-                     shrink-0`}>
+                    shrink-0`}>
                     View Event
                 </button>
 
