@@ -2,6 +2,7 @@ import { useState } from 'react'
 import EventCard from "../dashboard_components/EventCard.jsx";
 import EventDetails from "../dashboard_components/EventDetails.jsx";
 import { useSearchParams } from "react-router-dom";
+import { FaAngleLeft, FaAnglesLeft, FaAngleRight, FaAnglesRight } from "react-icons/fa6";
 
 export default function EventFeed({eventData}) {
     const [searchParams, setSearchParams] = useSearchParams();
@@ -14,13 +15,24 @@ export default function EventFeed({eventData}) {
     const selectedEventId = searchParams.get("event");
     const selectedEvent = eventData.events.find((event) => event.id === selectedEventId);
 
+    const feedPage = Number(searchParams.get("page")) || 1;
+
+    const updatePage = (newPage) => {
+        setSearchParams((prevParams) => {
+            const newParams = new URLSearchParams(prevParams);
+            newParams.set("page", newPage);
+
+            return newParams;
+        });
+    };
+
     return (
         <div className={`
             relative flex flex-col
             text-stone-700 dark:text-white
             bg-stone-100 dark:bg-zinc-800/70 dark:border-zinc-800 
             hover:bg-zinc-300
-            hover:dark:bg-zinc-700
+            hover:dark:bg-zinc-800
             border-2 border-stone-200 
             shadow-lg
             overflow-hidden
@@ -30,9 +42,39 @@ export default function EventFeed({eventData}) {
             gap-6
             transition-colors duration-300
         `}>
-            <h2 className="text-lg tracking-tight font-bold">
-                Event Feed
-            </h2>
+            <span className={`flex`}>
+                <h2 className="text-lg tracking-tight font-bold">
+                    Event Feed
+                </h2>
+
+                <div className={`flex ml-auto`}>
+                    <button
+                        disabled={feedPage === 1}
+                        onClick={() => updatePage(1)}>
+                        <FaAnglesLeft />
+                    </button>
+
+                    <button
+                        disabled={feedPage === 1}
+                        onClick={() => updatePage(feedPage - 1)}>
+                        <FaAngleLeft />
+                    </button>
+
+                    <p>Page {feedPage}</p>
+
+                    <button
+                        disabled={feedPage === eventData.totalPages}
+                        onClick={() => updatePage(feedPage + 1)}>
+                        <FaAngleRight />
+                    </button>
+
+                    <button
+                        disabled={feedPage === eventData.totalPages}
+                        onClick={() => updatePage(eventData.totalPages)}>
+                        <FaAnglesRight />
+                    </button>
+                </div>
+            </span>
 
             <section>
                 <label htmlFor="event-search" className="sr-only">
@@ -72,7 +114,14 @@ export default function EventFeed({eventData}) {
                     <EventCard
                         key={event.id}
                         event={event}
-                        onViewEvent={() => {setSearchParams({ event: event.id })}}
+                        onViewEvent={() => {
+                            setSearchParams((prevParams) => {
+                                const params = new URLSearchParams(prevParams);
+                                params.set("event", event.id);
+
+                                return params;
+                            });
+                        }}
                     />
                 ))}
             </ul>

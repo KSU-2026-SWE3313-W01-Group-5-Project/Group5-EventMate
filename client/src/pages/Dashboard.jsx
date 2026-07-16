@@ -8,11 +8,16 @@ import Navbar from "../components/Navbar.jsx";
 import EventFeed from "../components/dashboard_components/EventFeed.jsx";
 import ConnectionsList from "../components/dashboard_components/ConnectionsList.jsx";
 import ManageEvents from "../components/dashboard_components/ManageEvents.jsx";
+import {useSearchParams} from "react-router-dom";
 
 export default function Dashboard() {
+    const [searchParams, setSearchParams] = useSearchParams();
+
+    const feedPage = searchParams.get("page") || 1;
+
     const { data: eventData, isLoading, isError, error } = useQuery({
-        queryKey: ["events", 1],
-        queryFn: () => getEvents(1),
+        queryKey: ["events", feedPage],
+        queryFn: () => getEvents(feedPage),
     })
 
     if (isLoading) return (
