@@ -162,7 +162,14 @@ export default function EventDetails({ event, onClose }) {
                                 key={`${occurrence}-${index}`}
                                 value={occurrence}
                             >
-                                {occurrence}
+                                {new Date(occurrence).toLocaleString("en-US", {
+                                        weekday: "short",
+                                        month: "short",
+                                        day: "numeric",
+                                        year: "numeric",
+                                        hour: "numeric",
+                                        minute: "2-digit"
+                                    })}
                             </option>
                         ))}
                     </select>

@@ -156,6 +156,8 @@ export default function Preferences() {
     };
 
     useEffect(() => {
+        if (isLoading) return;
+
         setAutoFilterEnabled(userPreferences.auto_filter_enabled);
 
         setSelectedEventTypes(userPreferences.event_types);
@@ -173,6 +175,11 @@ export default function Preferences() {
         formInput: `flex px-4 py-3 gap-x-6 gap-y-2 rounded-md border border-stone-300 bg-white 
         text-stone-800 placeholder:text-stone-400 focus-within:outline-none focus-within:ring-2 focus-within:ring-stone-300/75 
         transition-colors duration-300`,
+    }
+
+    const resetLocationFilters = () => {
+        setStateFilter(null);
+        setCityFilter(null);
     }
 
     const handleSubmit = async (e) => {
@@ -465,22 +472,24 @@ export default function Preferences() {
                         <div className={styles.formInput}>
                             <h1>Preferred Location</h1>
 
-                            {/* Currently the placeholders are just set as null because the backend has not been configured to
-                                save user event filtering preferences. Eventually these will be replaced with the actual data
-                                from the database. */}
-                            <LocationTypeahead user={user} setState={setStateFilter} setCity={setCityFilter} statePlaceholder={userPreferences.state_filter} cityPlaceholder={userPreferences.city_filter}/>
+                            <LocationTypeahead user={user} setState={setStateFilter} setCity={setCityFilter} state={stateFilter} city={cityFilter}/>
+                            <button
+                                type={`button`}
+                                className={`text-red-700`}
+                                onClick={resetLocationFilters}>
+                                Reset
+                            </button>
                         </div>
                     </div>
-
-                    <div>
-                        <button
-                            type={'submit'}
-                            className={styles.formInput}
-                        >
-                            Save Changes
-                        </button>
-                    </div>
                 </fieldset>
+                <div>
+                    <button
+                        type={'submit'}
+                        className={styles.formInput}
+                    >
+                        Save Changes
+                    </button>
+                </div>
             </form>
         </div>
     );

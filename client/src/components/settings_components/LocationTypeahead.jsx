@@ -32,7 +32,10 @@
 import {useEffect, useRef, useState} from "react";
 import {useCities} from "../../hooks/useCities.js";
 
-export default function LocationTypeahead({statePlaceholder, cityPlaceholder, setState, setCity, user}) {
+export default function LocationTypeahead({state, city, setState, setCity, user}) {
+
+    console.log(state);
+    console.log(city);
 
     // All the states for this file.
     // Honestly, statePlaceholderValue and cityPlaceholderValue may be able to be constants instead of states, I am not entirely sure
@@ -47,8 +50,13 @@ export default function LocationTypeahead({statePlaceholder, cityPlaceholder, se
     const [stateIsOpen, setStateIsOpen] = useState(false);
     const [cityIsOpen, setCityIsOpen] = useState(false);
 
-    const [statePlaceholderValue, setStatePlaceHolder] = useState(statePlaceholder);
-    const [cityPlaceholderValue, setCityPlaceHolder] = useState(cityPlaceholder);
+    const [statePlaceholderValue, setStatePlaceHolder] = useState(state);
+    const [cityPlaceholderValue, setCityPlaceHolder] = useState(city);
+
+    useEffect(() => {
+        setStatePlaceHolder(state);
+        setCityPlaceHolder(city);
+    }, [state, city]);
 
     // Included is also the containerRef which is used to add the functionality to automatically close the dropdowns when a user clicks off of them
     const containerRef = useRef(null);
