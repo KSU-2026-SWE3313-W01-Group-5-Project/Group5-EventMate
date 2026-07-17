@@ -35,7 +35,7 @@ export default function EventFeed() {
             relative flex flex-col
             text-stone-700 dark:text-white
             bg-stone-100 dark:bg-zinc-800/70 dark:border-zinc-800 
-            hover:bg-zinc-300
+            hover:bg-zinc-300/35
             hover:dark:bg-zinc-800
             border-2 border-stone-200 
             shadow-lg

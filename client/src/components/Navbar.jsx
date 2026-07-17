@@ -14,7 +14,6 @@ import sunIcon from "../assets/navbar_icons/sun.png"
 import moonIcon from "../assets/navbar_icons/crescent-moon.png"
 import bellIcon from "../assets/navbar_icons/bell.png"
 import userIcon from "../assets/navbar_icons/user.png"
-import EventMateLogo from "../assets/navbar_icons/EventMateLogo.png"
 
 import {AuthModal} from "../pages/modals/AuthModal.jsx";
 import getUserProfilePicture from "../utils/getUserProfilePicture.js";
