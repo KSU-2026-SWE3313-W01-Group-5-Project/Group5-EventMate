@@ -3,8 +3,6 @@ import { useState } from 'react';
 export default function EventDetails({ event, onClose }) {
     const [selectedDate, setSelectedDate] = useState("");
 
-    console.log("running")
-
     const occurrences = event.occurrences ?? [] ;
 
     function handleSignUp() {
@@ -12,9 +10,6 @@ export default function EventDetails({ event, onClose }) {
             return null;
         }
     }
-
-    console.log("Selected Events", event);
-    console.log("Selected date", selectedDate);
 
     return (
         <section className={`
@@ -167,7 +162,14 @@ export default function EventDetails({ event, onClose }) {
                                 key={`${occurrence}-${index}`}
                                 value={occurrence}
                             >
-                                {occurrence}
+                                {new Date(occurrence).toLocaleString("en-US", {
+                                        weekday: "short",
+                                        month: "short",
+                                        day: "numeric",
+                                        year: "numeric",
+                                        hour: "numeric",
+                                        minute: "2-digit"
+                                    })}
                             </option>
                         ))}
                     </select>

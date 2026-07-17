@@ -10,6 +10,7 @@ import Navbar from "../components/Navbar.jsx";
 import {useAuth} from "../context/AuthContext.jsx";
 
 import heroImage from "../assets/hero/homepage-hero.jpg"
+import LoadingPage from "../components/LoadingPage.jsx";
 
 export default function Home() {
     const {user, isLoading, isError, logout} = useAuth();
@@ -18,7 +19,7 @@ export default function Home() {
     const renderUser = () => {
         if (isLoading) {
             return (
-                <span>Loading...</span>
+                <LoadingPage />
             )
         }
 

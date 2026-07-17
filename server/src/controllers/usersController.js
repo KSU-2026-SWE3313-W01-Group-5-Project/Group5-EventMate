@@ -151,6 +151,14 @@ export async function updateUser(req, res) {
                 }
             })
 
+            if (requestedUpdates.city === "") {
+                requestedUpdates.city = null;
+            }
+
+            if (requestedUpdates.state === "") {
+                requestedUpdates.state = null;
+            }
+
             const imagePath = req.file.path;
             const tempPath = `${imagePath}-temp`
 
@@ -165,6 +173,8 @@ export async function updateUser(req, res) {
 
             requestedUpdates.profile_picture_url = `${req.file.filename}`;
         }
+
+        console.log(requestedUpdates.city);
 
         const columns = Object.keys(requestedUpdates);
         const queryValues = Object.values(requestedUpdates);

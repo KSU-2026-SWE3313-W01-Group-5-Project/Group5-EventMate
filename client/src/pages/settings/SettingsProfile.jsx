@@ -79,6 +79,8 @@ export default function SettingsProfile() {
     useEffect(() => {
         setSelected(user.interests);
         setProfileImagePreview(getUserProfilePicture(user.profile_picture_url));
+        setCity(user.city);
+        setState(user.state);
     }, [])
 
     useEffect(() => {
@@ -91,6 +93,11 @@ export default function SettingsProfile() {
         transition-colors duration-300`,
     }
 
+    const resetLocation = () => {
+        setState("");
+        setCity("");
+    }
+
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -99,8 +106,8 @@ export default function SettingsProfile() {
         // Only sends fields to the backend that have actually had changes made.
         if (username.trim()) formData.append("username", username)
         if (bio.trim()) formData.append("bio", bio)
-        if (city.trim()) formData.append("city", city)
-        if (state.trim()) formData.append("state", state.trim())
+        formData.append("city", city ?? "");
+        formData.append("state", state ?? "");
         if (profileImageFile) {
             formData.append("profileImage", profileImageFile)
         }
@@ -222,7 +229,13 @@ export default function SettingsProfile() {
                             >
                                 <h1>Change Location</h1>
 
-                                <LocationTypeahead user={user} setState={setState} setCity={setCity} statePlaceholder={user.state} cityPlaceholder={user.city}/>
+                                <LocationTypeahead user={user} setState={setState} setCity={setCity} state={state} city={city}/>
+                                <button
+                                    type={`button`}
+                                    className={`text-red-700`}
+                                    onClick={resetLocation}>
+                                    Reset
+                                </button>
                             </div>
                         </div>
 

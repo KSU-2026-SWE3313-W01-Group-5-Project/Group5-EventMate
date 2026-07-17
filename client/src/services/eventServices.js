@@ -13,8 +13,8 @@ const api = axios.create({
     withCredentials: true
 })
 
-export async function getEvents(page) {
-    const response = await api.get('/', { params: { page } });
+export async function getEvents(page, userUUID) {
+    const response = await api.get('/', { params: { page, userUUID } });
 
     return response.data;
 }

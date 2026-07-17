@@ -134,7 +134,7 @@ export default function Navbar() {
 
                 <NavLink
                     key={"dashboard"}
-                    to={"/dashboard"}
+                    to={"/dashboard/?page=1"}
                     hidden={!user}
                     className={({ isActive }) =>
                         isActive
