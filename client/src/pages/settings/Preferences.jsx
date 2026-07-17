@@ -20,6 +20,7 @@
 import {useEffect, useState} from "react";
 import LocationTypeahead from "../../components/settings_components/LocationTypeahead.jsx";
 import {useAuth} from "../../context/AuthContext.jsx";
+import LoadingPage from "../../components/LoadingPage.jsx";
 
 /**
  * These event types constant arrays are most of the categories I felt were applicable to take from TicketMaster's API.
@@ -224,7 +225,7 @@ export default function Preferences() {
         }
     };
 
-    if (isLoading) return <span>Loading...</span>
+    if (isLoading) return <LoadingPage />
 
     return (
         <div className={"max-w-full h-full flex flex-col gap-5"}>

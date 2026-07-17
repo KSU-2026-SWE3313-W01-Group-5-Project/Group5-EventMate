@@ -10,6 +10,7 @@ import ConnectionsList from "../components/dashboard_components/ConnectionsList.
 import ManageEvents from "../components/dashboard_components/ManageEvents.jsx";
 import {useSearchParams} from "react-router-dom";
 import {useAuth} from "../context/AuthContext.jsx";
+import LoadingPage from "../components/LoadingPage.jsx";
 
 export default function Dashboard() {
     const { user } = useAuth();
@@ -25,8 +26,7 @@ export default function Dashboard() {
 
     if (isLoading) return (
         <>
-            <Navbar />
-            <span>Loading...</span>
+            <LoadingPage />
         </>
     );
 

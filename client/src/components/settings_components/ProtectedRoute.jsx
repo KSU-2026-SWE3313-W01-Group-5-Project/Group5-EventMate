@@ -14,6 +14,7 @@
 
 import { Navigate, Outlet } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import LoadingPage from "../LoadingPage.jsx";
 
 export default function ProtectedRoute() {
 
@@ -27,7 +28,7 @@ export default function ProtectedRoute() {
     // The main conflict I was having with that aforementioned issue is that the website would automatically redirect everyone to the home page even if you were logged in
     // whenever you refreshed the page. This is because the server was slower than the render and the page thought a user was not logged in for a couple of seconds
     if (isLoading) {
-        return <span>Loading...</span>
+        return <LoadingPage />
     }
 
     // If no one is logged in (ie, if authContext returns nothing), automatically direct the user to the home page, the replace tag allows it to replace any page on the website
