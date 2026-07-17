@@ -3,8 +3,12 @@ import EventCard from "../dashboard_components/EventCard.jsx";
 import EventDetails from "../dashboard_components/EventDetails.jsx";
 import { useSearchParams } from "react-router-dom";
 import { FaAngleLeft, FaAnglesLeft, FaAngleRight, FaAnglesRight } from "react-icons/fa6";
+import {useEvents} from "../../context/EventContext.jsx";
+import LoadingPage from "../LoadingPage.jsx";
 
-export default function EventFeed({eventData}) {
+export default function EventFeed() {
+    const {eventData, feedPage, totalPages, isLoading} = useEvents();
+
     const [searchParams, setSearchParams] = useSearchParams();
     const [searchTerm, setSearchTerm] = useState("");
 
@@ -15,8 +19,6 @@ export default function EventFeed({eventData}) {
     const selectedEventId = searchParams.get("event");
     const selectedEvent = eventData.events.find((event) => event.id === selectedEventId);
 
-    const feedPage = Number(searchParams.get("page")) || 1;
-
     const updatePage = (newPage) => {
         setSearchParams((prevParams) => {
             const newParams = new URLSearchParams(prevParams);
@@ -25,6 +27,8 @@ export default function EventFeed({eventData}) {
             return newParams;
         });
     };
+
+    if (isLoading) return <LoadingPage />
 
     return (
         <div className={`
@@ -50,27 +54,31 @@ export default function EventFeed({eventData}) {
                 <div className={`flex ml-auto`}>
                     <button
                         disabled={feedPage === 1}
-                        onClick={() => updatePage(1)}>
+                        onClick={() => updatePage(1)}
+                    >
                         <FaAnglesLeft />
                     </button>
 
                     <button
                         disabled={feedPage === 1}
-                        onClick={() => updatePage(feedPage - 1)}>
+                        onClick={() => updatePage(feedPage - 1)}
+                    >
                         <FaAngleLeft />
                     </button>
 
                     <p>Page {feedPage}</p>
 
                     <button
-                        disabled={feedPage === eventData.totalPages}
-                        onClick={() => updatePage(feedPage + 1)}>
+                        disabled={feedPage === totalPages}
+                        onClick={() => updatePage(feedPage + 1)}
+                    >
                         <FaAngleRight />
                     </button>
 
                     <button
-                        disabled={feedPage === eventData.totalPages}
-                        onClick={() => updatePage(eventData.totalPages)}>
+                        disabled={feedPage === totalPages}
+                        onClick={() => updatePage(totalPages)}
+                    >
                         <FaAnglesRight />
                     </button>
                 </div>
