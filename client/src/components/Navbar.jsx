@@ -14,6 +14,7 @@ import sunIcon from "../assets/navbar_icons/sun.png"
 import moonIcon from "../assets/navbar_icons/crescent-moon.png"
 import bellIcon from "../assets/navbar_icons/bell.png"
 import userIcon from "../assets/navbar_icons/user.png"
+
 import {AuthModal} from "../pages/modals/AuthModal.jsx";
 import getUserProfilePicture from "../utils/getUserProfilePicture.js";
 
@@ -55,7 +56,7 @@ export default function Navbar() {
         text-stone-700 hover:text-stone-900 dark:text-stone-50 dark:hover:text-stone-200
         hover:bg-stone-100 dark:hover:bg-zinc-600 transition-colors`,
 
-        navButtonActive: `bg-stone-700 dark:bg-zinc-950/50 
+        navButtonActive: `bg-stone-700 dark:bg-zinc-900/50 
         text-stone-50 dark:text-white 
         rounded-md px-3 py-2 
         text-sm font-medium 
@@ -147,8 +148,27 @@ export default function Navbar() {
             </div>
 
             {/* Temporary placeholder text until we design an EventMate logo */}
-            <div className="text-stone-700 dark:text-white font-bold text-lg absolute left-1/2 -translate-x-1/2">
-                Placeholder logo
+            <div className="relative flex items-center justify-center">
+                <div
+                    className={`
+                        relative
+                        px-5 py-2
+                        bg-stone-700 dark:bg-zinc-900/50 
+                        -skew-x-12
+                        shadow-lg
+                        `}
+                >
+                    <span
+                        className={`
+                            block
+                            skew-x-12
+                            text-xl font-bold tracking-tight
+                            text-stone-50 dark:text-white 
+                        `}
+                    >
+                        EventMate
+                    </span>
+                </div>
             </div>
 
             {/* Navbar utility buttons */}
