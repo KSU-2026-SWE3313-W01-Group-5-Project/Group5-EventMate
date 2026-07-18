@@ -1,0 +1,124 @@
+@startuml
+title EventMate Authentication and Security Subsystem - Static Structure
+
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam linetype ortho
+left to right direction
+
+package "Frontend" {
+    class LoginModal <<React component>> {
+        +submitLogin()
+    }
+    class RegisterModal <<React component>> {
+        +validateRegistration()
+        +submitRegistration()
+    }
+    class ProtectedRoute <<React component>> {
+        +verifyAuthentication()
+    }
+    class AuthProvider <<React context>> {
+        +user: Object
+        +isAuthenticated: Boolean
+        +login(credentials)
+        +logout()
+    }
+    class authServices <<service module>> {
+        +login(credentials)
+        +register(userData)
+        +logout()
+    }
+    class userServices <<service module>> {
+        +getCurrentUser()
+        +updateUser(userData)
+        +updateUserPreferences(preferences)
+        +deleteUser()
+    }
+}
+
+package "Backend" {
+    class AuthRoutes <<Express router>> {
+        +POST /register
+        +POST /login
+        +POST /logout
+    }
+    class UserRoutes <<Express router>> {
+        +GET /me
+        +PATCH /me/update
+        +PATCH /me/update/updatePreferences
+        +DELETE /me/update/delete
+    }
+    class AuthController <<controller>> {
+        +registerUser(req, res)
+        +loginUser(req, res)
+        +logout(req, res)
+    }
+    class UsersController <<controller>> {
+        +getUser(req, res)
+        +updateUser(req, res)
+        +updateUserPreferences(req, res)
+        +deleteUser(req, res)
+    }
+    class AuthMiddleware <<middleware>> {
+        +verifyToken(req, res, next)
+    }
+    class UploadMiddleware <<middleware>> {
+        +uploadProfileImage(req, res, next)
+    }
+    class AuthorizationMiddleware <<middleware; planned>> {
+        +authorizeRegistrationOwner()
+        +authorizeConnectionParticipant()
+        +authorizeMessageThread()
+    }
+    class PasswordUtility <<utility>> {
+        +hashPassword(password): String
+        +comparePasswords(password, hash): Boolean
+    }
+    class JwtUtility <<utility>> {
+        +generateToken(user): String
+        +verifyToken(token): Object
+    }
+    class UserTable <<database entity>> {
+        +id: Integer
+        +username: String
+        +email: String
+        -password_hash: String
+    }
+}
+
+LoginModal --> AuthProvider
+RegisterModal --> authServices
+ProtectedRoute --> AuthProvider
+AuthProvider --> authServices
+AuthProvider --> userServices
+
+authServices --> AuthRoutes : HTTPS with credentials
+userServices --> UserRoutes : HTTPS with credentials
+AuthRoutes --> AuthController
+UserRoutes --> AuthMiddleware
+UserRoutes --> UploadMiddleware
+UserRoutes --> UsersController
+AuthController --> PasswordUtility
+AuthController --> JwtUtility
+AuthController --> UserTable
+AuthMiddleware --> JwtUtility
+UsersController --> UserTable
+AuthorizationMiddleware --> UserTable
+
+note right of JwtUtility
+The generated JWT is returned in an
+HTTP-only cookie after successful login.
+end note
+
+note bottom of UsersController
+Protected /me operations use req.user.id from the
+verified JWT. The client cannot select another user ID
+when updating or deleting an account.
+end note
+
+note bottom of AuthorizationMiddleware
+Connection and message authorization is planned.
+Only participants may access those resources.
+end note
+
+@enduml

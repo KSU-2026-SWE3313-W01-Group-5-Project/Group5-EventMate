@@ -1,0 +1,149 @@
+@startuml
+title EventMate Backend Application Subsystem - Static Structure
+
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam linetype ortho
+left to right direction
+
+class ExpressApplication <<application>> {
+    +configureMiddleware()
+    +registerRoutes()
+    +startServer()
+}
+
+package "Routes" {
+    class AuthRoutes <<Express router>> {
+        +POST /register
+        +POST /login
+        +POST /logout
+    }
+    class UserRoutes <<Express router>> {
+        +GET /me
+        +PATCH /me/update
+        +PATCH /me/update/updatePreferences
+        +DELETE /me/update/delete
+        +GET /:public_id
+    }
+    class EventRoutes <<Express router>> {
+        +GET /
+        +POST /registrations <<planned>>
+        +DELETE /registrations/:id <<planned>>
+    }
+    class CityRoutes <<Express router>> {
+        +GET /
+    }
+    class ConnectionRoutes <<Express router; planned>>
+    class MessageRoutes <<Express router; planned>>
+}
+
+package "Controllers" {
+    class AuthController <<controller>> {
+        +registerUser(req, res)
+        +loginUser(req, res)
+        +logout(req, res)
+    }
+    class UsersController <<controller>> {
+        +getUserProfile(req, res)
+        +getUser(req, res)
+        +updateUser(req, res)
+        +updateUserPreferences(req, res)
+        +deleteUser(req, res)
+    }
+    class EventController <<controller>> {
+        +getEvents(req, res)
+        +registerForEvent(req, res) <<planned>>
+        +removeEventRegistration(req, res) <<planned>>
+    }
+    class ConnectionController <<controller; planned>> {
+        +getInterestedUsers(req, res)
+        +requestConnection(req, res)
+        +getConnections(req, res)
+    }
+    class MessageController <<controller; planned>> {
+        +getMessages(req, res)
+        +sendMessage(req, res)
+    }
+}
+
+package "Middleware" {
+    class AuthMiddleware <<middleware>> {
+        +verifyToken(req, res, next)
+    }
+    class UploadMiddleware <<middleware>> {
+        +uploadProfileImage(req, res, next)
+    }
+    class ResourceAuthorization <<middleware; planned>> {
+        +authorizeRegistrationOwner()
+        +authorizeConnectionParticipant()
+        +authorizeMessageThread()
+    }
+}
+
+package "Services" {
+    class EventSyncService <<service>> {
+        +handleSync(classifications)
+    }
+    class ConnectionService <<service; planned>> {
+        +recordRequest(senderId, receiverId, eventId)
+        +checkMutualAgreement()
+        +createConnection()
+    }
+    class MessageService <<service; planned>> {
+        +getConnectionMessages()
+        +createMessage()
+    }
+}
+
+package "Database Access" {
+    class DatabasePool <<database gateway>> {
+        +createPool(): Pool
+    }
+    class EventModel <<model>> {
+        +insert(event)
+        +findByCanonicalKey(key)
+        +insertOccurrence(eventId, time)
+    }
+    class VenueModel <<model>> {
+        +upsert(venue)
+    }
+}
+
+ExpressApplication *-- AuthRoutes
+ExpressApplication *-- UserRoutes
+ExpressApplication *-- EventRoutes
+ExpressApplication *-- CityRoutes
+ExpressApplication *-- ConnectionRoutes
+ExpressApplication *-- MessageRoutes
+
+AuthRoutes --> AuthController
+UserRoutes --> AuthMiddleware
+UserRoutes --> UploadMiddleware
+UserRoutes --> UsersController
+EventRoutes --> EventController
+ConnectionRoutes --> AuthMiddleware
+ConnectionRoutes --> ResourceAuthorization
+ConnectionRoutes --> ConnectionController
+MessageRoutes --> AuthMiddleware
+MessageRoutes --> ResourceAuthorization
+MessageRoutes --> MessageController
+
+AuthController --> DatabasePool
+UsersController --> DatabasePool
+EventController --> DatabasePool
+ConnectionController --> ConnectionService
+MessageController --> MessageService
+ConnectionService --> DatabasePool
+MessageService --> DatabasePool
+EventSyncService --> EventModel
+EventSyncService --> VenueModel
+EventModel --> DatabasePool
+VenueModel --> DatabasePool
+
+note bottom of ResourceAuthorization
+Users may modify only their own records and may
+access only connections and message threads in
+which they are participants.
+end note
+
+@enduml
