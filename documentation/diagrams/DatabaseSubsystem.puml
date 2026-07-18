@@ -1,0 +1,117 @@
+@startuml
+title EventMate Database Subsystem - Static Data Structure
+
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam linetype ortho
+hide methods
+
+class User <<database entity>> {
+    +id: SERIAL <<PK>>
+    +public_id: UUID <<UK>>
+    +firstname: VARCHAR
+    +lastname: VARCHAR
+    +username: VARCHAR <<UK>>
+    +email: VARCHAR <<UK>>
+    -password_hash: TEXT
+    +profile_picture_url: TEXT
+    +bio: VARCHAR
+    +interests: TEXT[]
+    +city: TEXT
+    +state: TEXT
+    +created_at: TIMESTAMP
+}
+
+class UserPreference <<database entity>> {
+    +user_id: INT <<PK, FK>>
+    +auto_filter_enabled: BOOLEAN
+    +event_types: TEXT[]
+    +music_categories: TEXT[]
+    +sports_categories: TEXT[]
+    +arts_categories: TEXT[]
+    +max_distance: INT
+    +city_filter: TEXT
+    +state_filter: TEXT
+}
+
+class Venue <<database entity; technical support>> {
+    +id: TEXT <<PK>>
+    +name: TEXT
+    +city: TEXT
+    +state: TEXT
+    +country: TEXT
+    +latitude: DOUBLE
+    +longitude: DOUBLE
+}
+
+class Event <<database entity>> {
+    +id: TEXT <<PK>>
+    +canonical_key: TEXT
+    +name: TEXT
+    +description: TEXT
+    +timezone: TEXT
+    +status: TEXT
+    +image_url: TEXT
+    +venue_id: TEXT <<FK>>
+    +segment: TEXT
+    +genre: TEXT
+    +subgenre: TEXT
+    +occurrences: TIMESTAMPTZ[]
+    +last_seen_at: TIMESTAMPTZ
+}
+
+class EventRegistration <<database entity; planned revision>> {
+    +user_id: INT <<PK, FK>>
+    +event_id: TEXT <<PK, FK>>
+    +selected_date: TIMESTAMPTZ <<PK>>
+    +created_at: TIMESTAMPTZ
+}
+
+class Connection <<database entity>> {
+    +id: SERIAL <<PK>>
+    +sender_id: INT <<FK>>
+    +receiver_id: INT <<FK>>
+    +event_id: TEXT <<FK>>
+    +status: TEXT
+    +created_at: TIMESTAMP
+}
+
+class Message <<database entity>> {
+    +id: SERIAL <<PK>>
+    +connection_id: INT <<FK>>
+    +sender_id: INT <<FK>>
+    +content: TEXT
+    +sent_at: TIMESTAMPTZ
+}
+
+User "1" *-- "0..1" UserPreference : owns
+User "1" -- "0..*" EventRegistration : registers
+Event "1" -- "0..*" EventRegistration : receives
+Venue "1" -- "0..*" Event : hosts
+User "1" -- "0..*" Connection : sends
+User "1" -- "0..*" Connection : receives
+Event "1" -- "0..*" Connection : provides context
+Connection "1" *-- "0..*" Message : contains
+User "1" -- "0..*" Message : sends
+
+note right of EventRegistration
+The current schema uses only user_id and event_id.
+selected_date is added to support registration for
+the same event on different dates.
+end note
+
+note right of Connection
+Shared event interest permits discovery only.
+The status becomes accepted only after both
+users agree to connect.
+end note
+
+note bottom of Venue
+Venue is retained as an internal technical entity
+because the current event-import and location-filter
+code depends on it. It is not a separate user feature.
+end note
+
+note "The unused notifications table is excluded to keep the design aligned with the approved MVP scope." as N1
+
+@enduml
