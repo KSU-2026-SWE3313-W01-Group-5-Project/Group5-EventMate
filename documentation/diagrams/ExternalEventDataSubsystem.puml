@@ -1,0 +1,74 @@
+@startuml
+title EventMate External Event Data Subsystem - Static Structure
+
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam linetype ortho
+left to right direction
+
+interface EventDataProvider <<provider contract>> {
+    +retrieveEvents(classification): Event[]
+}
+
+class TicketmasterServices <<external API adapter>> {
+    +fetchTicketmasterEvents(classification): Event[]
+}
+
+class MockEventProvider <<fallback provider; planned>> {
+    +retrieveEvents(classification): Event[]
+    +loadMockEvents(): Event[]
+}
+
+class EventSyncService <<service>> {
+    +handleSync(classifications)
+    -selectProvider(): EventDataProvider
+}
+
+class EventNormalizer <<normalizer>> {
+    +normalizeEvent(rawEvent, canonicalKey)
+}
+
+class CanonicalKeyGenerator <<utility>> {
+    +generateCanonicalKey(rawEvent): String
+}
+
+class DescriptionGenerator <<utility>> {
+    +generateDescription(rawEvent): String
+}
+
+class EventModel <<model>> {
+    +insert(event)
+    +findByCanonicalKey(key)
+    +insertOccurrence(eventId, time)
+}
+
+class VenueModel <<model>> {
+    +upsert(venue)
+}
+
+class PostgreSQL <<database>>
+
+TicketmasterServices ..|> EventDataProvider
+MockEventProvider ..|> EventDataProvider
+EventSyncService --> EventDataProvider : selects
+EventSyncService --> CanonicalKeyGenerator
+EventSyncService --> EventNormalizer
+EventNormalizer --> DescriptionGenerator
+EventSyncService --> EventModel
+EventSyncService --> VenueModel
+EventModel --> PostgreSQL
+VenueModel --> PostgreSQL
+
+note bottom of MockEventProvider
+Used when Ticketmaster is disabled, unavailable,
+rate-limited, or returns invalid data. Both providers
+must produce the same normalized Event format.
+end note
+
+note bottom of EventSyncService
+eventsServices.js currently contains handleSync().
+The provider-selection operation represents the
+fallback behavior required by the revised design.
+end note
+
+@enduml

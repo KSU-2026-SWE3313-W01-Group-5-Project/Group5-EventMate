@@ -1,0 +1,186 @@
+@startuml
+title EventMate Frontend Subsystem - Static Structure
+
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam linetype ortho
+left to right direction
+
+package "Application and Routing" {
+    class App <<React component>> {
+        +renderRoutes()
+    }
+
+    class ProtectedRoute <<React component>> {
+        +verifyAuthentication()
+        +renderProtectedContent()
+    }
+
+    class AuthProvider <<React context>> {
+        +user: Object
+        +isAuthenticated: Boolean
+        +isLoading: Boolean
+        +login(credentials)
+        +logout()
+        +updateUser(settings)
+        +updatePreferences(preferences)
+        +deleteUser()
+    }
+}
+
+package "Pages" {
+    class Home <<React page>>
+    class Dashboard <<React page>> {
+        -feedPage: Integer
+        +loadEvents()
+    }
+    class Profile <<React page>> {
+        +loadUserProfile()
+    }
+    class Settings <<React page>>
+    class SettingsProfile <<React page>> {
+        +updateProfile()
+        +uploadProfileImage()
+    }
+    class Preferences <<React page>> {
+        +updatePreferences()
+    }
+    class Security <<React page>> {
+        +updateCredentials()
+        +deleteAccount()
+    }
+}
+
+package "Reusable Components" {
+    class Navbar <<React component>>
+    class Modal <<React component>>
+    class ProfileHeader <<React component>>
+    class SettingsSidebar <<React component>>
+    class LocationTypeahead <<React component>>
+    class ProfileImageUpload <<React component>>
+}
+
+package "Dashboard Components" {
+    class EventFeed <<React component>> {
+        -searchTerm: String
+        -feedPage: Integer
+        +filterEvents()
+        +updatePage(page)
+        +selectEvent(eventId)
+    }
+    class EventCard <<React component>> {
+        +displayEventSummary()
+        +viewEvent()
+    }
+    class EventDetails <<React component>> {
+        -selectedDate: DateTime
+        +selectDate(date)
+        +handleSignUp()
+    }
+    class ManageEvents <<React component; partial>> {
+        +displaySelectedEvents() <<planned>>
+        +removeRegistration() <<planned>>
+    }
+    class ConnectionsList <<React component; partial>> {
+        +displayConnections() <<planned>>
+        +openMessageThread() <<planned>>
+    }
+}
+
+package "Authentication Modals" {
+    class AuthModal <<React component>>
+    class LoginModal <<React component>> {
+        +submitLogin()
+    }
+    class RegisterModal <<React component>> {
+        +validateRegistration()
+        +submitRegistration()
+    }
+    class DeleteAccountModal <<React component>> {
+        +confirmDeletion()
+    }
+}
+
+package "API Service Modules" {
+    class authServices <<service module>> {
+        +login(credentials)
+        +register(userData)
+        +logout()
+    }
+    class userServices <<service module>> {
+        +getUserProfile(userUUID)
+        +getCurrentUser()
+        +updateUser(userData)
+        +updateUserPreferences(preferences)
+        +deleteUser()
+    }
+    class eventServices <<service module>> {
+        +getEvents(page, userUUID)
+        +registerForEvent(eventId, selectedDate) <<planned>>
+        +removeEventRegistration(registrationId) <<planned>>
+    }
+    class connectionServices <<service module; planned>> {
+        +getInterestedUsers(eventId)
+        +requestConnection(userId, eventId)
+        +getConnections()
+    }
+    class messageServices <<service module; planned>> {
+        +getMessages(connectionId)
+        +sendMessage(connectionId, content)
+    }
+}
+
+App --> Home
+App --> Dashboard
+App --> Profile
+App --> Settings
+App --> ProtectedRoute
+ProtectedRoute --> AuthProvider : checks
+
+Dashboard --> Navbar
+Dashboard *-- EventFeed
+Dashboard *-- ManageEvents
+Dashboard *-- ConnectionsList
+Dashboard --> eventServices
+Dashboard --> AuthProvider
+
+EventFeed *-- EventCard
+EventFeed *-- EventDetails
+EventDetails --> eventServices
+ManageEvents --> eventServices
+ConnectionsList --> connectionServices
+ConnectionsList --> messageServices
+
+Profile --> ProfileHeader
+Profile --> userServices
+Settings *-- SettingsSidebar
+Settings *-- SettingsProfile
+Settings *-- Preferences
+Settings *-- Security
+SettingsProfile *-- LocationTypeahead
+SettingsProfile *-- ProfileImageUpload
+SettingsProfile --> AuthProvider
+Preferences --> AuthProvider
+Security --> AuthProvider
+Security *-- DeleteAccountModal
+
+Navbar *-- AuthModal
+AuthModal *-- Modal
+AuthModal *-- LoginModal
+AuthModal *-- RegisterModal
+LoginModal --> AuthProvider
+RegisterModal --> authServices
+AuthProvider --> authServices
+AuthProvider --> userServices
+
+note bottom of ManageEvents
+The component exists in the repository,
+but its event-management behavior is not implemented.
+end note
+
+note bottom of ConnectionsList
+The component exists in the repository,
+but connections and messaging are not implemented.
+end note
+
+@enduml
