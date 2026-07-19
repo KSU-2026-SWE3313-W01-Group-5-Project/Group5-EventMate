@@ -12,21 +12,15 @@ const pool = createPool();
 
 export async function getEvents(req, res) {
     try {
-        const userUUID = req.query.userUUID;
 
-        const userId = await pool.query(`
-            SELECT id from users where public_id = $1`,
-            [userUUID]
-        );
+        const userId = req.user.id;
 
         const result = await pool.query(`
             SELECT * FROM user_preferences WHERE user_id = $1`,
-            [userId.rows[0].id]
+            [userId]
         );
 
         const preferences = result.rows[0];
-
-        console.log(preferences);
 
         const page = Number(req.query.page) || 1;
         const limit = 50;
@@ -136,4 +130,55 @@ export async function getEvents(req, res) {
     }
 }
 
-//
+export async function registerForEvent(req, res) {
+    const userId = req.user.id;
+    const eventId = req.body.params.eventId;
+    const occurrence = req.body.params.occurrence;
+
+    if (!userId) {
+        return res.status(401).json({ message: "UNAUTHORIZED" });
+    }
+
+    if (!eventId) {
+        return res.status(400).json({ message: "INVALID_EVENT" });
+    }
+
+    if (!occurrence) {
+        return res.status(400).json({ message: "INVALID_OCCURRENCE" });
+    }
+
+    const eventResult = await pool.query(
+        `SELECT id, occurrences
+        FROM events
+        WHERE id = $1`,
+        [eventId]
+    );
+
+    if (eventResult.rowCount === 0) {
+        return res.status(404).json({ message: "NO_EVENT_FOUND" });
+    }
+
+    const occurrenceResult = await pool.query(
+        ` SELECT id, occurrences
+        FROM events
+        WHERE id = $1
+        AND $2 = ANY(occurrences)`,
+        [eventId, occurrence]
+    );
+
+    if (occurrenceResult.rowCount === 0) {
+        return res.status(400).json({ message: "OCCURRENCE_UNAVAILABLE" });
+    }
+
+    // now add this stuff to the event registrations stuff
+
+    console.log(occurrenceResult);
+
+    console.log(userId);
+    console.log(eventId);
+    console.log(occurrence);
+
+    return res.status(200).json({
+        message: "SUCCESS",
+    })
+}

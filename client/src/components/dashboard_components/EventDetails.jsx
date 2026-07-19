@@ -1,13 +1,29 @@
 import { useState } from 'react';
+import {useEvents} from "../../context/EventContext.jsx";
 
 export default function EventDetails({ event, onClose }) {
+    const {signup} = useEvents();
+
     const [selectedDate, setSelectedDate] = useState("");
 
     const occurrences = event.occurrences ?? [] ;
 
-    function handleSignUp() {
+    const  handleSignUp = async (e) => {
+        e.preventDefault();
+
         if (!selectedDate) {
             return null;
+        }
+
+        try {
+            const response = await signup({
+                eventId: event.id,
+                occurrence: selectedDate,
+            });
+
+            console.log(response);
+        } catch (err) {
+            console.error(err);
         }
     }
 
@@ -158,6 +174,7 @@ export default function EventDetails({ event, onClose }) {
                         </option>
 
                         {occurrences.map((occurrence, index) => (
+
                             <option
                                 key={`${occurrence}-${index}`}
                                 value={occurrence}

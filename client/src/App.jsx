@@ -21,7 +21,7 @@
  *
  * NOTE: Future refactor considerations:
  * As I have been looking at more and more examples of professional codebases and system designs, if I were to redesign this
- * entire system, I would probably split all of the components files into two, dedicated hooks for logic and the components for UI.
+ * entire system, I would probably split all of the components files into two dedicated hooks for logic and the components for UI.
  *
  * Honestly, I would really love to do that for this project, but that would just take so much effort and time to refactor. Next time...
  */

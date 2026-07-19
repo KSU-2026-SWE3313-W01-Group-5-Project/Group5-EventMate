@@ -22,12 +22,16 @@ export function EventsProvider({ children }) {
         isError,
         error
     } = useQuery({
-        queryKey: ["events", feedPage, userUUID],
-        queryFn: () => eventServices.getEvents(feedPage, userUUID),
+        queryKey: ["events", feedPage],
+        queryFn: () => eventServices.getEvents(feedPage),
         enabled: !!userUUID
     });
 
     const totalPages = eventData?.totalPages ?? 0;
+
+    const signupMutation = useMutation({
+        mutationFn: ({eventId, occurrence}) => eventServices.registerForEvent({eventId, occurrence}),
+    });
 
     return <EventsContext.Provider
             value={{
@@ -36,7 +40,9 @@ export function EventsProvider({ children }) {
                 totalPages,
                 isLoading,
                 isError,
-                error
+                error,
+
+                signup: signupMutation.mutateAsync,
             }}
         >
             {children}
