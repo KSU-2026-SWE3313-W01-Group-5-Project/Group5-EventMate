@@ -118,6 +118,10 @@ export function AuthProvider({ children }) {
             queryClient.invalidateQueries({
                 queryKey: ["currentUser"],
             })
+
+            queryClient.invalidateQueries({
+                queryKey: ["events"],
+            })
         }
     })
 

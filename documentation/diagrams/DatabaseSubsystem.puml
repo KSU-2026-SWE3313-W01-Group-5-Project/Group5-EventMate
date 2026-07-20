@@ -63,7 +63,7 @@ class Event <<database entity>> {
 class EventRegistration <<database entity; planned revision>> {
     +user_id: INT <<PK, FK>>
     +event_id: TEXT <<PK, FK>>
-    +selected_date: TIMESTAMPTZ <<PK>>
+    +occurrence: TIMESTAMPTZ <<PK>>
     +created_at: TIMESTAMPTZ
 }
 
@@ -71,7 +71,6 @@ class Connection <<database entity>> {
     +id: SERIAL <<PK>>
     +sender_id: INT <<FK>>
     +receiver_id: INT <<FK>>
-    +event_id: TEXT <<FK>>
     +status: TEXT
     +created_at: TIMESTAMP
 }
@@ -93,12 +92,6 @@ User "1" -- "0..*" Connection : receives
 Event "1" -- "0..*" Connection : provides context
 Connection "1" *-- "0..*" Message : contains
 User "1" -- "0..*" Message : sends
-
-note right of EventRegistration
-The current schema uses only user_id and event_id.
-selected_date is added to support registration for
-the same event on different dates.
-end note
 
 note right of Connection
 Shared event interest permits discovery only.

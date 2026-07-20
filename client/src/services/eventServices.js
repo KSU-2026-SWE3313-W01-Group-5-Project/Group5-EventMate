@@ -13,8 +13,14 @@ const api = axios.create({
     withCredentials: true
 })
 
-export async function getEvents(page, userUUID) {
-    const response = await api.get('/', { params: { page, userUUID } });
+export async function getEvents(page) {
+    const response = await api.get('/', { params: { page } });
+
+    return response.data;
+}
+
+export async function registerForEvent({eventId, occurrence}) {
+    const response = await api.post('/register', { params: { eventId, occurrence } });
 
     return response.data;
 }

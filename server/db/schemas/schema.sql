@@ -90,6 +90,7 @@ CREATE TABLE events (
 CREATE TABLE event_registrations (
     user_id INT NOT NULL,
     event_id TEXT NOT NULL,
+    occurrence TEXT NOT NULL,
 
     PRIMARY KEY (user_id, event_id),
 

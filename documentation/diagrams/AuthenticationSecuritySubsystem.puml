@@ -80,9 +80,12 @@ package "Backend" {
     }
     class UserTable <<database entity>> {
         +id: Integer
+        +public_id: UUID
         +username: String
         +email: String
         -password_hash: String
+        +first_name: String
+        +last_name: String
     }
 }
 
@@ -103,7 +106,6 @@ AuthController --> JwtUtility
 AuthController --> UserTable
 AuthMiddleware --> JwtUtility
 UsersController --> UserTable
-AuthorizationMiddleware --> UserTable
 
 note right of JwtUtility
 The generated JWT is returned in an
@@ -114,11 +116,6 @@ note bottom of UsersController
 Protected /me operations use req.user.id from the
 verified JWT. The client cannot select another user ID
 when updating or deleting an account.
-end note
-
-note bottom of AuthorizationMiddleware
-Connection and message authorization is planned.
-Only participants may access those resources.
 end note
 
 @enduml
