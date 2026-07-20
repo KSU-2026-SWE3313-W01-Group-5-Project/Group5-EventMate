@@ -22,6 +22,7 @@ export default function EventDetails({ event, onClose }) {
             });
 
             console.log(response);
+            onClose();
         } catch (err) {
             console.error(err);
         }

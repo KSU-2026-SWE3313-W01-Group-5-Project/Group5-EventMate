@@ -90,9 +90,18 @@ CREATE TABLE events (
 CREATE TABLE event_registrations (
     user_id INT NOT NULL,
     event_id TEXT NOT NULL,
-    occurrence TEXT NOT NULL,
+--     occurrence TEXT NOT NULL,
+    occurrence TIMESTAMPTZ NOT NULL,
 
-    PRIMARY KEY (user_id, event_id),
+    --Identifies each exact user, event, and selected occurrence.
+    --This allows the same user to register for the same event at
+    -- different dates or times.
+    PRIMARY KEY (user_id, event_id, occurrence),
+
+    -- Prevents the user from registering for any two events at the exact
+    -- same timestamp, even when the event IDs are different.
+    CONSTRAINT unique_user_occurrence
+        UNIQUE (user_id, occurrence),
 
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
     FOREIGN KEY (event_id) REFERENCES events(id) ON DELETE CASCADE
