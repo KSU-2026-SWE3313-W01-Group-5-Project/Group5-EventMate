@@ -263,3 +263,53 @@ export async function registerForEvent(req, res) {
         });
     }
 }
+
+/*
+    Gets every event registration belonging to the authenticated user.
+    The query joins event and venue information with each registration so
+    Manage Events receives everything it needs in one API request.
+*/
+
+export async function getEventRegistration(req, res) {
+    try {
+        const userId = req.user?.id;
+
+        if (!userId) {
+            return res.status(401).json({
+                message: "UNAUTHORIZED"
+            });
+        }
+        const registrationResult = await pool.query(
+            `SELECT
+                er.event_id,
+                er.occurrence,
+                e.name,
+                e.description,
+                e.image_url,
+                e.segment,
+                e.genre,
+                e.timezone,
+                v.name AS venue_name,
+                v.city AS venue_city,
+                v.state AS venue_state
+             FROM event_registrations er
+             INNER JOIN events e
+                ON e.id = er.event_id
+             LEFT JOIN venues v
+                ON v.id = e.venue_id
+             WHERE er.user_id = $1
+             ORDER BY er.occurrence ASC`,
+            [userId]
+        );
+
+        return res.status(200).json({
+            registrations: registrationResult.rows
+        });
+    } catch (error) {
+        console.error("Error getting event registrations:", error);
+
+        return res.status(500).json({
+            message: "REGISTRATIONS_FAILED"
+        });
+    }
+}

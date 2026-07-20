@@ -19,6 +19,12 @@ export async function getEvents(page) {
     return response.data;
 }
 
+export async function getEventRegistrations() {
+    const response = await api.get("/registrations");
+
+    return response.data;
+}
+
 export async function registerForEvent({eventId, occurrence}) {
 
     // Send eventId and occurrence as a flat POST body so the server receives them correctly.
