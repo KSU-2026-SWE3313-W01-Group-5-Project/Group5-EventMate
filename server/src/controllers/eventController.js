@@ -1,4 +1,4 @@
-import { createPool } from "../../db/index.js";
+import {createPool} from "../../db/index.js";
 
 const pool = createPool();
 
@@ -16,7 +16,9 @@ export async function getEvents(req, res) {
         const userId = req.user.id;
 
         const result = await pool.query(`
-            SELECT * FROM user_preferences WHERE user_id = $1`,
+            SELECT *
+            FROM user_preferences
+            WHERE user_id = $1`,
             [userId]
         );
 
@@ -28,15 +30,17 @@ export async function getEvents(req, res) {
 
         if (!preferences.auto_filter_enabled) {
             const events = await pool.query(
-                `SELECT * FROM events
-                ORDER BY last_seen_at
-                LIMIT $1
-                OFFSET $2`,
+                `SELECT *
+                 FROM events
+                 ORDER BY last_seen_at
+                 LIMIT $1
+                 OFFSET $2`,
                 [limit, offset]
             );
 
             const totalEvents = await pool.query(
-                `SELECT COUNT(*) FROM events`
+                `SELECT COUNT(*)
+                 FROM events`
             );
 
             const totalPages = Math.ceil(totalEvents.rows[0].count / limit);
@@ -81,9 +85,10 @@ export async function getEvents(req, res) {
                 const city = preferences.city_filter;
 
                 const filteredVenues = await pool.query(
-                    `SELECT id FROM venues
-                    WHERE state = $1
-                    AND ($2::text IS NULL OR city = $2)`,
+                    `SELECT id
+                     FROM venues
+                     WHERE state = $1
+                     AND ($2::text IS NULL OR city = $2)`,
                     [state, city]
                 );
 
@@ -93,25 +98,27 @@ export async function getEvents(req, res) {
             console.log(venueIds);
 
             const filteredEvents = await pool.query(
-                `SELECT * FROM events 
-                WHERE (
+                `SELECT *
+                 FROM events
+                 WHERE (
                     segment = ANY ($1)
-                        OR genre = ANY ($2)
-                    )
-                AND ($3::text[] is NULL OR venue_id = ANY($3))
-                ORDER BY last_seen_at
-                LIMIT $4
-                OFFSET $5`,
+                    OR genre = ANY ($2)
+                 )
+                 AND ($3::text[] is NULL OR venue_id = ANY($3))
+                 ORDER BY last_seen_at
+                     LIMIT $4
+                 OFFSET $5`,
                 [segments, genres, venueIds, limit, offset]
             );
 
             const totalEvents = await pool.query(
-                `SELECT COUNT(*) FROM events
-                WHERE (
-                    segment = ANY ($1)
-                        OR genre = ANY ($2)
-                    )
-                AND ($3::text[] is NULL OR venue_id = ANY($3))`,
+                `SELECT COUNT(*)
+                 FROM events
+                 WHERE (
+                     segment = ANY ($1)
+                     OR genre = ANY ($2)
+                     )
+                   AND ($3::text[] is NULL OR venue_id = ANY($3))`,
                 [segments, genres, venueIds]
             );
 
@@ -131,54 +138,128 @@ export async function getEvents(req, res) {
 }
 
 export async function registerForEvent(req, res) {
-    const userId = req.user.id;
-    const eventId = req.body.params.eventId;
-    const occurrence = req.body.params.occurrence;
+    try {
 
-    if (!userId) {
-        return res.status(401).json({ message: "UNAUTHORIZED" });
+        // authMiddleware adds the authenticated user's database ID to req.user.
+        // Optional chaining prevents an error if req.user is unexpectedly missing.
+        const userId = req.user?.id;
+        // The frontend sends these values directly in the POST request body.
+        const {eventId, occurrence} = req.body;
+
+        /* Original code below
+        const eventId = req.body.params.eventId;
+        const occurrence = req.body.params.occurrence;
+        */
+
+
+        if (!userId) {
+            return res.status(401).json({message: "UNAUTHORIZED"});
+        }
+
+        if (!eventId) {
+            return res.status(400).json({message: "INVALID_EVENT"});
+        }
+
+        if (!occurrence) {
+            return res.status(400).json({message: "INVALID_OCCURRENCE"});
+        }
+
+        const eventResult = await pool.query(
+            `SELECT id, occurrences
+             FROM events
+             WHERE id = $1`,
+            [eventId]
+        );
+
+        if (eventResult.rowCount === 0) {
+            return res.status(404).json({message: "NO_EVENT_FOUND"});
+        }
+
+        const occurrenceResult = await pool.query(
+            ` SELECT id, occurrences
+              FROM events
+              WHERE id = $1
+                AND $2::timestamptz = ANY(occurrences)`,
+            [eventId, occurrence]
+        );
+
+        if (occurrenceResult.rowCount === 0) {
+            return res.status(400).json({message: "OCCURRENCE_UNAVAILABLE"});
+        }
+
+        /*
+         After confirming the event occurrence is valid, check whether the
+         user already has something registered at that exact timestamp.
+
+         Events on the same calendar date are allowed when their times differ.
+        */
+        const scheduleConflictResult = await pool.query(
+            `SELECT event_id
+             FROM event_registrations
+             WHERE user_id = $1
+               AND occurrence = $2::timestamptz`,
+            [userId, occurrence]
+        );
+
+        if (scheduleConflictResult.rowCount > 0) {
+            const existingEventId =
+                scheduleConflictResult.rows[0].event_id;
+
+            // The user selected an event and occurrence already registered.
+            if (existingEventId === eventId) {
+                return res.status(200).json({
+                    message: "ALREADY_REGISTERED"
+                });
+            }
+
+            // A different event already occupies the exact timestamp.
+            return res.status(409).json({
+                message: "REGISTRATION_TIME_CONFLICT",
+                conflictingEventId: existingEventId
+            });
+        }
+
+        // now add this stuff to the event registrations stuff
+
+        const registrationResult = await pool.query(
+            `INSERT INTO event_registrations (
+                 user_id,
+                 event_id,
+                 occurrence
+            )
+            VALUES ($1, $2, $3) 
+            ON CONFLICT (user_id, occurrence)
+            DO NOTHING
+            RETURNING user_id, event_id, occurrence`,
+            [userId, eventId, occurrence]
+        );
+
+        // This can happen if another request inserted a registration after
+        // the schedule check but before this INSERT completed.
+        if (registrationResult.rowCount === 0) {
+            return res.status(409).json({
+                message: "REGISTRATION_TIME_CONFLICT"
+            });
+        }
+
+        return res.status(201).json({
+            message: "REGISTRATION_CREATED",
+            registration: registrationResult.rows[0]
+        });
+        // console.log(occurrenceResult);
+        //
+        // console.log(userId);
+        // console.log(eventId);
+        // console.log(occurrence);
+
+        // return res.status(200).json({
+        //     message: "SUCCESS",
+        // })
+    } catch (error) {
+        console.error("Error registering for event:", error);
+
+        return res.status(500).json({
+            message: "REGISTRATION_FAILED"
+        });
     }
-
-    if (!eventId) {
-        return res.status(400).json({ message: "INVALID_EVENT" });
-    }
-
-    if (!occurrence) {
-        return res.status(400).json({ message: "INVALID_OCCURRENCE" });
-    }
-
-    const eventResult = await pool.query(
-        `SELECT id, occurrences
-        FROM events
-        WHERE id = $1`,
-        [eventId]
-    );
-
-    if (eventResult.rowCount === 0) {
-        return res.status(404).json({ message: "NO_EVENT_FOUND" });
-    }
-
-    const occurrenceResult = await pool.query(
-        ` SELECT id, occurrences
-        FROM events
-        WHERE id = $1
-        AND $2 = ANY(occurrences)`,
-        [eventId, occurrence]
-    );
-
-    if (occurrenceResult.rowCount === 0) {
-        return res.status(400).json({ message: "OCCURRENCE_UNAVAILABLE" });
-    }
-
-    // now add this stuff to the event registrations stuff
-
-    console.log(occurrenceResult);
-
-    console.log(userId);
-    console.log(eventId);
-    console.log(occurrence);
-
-    return res.status(200).json({
-        message: "SUCCESS",
-    })
 }
