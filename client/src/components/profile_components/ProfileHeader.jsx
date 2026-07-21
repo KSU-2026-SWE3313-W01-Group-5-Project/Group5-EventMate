@@ -12,10 +12,28 @@
  * @param {Object} props.displayedUser - the user object obtained from the backend with their public
  * id to display. this object only has the information that we have defined as safe for public viewing
  */
-
+import {useEffect, useState} from "react";
 import getUserProfilePicture from "../../utils/getUserProfilePicture.js";
+import {useConnection} from "../../context/ConnectionContext.jsx";
+import LoadingPage from "../LoadingPage.jsx";
 
 export default function ProfileHeader({ displayedUser }) {
+    const {connectionsData, isLoading, connect} = useConnection();
+
+    const [connections, setConnections] = useState([]);
+
+    useEffect(() => {
+        if (!connectionsData) return;
+
+        const matchingConnections = connectionsData.data.filter((conn) =>
+            conn.sender_id === displayedUser.public_id ||
+            conn.receiver_id === displayedUser.public_id
+        );
+
+        setConnections(matchingConnections);
+    }, [connectionsData, displayedUser.public_id]);
+
+    if (isLoading) return <LoadingPage />
 
     // Pre-formatted values for the profile display header.
     // We add these checks to make sure that the profile does not render missing information
@@ -35,6 +53,16 @@ export default function ProfileHeader({ displayedUser }) {
         displayedUser.interests.length > 0
             ? `Interests: ${displayedUser.interests.join(", ")}`
             : "";
+
+    const handleConnect = async () => {
+        try {
+            const response = await connect(displayedUser.public_id);
+
+            console.log(response);
+        } catch (err) {
+            console.error(err);
+        }
+    }
 
     return (
         <div className={`flex
@@ -68,7 +96,6 @@ export default function ProfileHeader({ displayedUser }) {
             gap-5
             `}>
 
-                {/* User basic information/identity */}
                 <div className={`flex flex-col gap-0.5`}>
                     <h1 className={`text-lg font-bold`}>{displayedUser.username}</h1>
                     <h1 className={`text-sm`}>{formattedName}</h1>
@@ -76,8 +103,13 @@ export default function ProfileHeader({ displayedUser }) {
                     <h1 className={`text-sm`}>{formattedInterests}</h1>
                 </div>
 
-                {/* User bio */}
                 <p>{displayedUser.bio}</p>
+
+                <div className={`flex gap-3 ml-auto`}>
+                    <button>Message</button>
+                    <button onClick={handleConnect}>Send Connection</button>
+                    <button>Remove Connection</button>
+                </div>
             </div>
         </div>
     )

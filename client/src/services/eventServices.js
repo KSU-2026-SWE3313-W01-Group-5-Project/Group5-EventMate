@@ -6,7 +6,7 @@
 
 import axios from 'axios';
 
-const EVENTS_BASE_URL = "http://localhost:3000/api/events";
+const EVENTS_BASE_URL = import.meta.env.VITE_EVENTS_API_URL;
 
 const api = axios.create({
     baseURL: EVENTS_BASE_URL,
