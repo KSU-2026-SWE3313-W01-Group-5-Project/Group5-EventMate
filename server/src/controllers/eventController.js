@@ -370,9 +370,7 @@ export async function unregisterForEvent(req, res) {
             [registrationId]
         );
 
-        console.log(unregistrationResult.rows);
-
-        return res.status(204).send();
+        return res.status(204).json({ message: "UNREGISTERED"});
     } catch (err) {
         console.error("Error deleting registration:", err);
         return res.status(500).json({error: "INTERNAL_SERVER_ERROR"});

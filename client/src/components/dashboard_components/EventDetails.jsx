@@ -7,8 +7,11 @@ import LoadingPage from "../LoadingPage.jsx";
 import getUserProfilePicture from "../../utils/getUserProfilePicture.js";
 import {useNavigate} from "react-router-dom";
 import {useAuth} from "../../context/AuthContext.jsx";
+import {useNotifications} from "../../context/NotificationContext.jsx";
 
 export default function EventDetails({ eventId, onClose }) {
+    const {addNotification} = useNotifications();
+
     const {registrations} = useAuth();
 
     const {signup, unregister} = useEvents();
@@ -88,9 +91,50 @@ export default function EventDetails({ eventId, onClose }) {
                 occurrence: selectedDate,
             });
 
-            console.log("Signup response:", response);
+            console.log(response);
+
+            if (response.message === 'REGISTRATION_CREATED') {
+                addNotification({
+                    kind: 'success',
+                    title: 'Registration Created',
+                    subtitle: `Your registration for ${new Date(response.registration.occurrence).toLocaleString("en-US", {
+                        weekday: "short",
+                        month: "short",
+                        day: "numeric",
+                        year: "numeric",
+                        hour: "numeric",
+                        minute: "2-digit"
+                    })} has been created!`,
+                    timeout: 5000
+                });
+            }
+
+            if (response.message === 'ALREADY_REGISTERED') {
+                addNotification({
+                    kind: 'warning',
+                    title: 'Already Registered',
+                    subtitle: "You are already registered for this event at this time!",
+                    timeout: 10000
+                });
+            }
         } catch (err) {
-            console.error(err);
+            if (err.status === 409) {
+                addNotification({
+                    kind: 'error',
+                    title: 'Already Registered',
+                    subtitle: "You are already registered for another event at this time!",
+                    timeout: 10000
+                });
+            }
+
+            if (err.status === 500) {
+                addNotification({
+                    kind: 'error',
+                    title: 'System Error',
+                    subtitle: "The server has timed out.",
+                    timeout: 10000
+                });
+            }
         }
     }
 
@@ -100,7 +144,14 @@ export default function EventDetails({ eventId, onClose }) {
         try {
             const response = await unregister(registration.id);
 
-            console.log(response);
+            if (response.status === 204) {
+                addNotification({
+                    kind: 'success',
+                    title: 'Successfully Unregistered',
+                    subtitle: 'Your registration has been deleted.',
+                    timeout: 5000
+                });
+            }
         } catch (err) {
             console.error(err);
         }
@@ -313,7 +364,7 @@ export default function EventDetails({ eventId, onClose }) {
                                         </li>
                                     ))
                                 ) : (
-                                    <li className={`flex h-full items-center justify-center text-sm text-stone-600 dark:text-zinc-400`}>No one signed up yet, be the first!</li>
+                                    <li className={`flex h-full items-center justify-center text-sm text-stone-600 dark:text-zinc-400`}>No one has signed up yet, be the first!</li>
                                 )}
                             </ul>
                         </div>
