@@ -351,5 +351,30 @@ export async function getEventRegistrationsById(req, res) {
             message: "INTERNAL_SERVER_ERROR"
         });
     }
+}
 
+export async function unregisterForEvent(req, res) {
+    try {
+        const registrationId = req.params.registrationId;
+
+        console.log(registrationId);
+
+        if (!registrationId) {
+            return res.status(400).json({
+                message: "MISSING_REGISTRATION"
+            });
+        }
+
+        const unregistrationResult = await pool.query(
+            `DELETE FROM event_registrations WHERE id = $1`,
+            [registrationId]
+        );
+
+        console.log(unregistrationResult.rows);
+
+        return res.status(204).send();
+    } catch (err) {
+        console.error("Error deleting registration:", err);
+        return res.status(500).json({error: "INTERNAL_SERVER_ERROR"});
+    }
 }

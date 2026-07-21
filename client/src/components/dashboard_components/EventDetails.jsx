@@ -11,7 +11,7 @@ import {useAuth} from "../../context/AuthContext.jsx";
 export default function EventDetails({ eventId, onClose }) {
     const {registrations} = useAuth();
 
-    const {signup} = useEvents();
+    const {signup, unregister} = useEvents();
 
     const [selectedDate, setSelectedDate] = useState("");
 
@@ -75,7 +75,7 @@ export default function EventDetails({ eventId, onClose }) {
 
     const occurrences = event?.occurrences ?? [] ;
 
-    const  handleSignUp = async (e) => {
+    const handleSignUp = async (e) => {
         e.preventDefault();
 
         if (!selectedDate) {
@@ -88,7 +88,19 @@ export default function EventDetails({ eventId, onClose }) {
                 occurrence: selectedDate,
             });
 
-            onClose();
+            console.log("Signup response:", response);
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+    const handleUnregister = async (registration) => {
+        if (!registration) return;
+
+        try {
+            const response = await unregister(registration.id);
+
+            console.log(response);
         } catch (err) {
             console.error(err);
         }
@@ -177,7 +189,13 @@ export default function EventDetails({ eventId, onClose }) {
                                             })}
                                         </p>
 
-                                        <button className={`ml-auto mr-3 border border-red-200 bg-red-50 text-red-700 rounded-md px-2 py-1`}>Unregister</button>
+                                        <button
+                                            type={`button`}
+                                            onClick={() => handleUnregister(registration)}
+                                            className={`ml-auto mr-3 border border-red-200 bg-red-50 text-red-700 rounded-md px-2 py-1`}
+                                        >
+                                            Unregister
+                                        </button>
                                     </li>
                                 )
                             })}

@@ -37,12 +37,11 @@ export async function registerForEvent({eventId, occurrence}) {
     return response.data;
 }
 
-export async function unregisterForEvent({eventId, occurrence}) {
-    // const response = await api.delete('/unregister', { eventId, occurrence });
-    //
-    // return response.data;
+export async function unregisterForEvent({registrationId}) {
 
-    console.log("hello!");
+    const response = await api.delete(`/registrations/me/${registrationId}`, { params: { registrationId } });
+
+    return response.data;
 }
 
 export async function getEventById(eventId) {

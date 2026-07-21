@@ -11,7 +11,7 @@ import {
     getEvents,
     getEventById,
     registerForEvent,
-    // unregisterForEvent,
+    unregisterForEvent,
     getEventRegistration,
     getEventRegistrationsById
 } from '../controllers/eventController.js';
@@ -24,6 +24,6 @@ router.get('/:event_id', authMiddleware, getEventById);
 router.get('/registrations/me', authMiddleware, getEventRegistration)
 router.get('/registrations/:event_id', authMiddleware, getEventRegistrationsById)
 router.post('/register', authMiddleware, registerForEvent);
-// router.delete('/unregister', authMiddleware, unregisterForEvent);
+router.delete('/registrations/me/:registrationId', authMiddleware, unregisterForEvent);
 
 export default router;
