@@ -67,6 +67,28 @@ export async function getUser(req, res) {
     }
 }
 
+export async function getUserRegistrations(req, res) {
+    try {
+        const userId = req.user.id;
+
+        const result = await pool.query(
+            `SELECT event_id, occurrence FROM event_registrations WHERE user_id = $1`,
+            [userId]
+        );
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: "USER_NOT_FOUND" });
+        }
+
+        res.status(200)
+            .setHeader("Cache-Control", "no-store")
+            .json(result.rows);
+    } catch (err) {
+        console.error("Getting user registrations failed:", err);
+        res.status(500).json({ error: "INTERNAL_SERVER_ERROR" });
+    }
+}
+
 export async function updateUser(req, res) {
     try {
         const userId = req.user.id;

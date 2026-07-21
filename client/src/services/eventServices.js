@@ -20,7 +20,13 @@ export async function getEvents(page) {
 }
 
 export async function getEventRegistrations() {
-    const response = await api.get("/registrations");
+    const response = await api.get("/registrations/me");
+
+    return response.data;
+}
+
+export async function getEventRegistrationsById(eventId) {
+    const response = await api.get(`/registrations/${eventId}`, { params: { eventId } });
 
     return response.data;
 }
@@ -30,6 +36,12 @@ export async function registerForEvent({eventId, occurrence}) {
     // Send eventId and occurrence as a flat POST body so the server receives them correctly.
     // Using "params" here nests the values under req.body.params, which the backend does not expect.
     const response = await api.post('/register', { eventId, occurrence });
+
+    return response.data;
+}
+
+export async function getEventById(eventId) {
+    const response = await api.get(`/${eventId}`, { params: { eventId } });
 
     return response.data;
 }
