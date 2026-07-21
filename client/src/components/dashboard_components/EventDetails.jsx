@@ -118,47 +118,46 @@ export default function EventDetails({ eventId, onClose }) {
         dark:bg-zinc-900
         dark:text-white
         `}>
-
-            <div className="relative h-[38%] shrink-0 overflow-hidden">
-                <img
-                className="h-full w-full object-contain object-center"
-                src={event.image_url}
-                alt={`${event.name}`}
-                />
-
-                <div className="absolute inset-0
-                    pointer-events-none
-                    z-10
-                    bg-gradient-to-t
-                    from-black/60
-                    to-black/20"
-                />
-            </div>
-
-            <button
-                type="button"
-                onClick={onClose}
-                aria-label="Close event detail"
-                className={`
-                    absolute right-4 top-4 z-50
-                    flex h-10 w-10
-                    items-center justify-center
-                    rounded-full
-                    border-2 border-white/40
-                    bg-zinc-700
-                    text-2xl font-bold leading-none
-                    text-white
-                    shadow-lg
-                    transition-colors
-                    hover:bg-black`}>
-                ×
-            </button>
-
             <div className={`flex min-h-0 flex-1 flex-col overflow-y-auto p-6 gap-3 scrollbar scrollbar-thin
                 scrollbar-thumb-zinc-800 scrollbar-track-transparent
                 dark:scrollbar-thumb-stone-100`}>
-                <div className={`flex-1`}>
 
+                <div className="relative h-[38%] shrink-0 overflow-hidden rounded-md">
+                    <img
+                        className="h-full w-full object-contain object-center"
+                        src={event.image_url}
+                        alt={`${event.name}`}
+                    />
+
+                    <div className={`absolute inset-0
+                        pointer-events-none
+                        z-10
+                        bg-linear-to-t
+                        from-black/60
+                        to-black/20`}
+                    />
+
+                    <button
+                        type="button"
+                        onClick={onClose}
+                        aria-label="Close event detail"
+                        className={`
+                        absolute right-5 top-5 z-50
+                        flex h-10 w-10
+                        items-center justify-center
+                        rounded-full
+                        border-2 border-white/40
+                        bg-zinc-700
+                        text-2xl font-bold leading-none
+                        text-white
+                        shadow-lg
+                        transition-colors
+                        hover:bg-zinc-800`}>
+                        ×
+                    </button>
+                </div>
+
+                <div className={`flex-1`}>
                     <div className="flex flex-col" hidden={currentRegistrations.length === 0}>
                         <h1 className={`text-xl font-bold`}>Your Registrations</h1>
 
