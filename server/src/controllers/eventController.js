@@ -163,12 +163,6 @@ export async function registerForEvent(req, res) {
         // The frontend sends these values directly in the POST request body.
         const {eventId, occurrence} = req.body;
 
-        /* Original code below
-        const eventId = req.body.params.eventId;
-        const occurrence = req.body.params.occurrence;
-        */
-
-
         if (!userId) {
             return res.status(401).json({message: "UNAUTHORIZED"});
         }
@@ -236,7 +230,6 @@ export async function registerForEvent(req, res) {
             });
         }
 
-
         const registrationResult = await pool.query(
             `INSERT INTO event_registrations (
             user_id,
@@ -244,7 +237,7 @@ export async function registerForEvent(req, res) {
             occurrence
             )
             VALUES ($1, $2, $3) 
-            RETURNING user_id, event_id, occurrence`,
+            RETURNING id, event_id, occurrence`,
             [userId, eventId, occurrence]
         );
 
@@ -286,6 +279,7 @@ export async function getEventRegistration(req, res) {
         }
         const registrationResult = await pool.query(
             `SELECT
+                er.id,
                 er.event_id,
                 er.occurrence,
                 e.name,

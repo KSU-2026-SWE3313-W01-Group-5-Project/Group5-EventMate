@@ -68,6 +68,19 @@ export function EventsProvider({ children }) {
         }
     });
 
+    const unregisterMutation = useMutation({
+        mutationFn: ({eventId, occurrence}) => eventServices.unregisterForEvent({eventId, occurrence}),
+        onSuccess: () => {
+            queryClient.invalidateQueries({
+                queryKey: ["eventRegistrations", userUUID]
+            });
+
+            queryClient.invalidateQueries({
+                queryKey: ["userRegistrations"]
+            });
+        }
+    });
+
     return (
         <EventsContext.Provider
             value={{
@@ -84,6 +97,7 @@ export function EventsProvider({ children }) {
                 registrationsError,
 
                 signup: signupMutation.mutateAsync,
+                unregister: unregisterMutation.mutateAsync,
                 signupLoading: signupMutation.isPending,
                 signupError: signupMutation.error
             }}

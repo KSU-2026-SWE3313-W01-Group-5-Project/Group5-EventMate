@@ -145,7 +145,7 @@ export default function EventDetails({ eventId, onClose }) {
             <div className={`flex min-h-0 flex-1 flex-col overflow-y-auto p-6 gap-3 scrollbar scrollbar-thin
                 scrollbar-thumb-zinc-800 scrollbar-track-transparent
                 dark:scrollbar-thumb-stone-100`}>
-                <div className="flex-1">
+                <div className={`flex-1`}>
 
                     <div className="flex flex-col" hidden={currentRegistrations.length === 0}>
                         <h1 className={`text-xl font-bold`}>Your Registrations</h1>
@@ -247,13 +247,17 @@ export default function EventDetails({ eventId, onClose }) {
                                 </div>
                             )}
                         </div>
-                        <div className={`flex flex-col flex-wrap flex-1 
-                        justify-center 
+                        <div className={`
+                            flex flex-col flex-1 
+                            justify-center 
+                            min-h-0
+                            max-h-[40vh]
                         `}>
-                            <h3 className={`m-auto text-md font-bold`}>Registered Users</h3>
+                            <h3 className={`m-auto text-md font-bold`}>Attendees</h3>
 
                             <ul
-                                className={`mt-4 flex-1
+                                className={`
+                                mt-4 flex flex-col flex-1 min-h-0
                                 rounded-lg
                                 bg-zinc-100 dark:bg-zinc-700
                                 space-y-3
@@ -269,7 +273,7 @@ export default function EventDetails({ eventId, onClose }) {
                                             onClick={() => navigate(`/profile/?user=${user.public_id}`)}
                                             key={user.public_id}
                                             className="
-                                            flex h-20 items-center gap-5
+                                            flex h-20 shrink-0 items-center gap-5
                                             rounded-lg
                                             bg-zinc-200 dark:bg-zinc-600
                                             p-3
@@ -292,7 +296,7 @@ export default function EventDetails({ eventId, onClose }) {
                                         </li>
                                     ))
                                 ) : (
-                                    <li className={``}>No one signed up yet!</li> 
+                                    <li className={`flex h-full items-center justify-center text-sm text-stone-600 dark:text-zinc-400`}>No one signed up yet, be the first!</li>
                                 )}
                             </ul>
                         </div>
@@ -370,7 +374,7 @@ export default function EventDetails({ eventId, onClose }) {
                             disabled:opacity-50
                         `}
                     >
-                        Sign up for Event
+                        Register for Event
                     </button>
                 </div>
             </div>

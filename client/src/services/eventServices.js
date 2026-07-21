@@ -32,12 +32,17 @@ export async function getEventRegistrationsById(eventId) {
 }
 
 export async function registerForEvent({eventId, occurrence}) {
-
-    // Send eventId and occurrence as a flat POST body so the server receives them correctly.
-    // Using "params" here nests the values under req.body.params, which the backend does not expect.
     const response = await api.post('/register', { eventId, occurrence });
 
     return response.data;
+}
+
+export async function unregisterForEvent({eventId, occurrence}) {
+    // const response = await api.delete('/unregister', { eventId, occurrence });
+    //
+    // return response.data;
+
+    console.log("hello!");
 }
 
 export async function getEventById(eventId) {
