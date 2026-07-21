@@ -193,17 +193,17 @@ export async function registerForEvent(req, res) {
 
          Events on the same calendar date are allowed when their times differ.
         */
+
         const scheduleConflictResult = await pool.query(
             `SELECT event_id
-             FROM event_registrations
-             WHERE user_id = $1
-               AND occurrence = $2::timestamptz`,
+            FROM event_registrations
+            WHERE user_id = $1
+            AND occurrence = $2`,
             [userId, occurrence]
         );
 
         if (scheduleConflictResult.rowCount > 0) {
-            const existingEventId =
-                scheduleConflictResult.rows[0].event_id;
+            const existingEventId = scheduleConflictResult.rows[0].event_id;
 
             // The user selected an event and occurrence already registered.
             if (existingEventId === eventId) {
@@ -219,17 +219,14 @@ export async function registerForEvent(req, res) {
             });
         }
 
-        // now add this stuff to the event registrations stuff
 
         const registrationResult = await pool.query(
             `INSERT INTO event_registrations (
-                 user_id,
-                 event_id,
-                 occurrence
+            user_id,
+            event_id,
+            occurrence
             )
             VALUES ($1, $2, $3) 
-            ON CONFLICT (user_id, occurrence)
-            DO NOTHING
             RETURNING user_id, event_id, occurrence`,
             [userId, eventId, occurrence]
         );
