@@ -17,6 +17,8 @@ export default function ManageEvents() {
             rounded-xl
             ml-2 mt-4 mr-4 mb-2
             p-6 h-3/5
+            hover:bg-zinc-300/35
+            hover:dark:bg-zinc-800
         `}>
             <h2 className="text-lg tracking-tight font-bold">
                 Manage Events
@@ -51,6 +53,9 @@ export default function ManageEvents() {
                         min-h-0
                         space-y-3
                         overflow-y-auto
+                        scrollbar scrollbar-thin
+                        scrollbar-thumb-zinc-800 scrollbar-track-transparent
+                        dark:scrollbar-thumb-stone-100
                     ">
                         {registrations.map((registration) => {
                             const {
@@ -71,6 +76,8 @@ export default function ManageEvents() {
                                         rounded-lg
                                         bg-white dark:bg-zinc-700
                                         p-3
+                                        pl-6
+                                        mr-2
                                     "
                                 >
                                     {image_url && (
