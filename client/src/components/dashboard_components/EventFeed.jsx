@@ -17,7 +17,6 @@ export default function EventFeed() {
     );
 
     const selectedEventId = searchParams.get("event");
-    const selectedEvent = eventData.events.find((event) => event.id === selectedEventId);
 
     const updatePage = (newPage) => {
         setSearchParams((prevParams) => {
@@ -69,14 +68,14 @@ export default function EventFeed() {
                     <p>Page {feedPage}</p>
 
                     <button
-                        disabled={feedPage === totalPages}
+                        disabled={feedPage === totalPages || totalPages === 0}
                         onClick={() => updatePage(feedPage + 1)}
                     >
                         <FaAngleRight />
                     </button>
 
                     <button
-                        disabled={feedPage === totalPages}
+                        disabled={feedPage === totalPages || totalPages === 0}
                         onClick={() => updatePage(totalPages)}
                     >
                         <FaAnglesRight />
@@ -134,9 +133,9 @@ export default function EventFeed() {
                 ))}
             </ul>
 
-            {selectedEvent && (
+            {selectedEventId && (
                 <EventDetails
-                    event={selectedEvent}
+                    eventId={selectedEventId}
                     onClose={() => {
                         const params = new URLSearchParams(searchParams);
                         params.delete("event");

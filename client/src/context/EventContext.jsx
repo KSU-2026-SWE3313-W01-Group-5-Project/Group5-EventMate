@@ -31,8 +31,8 @@ export function EventsProvider({ children }) {
 
     /*
     * Retrieve every event registration belonging to the authenticated user.
-      Including the user's public ID in the query key keeps registration
-      data separated when a different user signs in.
+    Including the user's public ID in the query key keeps registration
+    data separated when a different user signs in.
      */
 
     const {
@@ -46,14 +46,13 @@ export function EventsProvider({ children }) {
         enabled: !!userUUID
     });
 
-    const registrations =
-        registrationData?.registrations ?? [];
+    const registrations = registrationData?.registrations ?? [];
 
     /*
     * Send a new registration to the backend.
-      After signup succeeds, mark the registration query as stale. React Query
-      then requests the updated registration list, which automatically updates
-      ManageEvents through this Context.
+    After signup succeeds, mark the registration query as stale. React Query
+    then requests the updated registration list, which automatically updates
+    ManageEvents through this Context.
     */
 
     const signupMutation = useMutation({
@@ -61,6 +60,10 @@ export function EventsProvider({ children }) {
         onSuccess: () => {
             queryClient.invalidateQueries({
                 queryKey: ["eventRegistrations", userUUID]
+            });
+
+            queryClient.invalidateQueries({
+                queryKey: ["userRegistrations"]
             });
         }
     });

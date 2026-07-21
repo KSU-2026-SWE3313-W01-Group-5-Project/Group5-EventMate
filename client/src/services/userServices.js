@@ -26,6 +26,12 @@ export async function getCurrentUser() {
     return response.data;
 }
 
+export async function getUserRegistrations() {
+    const response = await api.get("/me/registrations");
+
+    return response.data;
+}
+
 export async function updateUser(userData) {
     const response = await api.patch("/me/update", userData);
 

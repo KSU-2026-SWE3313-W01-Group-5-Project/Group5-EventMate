@@ -65,6 +65,15 @@ export function AuthProvider({ children }) {
     const isLoading = query.isLoading;
     const isAuthenticated = !!query.data;
 
+    const {
+        data: registrations,
+    } = useQuery({
+        queryKey: ["userRegistrations"],
+        queryFn: () => userService.getUserRegistrations(),
+
+        retry: false,
+    })
+
     /**
      * Handles user login using @tanstack/react-query's useMutation function.
      *
@@ -133,6 +142,7 @@ export function AuthProvider({ children }) {
     return <AuthContext.Provider
         value={{
             user,
+            registrations,
             isAuthenticated,
             isLoading,
 

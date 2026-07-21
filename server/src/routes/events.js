@@ -9,15 +9,19 @@ import express from 'express';
 
 import {
     getEvents,
+    getEventById,
     registerForEvent,
-    getEventRegistration
+    getEventRegistration,
+    getEventRegistrationsById
 } from '../controllers/eventController.js';
 import {authMiddleware} from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
 router.get('/', authMiddleware, getEvents);
-router.get('/registrations', authMiddleware, getEventRegistration);
+router.get('/:event_id', authMiddleware, getEventById);
+router.get('/registrations/me', authMiddleware, getEventRegistration)
+router.get('/registrations/:event_id', authMiddleware, getEventRegistrationsById)
 router.post('/register', authMiddleware, registerForEvent);
 
 export default router;

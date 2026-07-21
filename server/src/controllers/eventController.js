@@ -31,16 +31,16 @@ export async function getEvents(req, res) {
         if (!preferences.auto_filter_enabled) {
             const events = await pool.query(
                 `SELECT *
-                 FROM events
-                 ORDER BY last_seen_at
-                 LIMIT $1
-                 OFFSET $2`,
+                FROM events
+                ORDER BY last_seen_at
+                LIMIT $1
+                OFFSET $2`,
                 [limit, offset]
             );
 
             const totalEvents = await pool.query(
                 `SELECT COUNT(*)
-                 FROM events`
+                FROM events`
             );
 
             const totalPages = Math.ceil(totalEvents.rows[0].count / limit);
@@ -86,39 +86,37 @@ export async function getEvents(req, res) {
 
                 const filteredVenues = await pool.query(
                     `SELECT id
-                     FROM venues
-                     WHERE state = $1
-                     AND ($2::text IS NULL OR city = $2)`,
+                    FROM venues
+                    WHERE state = $1
+                    AND ($2::text IS NULL OR city = $2)`,
                     [state, city]
                 );
 
                 venueIds = filteredVenues.rows.map(row => row.id);
             }
 
-            console.log(venueIds);
-
             const filteredEvents = await pool.query(
                 `SELECT *
-                 FROM events
-                 WHERE (
+                FROM events
+                WHERE (
                     segment = ANY ($1)
                     OR genre = ANY ($2)
-                 )
-                 AND ($3::text[] is NULL OR venue_id = ANY($3))
-                 ORDER BY last_seen_at
-                     LIMIT $4
-                 OFFSET $5`,
+                )
+                AND ($3::text[] is NULL OR venue_id = ANY($3))
+                ORDER BY last_seen_at
+                    LIMIT $4
+                OFFSET $5`,
                 [segments, genres, venueIds, limit, offset]
             );
 
             const totalEvents = await pool.query(
                 `SELECT COUNT(*)
-                 FROM events
-                 WHERE (
-                     segment = ANY ($1)
-                     OR genre = ANY ($2)
-                     )
-                   AND ($3::text[] is NULL OR venue_id = ANY($3))`,
+                FROM events
+                WHERE (
+                    segment = ANY ($1)
+                    OR genre = ANY ($2)
+                    )
+                AND ($3::text[] is NULL OR venue_id = ANY($3))`,
                 [segments, genres, venueIds]
             );
 
@@ -132,6 +130,25 @@ export async function getEvents(req, res) {
                 totalEvents: totalEvents.rows[0].count
             });
         }
+    } catch (err) {
+        console.error("Error getting events:", err);
+    }
+}
+
+export async function getEventById(req, res) {
+    try {
+        const eventId = req.params.event_id;
+
+        const event = await pool.query(
+            `SELECT *
+                FROM events
+                WHERE id = $1`,
+            [eventId]
+        );
+
+        res.send({
+            event: event.rows,
+        });
     } catch (err) {
         console.error("Error getting events:", err);
     }
@@ -166,8 +183,8 @@ export async function registerForEvent(req, res) {
 
         const eventResult = await pool.query(
             `SELECT id, occurrences
-             FROM events
-             WHERE id = $1`,
+            FROM events
+            WHERE id = $1`,
             [eventId]
         );
 
@@ -177,8 +194,8 @@ export async function registerForEvent(req, res) {
 
         const occurrenceResult = await pool.query(
             ` SELECT id, occurrences
-              FROM events
-              WHERE id = $1
+            FROM events
+            WHERE id = $1
                 AND $2::timestamptz = ANY(occurrences)`,
             [eventId, occurrence]
         );
@@ -188,10 +205,10 @@ export async function registerForEvent(req, res) {
         }
 
         /*
-         After confirming the event occurrence is valid, check whether the
-         user already has something registered at that exact timestamp.
+        After confirming the event occurrence is valid, check whether the
+        user already has something registered at that exact timestamp.
 
-         Events on the same calendar date are allowed when their times differ.
+        Events on the same calendar date are allowed when their times differ.
         */
 
         const scheduleConflictResult = await pool.query(
@@ -239,19 +256,10 @@ export async function registerForEvent(req, res) {
             });
         }
 
-        return res.status(201).json({
+        return res.status(200).json({
             message: "REGISTRATION_CREATED",
             registration: registrationResult.rows[0]
         });
-        // console.log(occurrenceResult);
-        //
-        // console.log(userId);
-        // console.log(eventId);
-        // console.log(occurrence);
-
-        // return res.status(200).json({
-        //     message: "SUCCESS",
-        // })
     } catch (error) {
         console.error("Error registering for event:", error);
 
@@ -289,13 +297,13 @@ export async function getEventRegistration(req, res) {
                 v.name AS venue_name,
                 v.city AS venue_city,
                 v.state AS venue_state
-             FROM event_registrations er
-             INNER JOIN events e
+            FROM event_registrations er
+            INNER JOIN events e
                 ON e.id = er.event_id
-             LEFT JOIN venues v
+            LEFT JOIN venues v
                 ON v.id = e.venue_id
-             WHERE er.user_id = $1
-             ORDER BY er.occurrence ASC`,
+            WHERE er.user_id = $1
+            ORDER BY er.occurrence ASC`,
             [userId]
         );
 
@@ -309,4 +317,45 @@ export async function getEventRegistration(req, res) {
             message: "REGISTRATIONS_FAILED"
         });
     }
+}
+
+export async function getEventRegistrationsById(req, res) {
+    try {
+        const eventId = req.params.event_id;
+
+        if (!eventId) {
+            return res.status(400).json({ message: "MISSING_EVENT" })
+        }
+
+        const eventRegistrationsResponse = await pool.query(
+            `SELECT user_id FROM event_registrations
+            WHERE event_id = $1`,
+            [eventId]
+        );
+
+        const registeredUsers = [
+            ...new Set(
+                eventRegistrationsResponse.rows.map(row => row.user_id)
+            )
+        ];
+
+        if (registeredUsers.length === 0) {
+            return res.status(200).json({ message: "NO_USERS_REGISTERED" });
+        }
+
+        const publicRegisteredUsersResponse = await pool.query(
+            `SELECT public_id from users
+            WHERE id = ANY($1::int[])`,
+            [registeredUsers]
+        );
+
+        return res.status(200).json({ message: "REGISTERED_USERS", data: publicRegisteredUsersResponse.rows});
+    } catch (error) {
+        console.error("Error getting event registration by id:", error);
+
+        return res.status(500).json({
+            message: "INTERNAL_SERVER_ERROR"
+        });
+    }
+
 }

@@ -1,6 +1,9 @@
 import {useEvents} from "../../context/EventContext.jsx";
+import {useSearchParams} from "react-router-dom";
 
 export default function ManageEvents() {
+    const [searchParams, setSearchParams] = useSearchParams();
+
     const {
         registrations,
         registrationsLoading,
@@ -70,6 +73,14 @@ export default function ManageEvents() {
 
                             return (
                                 <li
+                                    onClick={() => {
+                                        setSearchParams((prevParams) => {
+                                            const params = new URLSearchParams(prevParams);
+                                            params.set("event", registration.event_id);
+
+                                            return params;
+                                        });
+                                    }}
                                     key={`${event_id}-${occurrence}`}
                                     className="
                                         flex h-40 items-center gap-5
