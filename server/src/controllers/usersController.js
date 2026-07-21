@@ -72,7 +72,7 @@ export async function getUserRegistrations(req, res) {
         const userId = req.user.id;
 
         const result = await pool.query(
-            `SELECT event_id, occurrence FROM event_registrations WHERE user_id = $1`,
+            `SELECT id, event_id, occurrence FROM event_registrations WHERE user_id = $1`,
             [userId]
         );
 

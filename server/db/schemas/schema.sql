@@ -88,15 +88,17 @@ CREATE TABLE events (
 );
 
 CREATE TABLE event_registrations (
+    id SERIAL PRIMARY KEY,
+
     user_id INT NOT NULL,
     event_id TEXT NOT NULL,
---     occurrence TEXT NOT NULL,
     occurrence TIMESTAMPTZ NOT NULL,
 
     --Identifies each exact user, event, and selected occurrence.
     --This allows the same user to register for the same event at
     -- different dates or times.
-    PRIMARY KEY (user_id, event_id, occurrence),
+    CONSTRAINT unique_user_event_occurrence
+        UNIQUE (user_id, event_id, occurrence),
 
     -- Prevents the user from registering for any two events at the exact
     -- same timestamp, even when the event IDs are different.

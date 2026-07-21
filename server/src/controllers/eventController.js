@@ -163,12 +163,6 @@ export async function registerForEvent(req, res) {
         // The frontend sends these values directly in the POST request body.
         const {eventId, occurrence} = req.body;
 
-        /* Original code below
-        const eventId = req.body.params.eventId;
-        const occurrence = req.body.params.occurrence;
-        */
-
-
         if (!userId) {
             return res.status(401).json({message: "UNAUTHORIZED"});
         }
@@ -236,7 +230,6 @@ export async function registerForEvent(req, res) {
             });
         }
 
-
         const registrationResult = await pool.query(
             `INSERT INTO event_registrations (
             user_id,
@@ -244,7 +237,7 @@ export async function registerForEvent(req, res) {
             occurrence
             )
             VALUES ($1, $2, $3) 
-            RETURNING user_id, event_id, occurrence`,
+            RETURNING id, event_id, occurrence`,
             [userId, eventId, occurrence]
         );
 
@@ -286,6 +279,7 @@ export async function getEventRegistration(req, res) {
         }
         const registrationResult = await pool.query(
             `SELECT
+                er.id,
                 er.event_id,
                 er.occurrence,
                 e.name,
@@ -357,5 +351,30 @@ export async function getEventRegistrationsById(req, res) {
             message: "INTERNAL_SERVER_ERROR"
         });
     }
+}
 
+export async function unregisterForEvent(req, res) {
+    try {
+        const registrationId = req.params.registrationId;
+
+        console.log(registrationId);
+
+        if (!registrationId) {
+            return res.status(400).json({
+                message: "MISSING_REGISTRATION"
+            });
+        }
+
+        const unregistrationResult = await pool.query(
+            `DELETE FROM event_registrations WHERE id = $1`,
+            [registrationId]
+        );
+
+        console.log(unregistrationResult.rows);
+
+        return res.status(204).send();
+    } catch (err) {
+        console.error("Error deleting registration:", err);
+        return res.status(500).json({error: "INTERNAL_SERVER_ERROR"});
+    }
 }
