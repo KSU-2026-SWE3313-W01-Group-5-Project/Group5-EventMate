@@ -250,7 +250,7 @@ export default function EventDetails({ eventId, onClose }) {
                         <div className={`flex flex-col flex-wrap flex-1 
                         justify-center 
                         `}>
-                            <h3 className={`m-auto text-md font-bold`}>Other Interested Users</h3>
+                            <h3 className={`m-auto text-md font-bold`}>Registered Users</h3>
 
                             <ul
                                 className={`mt-4 flex-1
