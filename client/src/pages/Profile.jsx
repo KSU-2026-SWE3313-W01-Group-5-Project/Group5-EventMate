@@ -18,6 +18,7 @@ import {useSearchParams} from "react-router-dom";
 import {getUserProfile} from "../services/userServices.js";
 import {useQuery} from "@tanstack/react-query";
 import ProfileHeader from "../components/profile_components/ProfileHeader.jsx";
+import LoadingPage from "../components/LoadingPage.jsx";
 
 export default function Profile() {
     const [searchParams] = useSearchParams();
@@ -35,7 +36,7 @@ export default function Profile() {
 
     return (
         <>
-            {isLoading && <p>Loading...</p>}
+            {isLoading && <LoadingPage />}
 
             {isError && <p>Failed to load profile.</p>}
 

@@ -7,6 +7,7 @@ import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
 import {AuthProvider} from "./context/AuthContext.jsx";
 import {EventsProvider} from "./context/EventContext.jsx";
 import {NotificationProvider} from "./context/NotificationContext.jsx";
+import {ConnectionProvider} from "./context/ConnectionContext.jsx";
 
 const queryClient = new QueryClient();
 
@@ -15,11 +16,13 @@ createRoot(document.getElementById('root')).render(
         <QueryClientProvider client={queryClient}>
             <BrowserRouter>
                 <AuthProvider>
-                    <EventsProvider>
-                        <NotificationProvider>
-                            <App/>
-                        </NotificationProvider>
-                    </EventsProvider>
+                    <ConnectionProvider>
+                        <EventsProvider>
+                            <NotificationProvider>
+                                <App/>
+                            </NotificationProvider>
+                        </EventsProvider>
+                    </ConnectionProvider>
                 </AuthProvider>
             </BrowserRouter>
         </QueryClientProvider>

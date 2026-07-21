@@ -89,6 +89,7 @@ export default function ManageEvents() {
                                         p-3
                                         pl-6
                                         mr-2
+                                        overflow-hidden
                                     "
                                 >
                                     {image_url && (
@@ -105,7 +106,7 @@ export default function ManageEvents() {
                                     )}
 
                                     <div className="min-w-0">
-                                        <h3 className="truncate text-lg">
+                                        <h3 className="line-clamp-1 text-lg w-full">
                                             {name}
                                         </h3>
 

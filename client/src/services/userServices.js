@@ -6,7 +6,7 @@
 
 import axios from "axios";
 
-const USERS_BASE_URL = "http://localhost:3000/api/users";
+const USERS_BASE_URL = import.meta.env.VITE_USERS_API_URL;
 
 // Scalable pattern
 const api = axios.create({
