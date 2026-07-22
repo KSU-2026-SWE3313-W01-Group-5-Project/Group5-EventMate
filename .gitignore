@@ -32,3 +32,5 @@ client/.env
 
 server/uploads/profile_images/*
 !server/uploads/profile_images/default-profile.png
+
+client/.vite/
