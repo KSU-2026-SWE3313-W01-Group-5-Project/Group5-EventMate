@@ -152,8 +152,8 @@ CREATE TABLE messages (
     FOREIGN KEY (sender_id) REFERENCES users(id)
 );
 
-CREATE INDEX messages_connection_id_idx ON messages(connection_id);
-CREATE INDEX messages_sent_at_idx ON messages(connection_id, sent_at);
+CREATE INDEX messages_conversation_id_idx ON messages(conversation_id);
+CREATE INDEX messages_sent_at_idx ON messages(conversation_id, sent_at);
 
 /*
 -- Connections Tables End --
