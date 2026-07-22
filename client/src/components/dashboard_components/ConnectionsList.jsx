@@ -22,10 +22,7 @@ export default function ConnectionsList() {
     const {user} = useAuth();
     const {addNotification} = useNotifications();
 
-    const [connectedConnections, setConnectedConnections] = useState([]);
     const [connectedUsersData, setConnectedUsersData] = useState([]);
-
-    const [pendingConnections, setPendingConnections] = useState([]);
     const [pendingUsersData, setPendingUsersData] = useState([]);
 
     const [searchParams, setSearchParams] = useSearchParams();
@@ -33,56 +30,49 @@ export default function ConnectionsList() {
     const isOpen = modal === "messaging";
 
     useEffect(() => {
-        if (!connectionsData || connectionsData.message === "NO_CONNECTIONS_FOUND") {
-            setConnectedConnections([]);
-            setPendingConnections([]);
+        if (!connectionsData || !user?.public_id) {
+            setConnectedUsersData([]);
+            setPendingUsersData([]);
             return;
         }
 
-        const connections = connectionsData?.data ?? [];
+        const connections = connectionsData.data ?? [];
 
-        const connected = connections.filter((connection) => (connection.status === "CONNECTED") &&
-            (connection.sender_id !== user.public_id))
-        setConnectedConnections(connected);
-
-        const pending = connections.filter((connection) => (connection.status === "PENDING") &&
-            (connection.sender_id !== user.public_id)
+        const connectedConnections = connections.filter((connection) =>
+            connection.status === "CONNECTED" &&
+            connection.sender_id !== user.public_id
         );
-        setPendingConnections(pending);
-    }, [connectionsData, user?.public_id])
 
-    useEffect(() => {
+        const pendingConnections = connections.filter((connection) =>
+            connection.status === "PENDING" &&
+            connection.sender_id !== user.public_id
+        );
+
         async function getUserProfiles() {
-            const profiles = await Promise.all(
-                connectedConnections.map(async (connection) => {
-                        const profile = await getUserProfile(connection.sender_id)
+            const [connectedProfiles, pendingProfiles] = await Promise.all([
+                Promise.all(
+                    connectedConnections.map(async (connection) => {
+                        const profile = await getUserProfile(connection.sender_id);
+
                         return {
-                            profile: profile,
+                            profile,
                             conversationID: connection.conversation_id
-                        }
-                    }
-                )
-            );
+                        };
+                    })
+                ),
 
-            setConnectedUsersData(profiles);
+                Promise.all(pendingConnections.map((connection) =>
+                        getUserProfile(connection.sender_id)
+                    )
+                )
+            ]);
+
+            setConnectedUsersData(connectedProfiles);
+            setPendingUsersData(pendingProfiles);
         }
 
         getUserProfiles();
-    }, [connectedConnections]);
-
-    useEffect(() => {
-        async function getUserProfiles() {
-            const profiles = await Promise.all(
-                pendingConnections.map((connection) =>
-                    getUserProfile(connection.sender_id)
-                )
-            );
-
-            setPendingUsersData(profiles);
-        }
-
-        getUserProfiles();
-    }, [pendingConnections]);
+    }, [connectionsData, user?.public_id]);
 
     if (isLoading) return <LoadingPage />
 

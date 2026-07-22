@@ -43,8 +43,10 @@ export function EventsProvider({ children }) {
     } = useQuery({
         queryKey: ["eventRegistrations", userUUID],
         queryFn: () => eventServices.getEventRegistrations(),
-        enabled: !!userUUID
+        enabled: !!userUUID,
+        refetchInterval: 3000,
     });
+    // would use socket for these instead of refetch, but this is simple enough for now
 
     const registrations = registrationData?.registrations ?? [];
 

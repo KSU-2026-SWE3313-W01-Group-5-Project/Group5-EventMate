@@ -84,9 +84,8 @@ export default function Modal({ children, onClose, isOpen }) {
         // Full-screen overlay that allows the user to click anywhere on the page to close the modal. Probably could have used a ref like
         // we used in the LocationTypeahead dropdowns, but I coded this before that, so I had not learned about that yet
         <div
-            className={`fixed inset-0 transition-colors duration-300 ease-in-out ${
-                visible ? 'bg-black/70' : 'bg-black/0'
-            }`}
+            className={`fixed inset-0 transition-colors duration-300 ease-in-out z-9999
+                ${ visible ? 'bg-black/70' : 'bg-black/0'}`}
             onClick={handleClose}
         >
             <div className="h-full p-6 flex items-center justify-center transition-all duration-300 ease-in-out">
