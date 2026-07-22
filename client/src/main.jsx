@@ -18,13 +18,13 @@ createRoot(document.getElementById('root')).render(
             <BrowserRouter>
                 <AuthProvider>
                     <ConnectionProvider>
-                        <SocketProvider>
-                            <EventsProvider>
-                                <NotificationProvider>
+                        <NotificationProvider>
+                            <SocketProvider>
+                                <EventsProvider>
                                     <App/>
-                                </NotificationProvider>
-                            </EventsProvider>
-                        </SocketProvider>
+                                </EventsProvider>
+                            </SocketProvider>
+                        </NotificationProvider>
                     </ConnectionProvider>
                 </AuthProvider>
             </BrowserRouter>
