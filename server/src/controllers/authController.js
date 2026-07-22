@@ -80,11 +80,13 @@ export async function loginUser(req, res) {
 
         const jwtToken = generateToken(user);
 
+        const isProduction = process.env.NODE_ENV === "production";
+
         return res.status(200)
             .cookie('token', jwtToken, {
                 httpOnly: true,
-                secure: false,
-                sameSite: 'lax',
+                secure: isProduction,
+                sameSite: isProduction ? 'none' : 'lax',
                 path: '/',
                 maxAge: 7 * 24 * 60 * 60 * 1000,
             })
@@ -98,13 +100,14 @@ export async function loginUser(req, res) {
 
 export async function logout(req, res) {
     try {
+        const isProduction = process.env.NODE_ENV === "production";
+
         return res.status(200)
             .clearCookie('token', {
                 httpOnly: true,
-                secure: false,
-                sameSite: 'lax',
+                secure: isProduction,
+                sameSite: isProduction ? 'none' : 'lax',
                 path: '/',
-                domain: 'localhost',
             })
             .json({ message: "Logout successful" });
     } catch (err) {
