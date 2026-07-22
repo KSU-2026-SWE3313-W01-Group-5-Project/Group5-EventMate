@@ -46,7 +46,7 @@ export const SocketProvider = ({ children }) => {
     }, [user]);
 
     const {addNotification} = useNotifications();
-    const [searchParams] = useSearchParams();
+    const [searchParams, setSearchParams] = useSearchParams();
 
     const conversationID = searchParams.get("conversation");
 
@@ -63,11 +63,25 @@ export const SocketProvider = ({ children }) => {
             const preview = newMessage.content.length > 100
                 ? `${newMessage.content.slice(0, 100)}...` : newMessage.content;
 
+            const handleOpenConversation = (e) => {
+                e.stopPropagation();
+
+                setSearchParams((prevParams) => {
+                    const params = new URLSearchParams(prevParams);
+                    params.set("modal", "messaging");
+                    params.set("conversation", conversationID);
+
+                    return params;
+                });
+            }
+
             addNotification({
                 kind: "info",
-                title: "New Message",
+                title: newMessage.username,
                 subtitle: preview,
                 timeout: 5000,
+                actionLabel: "Read Message",
+                onActionClick: handleOpenConversation
             });
         }
 

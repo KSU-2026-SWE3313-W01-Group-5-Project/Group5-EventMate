@@ -31,8 +31,8 @@ export function setupSocketHandlers(io) {
                     [conversationID, socket.user.id, content]
                 );
 
-                const senderUUIDResult = await pool.query(`
-                    SELECT public_id FROM users WHERE id = $1`,
+                const senderPublicResult = await pool.query(`
+                    SELECT public_id, username FROM users WHERE id = $1`,
                     [socket.user.id]
                 );
 
@@ -66,7 +66,8 @@ export function setupSocketHandlers(io) {
 
                 const message = messageResult.rows.map(message => ({
                     ...message,
-                    sender_id: senderUUIDResult.rows[0].public_id,
+                    sender_id: senderPublicResult.rows[0].public_id,
+                    sender_username: senderPublicResult.rows[0].username
                 }));
 
                 console.log({
