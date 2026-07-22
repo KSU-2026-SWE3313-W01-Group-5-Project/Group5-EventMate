@@ -49,7 +49,7 @@ export default function ConnectionsList() {
             (connection.sender_id !== user.public_id)
         );
         setPendingConnections(pending);
-    }, [connectionsData])
+    }, [connectionsData, user?.public_id])
 
     useEffect(() => {
         async function getUserProfiles() {
