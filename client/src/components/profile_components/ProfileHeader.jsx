@@ -35,14 +35,8 @@ export default function ProfileHeader({ displayedUser }) {
 
         const matchingConnection = connections.find(
             (conn) =>
-                (
-                    conn.sender_id === user?.public_id &&
-                    conn.receiver_id === displayedUser.public_id
-                ) ||
-                (
-                    conn.sender_id === displayedUser.public_id &&
-                    conn.receiver_id === user?.public_id
-                )
+                (conn.sender_id === user?.public_id && conn.receiver_id === displayedUser.public_id) ||
+                (conn.sender_id === displayedUser.public_id && conn.receiver_id === user?.public_id)
         );
 
         setConnection(matchingConnection ?? null);
