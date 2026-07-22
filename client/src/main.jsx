@@ -8,6 +8,7 @@ import {AuthProvider} from "./context/AuthContext.jsx";
 import {EventsProvider} from "./context/EventContext.jsx";
 import {NotificationProvider} from "./context/NotificationContext.jsx";
 import {ConnectionProvider} from "./context/ConnectionContext.jsx";
+import {SocketProvider} from "./context/SocketContext.jsx";
 
 const queryClient = new QueryClient();
 
@@ -17,11 +18,13 @@ createRoot(document.getElementById('root')).render(
             <BrowserRouter>
                 <AuthProvider>
                     <ConnectionProvider>
-                        <EventsProvider>
-                            <NotificationProvider>
-                                <App/>
-                            </NotificationProvider>
-                        </EventsProvider>
+                        <SocketProvider>
+                            <EventsProvider>
+                                <NotificationProvider>
+                                    <App/>
+                                </NotificationProvider>
+                            </EventsProvider>
+                        </SocketProvider>
                     </ConnectionProvider>
                 </AuthProvider>
             </BrowserRouter>

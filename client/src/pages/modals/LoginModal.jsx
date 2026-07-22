@@ -106,7 +106,7 @@ export default function LoginModal({ onSwitch, onRequestClose }) {
                             rounded-md 
                             border border-stone-300 bg-white 
                             text-stone-700 placeholder:text-stone-400 
-                            focus-within:outline-none focus-within:ring-2 focus-within:ring-stone-500 
+                            focus-within:outline-none focus-within:ring-2 focus-within:ring-stone-700 
                             transition-colors duration-300
                             `}
                             >

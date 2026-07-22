@@ -128,7 +128,7 @@ export default function ConnectionsList() {
         setSearchParams(prev => {
             const params = new URLSearchParams(prev);
             params.delete("modal");
-            params.delete("user");
+            params.delete("conversation");
             return params;
         });
     };
@@ -171,7 +171,7 @@ export default function ConnectionsList() {
                             dark:scrollbar-thumb-stone-100`}>
                             {connectedUsersData.map((conn) => (
                                 <li
-                                    onClick={() => navigate(`/profile/?user=${user.public_id}`)}
+                                    onClick={() => navigate(`/profile/?user=${conn.profile.public_id}`)}
                                     key={conn.profile.public_id}
                                     className={`
                                     flex h-20 shrink-0 items-center gap-5
