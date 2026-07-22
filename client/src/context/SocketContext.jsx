@@ -69,7 +69,7 @@ export const SocketProvider = ({ children }) => {
                 setSearchParams((prevParams) => {
                     const params = new URLSearchParams(prevParams);
                     params.set("modal", "messaging");
-                    params.set("conversation", conversationID);
+                    params.set("conversation", newMessage.conversation_id);
 
                     return params;
                 });
@@ -77,11 +77,11 @@ export const SocketProvider = ({ children }) => {
 
             addNotification({
                 kind: "info",
-                title: newMessage.username,
+                title: newMessage.sender_username,
                 subtitle: preview,
                 timeout: 5000,
-                actionLabel: "Read Message",
-                onActionClick: handleOpenConversation
+                actionButtonLabel: "Read Message",
+                onActionButtonClick: handleOpenConversation
             });
         }
 

@@ -1,9 +1,9 @@
 import {ActionableNotification, ToastNotification} from "@carbon/react";
 
 export const ToastNotificationWrapper = ({ notification, onClose}) => {
-    const { kind, title, subtitle, actionLabel, onActionClick, lowContrast } = notification;
+    const { kind, title, subtitle, actionButtonLabel, onActionButtonClick, lowContrast } = notification;
 
-    if (actionLabel) {
+    if (actionButtonLabel) {
         return (
             <ActionableNotification
                 kind={kind}
@@ -13,8 +13,8 @@ export const ToastNotificationWrapper = ({ notification, onClose}) => {
                         {subtitle}
                     </span>
                 }
-                actionButton={actionLabel}
-                onActionButtonClick={onActionClick}
+                actionButtonLabel={actionButtonLabel}
+                onActionButtonClick={onActionButtonClick}
                 onClose={onClose}
                 lowContrast={lowContrast}
             />
