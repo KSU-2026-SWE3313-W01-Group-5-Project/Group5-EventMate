@@ -18,9 +18,11 @@ export function ConnectionProvider({ children }) {
         isError,
         error,
     } = useQuery({
-        queryKey: ["connections"],
-        queryFn: () => connectionServices.getConnections(),
-        enabled: !!user
+        queryKey: ["connections", user?.public_id],
+        queryFn: connectionServices.getConnections,
+        enabled: !!user,
+        refetchOnWindowFocus: true,
+        refetchInterval: user ? 3000 : false,
     });
 
     const connectionMutation = useMutation({

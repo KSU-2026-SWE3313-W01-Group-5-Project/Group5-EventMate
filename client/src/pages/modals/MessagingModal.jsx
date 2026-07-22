@@ -9,6 +9,7 @@ import {useSocket} from "../../context/SocketContext.jsx";
 import {useAuth} from "../../context/AuthContext.jsx";
 
 import { FiSend } from "react-icons/fi";
+import {useNotifications} from "../../context/NotificationContext.jsx";
 
 export default function MessagingModal({ onRequestClose }) {
     const {socket} = useSocket();
@@ -112,7 +113,7 @@ export default function MessagingModal({ onRequestClose }) {
 
                 <div>
                     <h3 className="text-xl font-semibold">{connectionProfile.username}</h3>
-                    <p className={`text-sm text-stone-500 dark:text-zinc-200 `}>{connectionProfile.firstname} {conversationID.lastname}</p>
+                    <p className={`text-sm text-stone-500 dark:text-zinc-200 `}>{connectionProfile.firstname} {connectionProfile.lastname}</p>
                 </div>
             </div>
 
