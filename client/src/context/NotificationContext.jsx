@@ -6,9 +6,9 @@ const NotificationContext = createContext(null);
 export const NotificationProvider = ({ children }) => {
     const [notifications, setNotifications] = useState([]);
 
-    const addNotification = useCallback(({ kind, title, subtitle, timeout = 5000, lowContrast = true }) => {
+    const addNotification = useCallback(({ kind, title, subtitle, timeout = 5000, lowContrast = true, actionButtonLabel = null, onActionButtonClick }) => {
         const id = Date.now();
-        setNotifications((prevState) => [...prevState, {id, kind, title, subtitle}])
+        setNotifications((prevState) => [...prevState, {id, kind, title, subtitle, lowContrast, actionButtonLabel, onActionButtonClick}])
 
         if (timeout) {
             setTimeout(() => {
