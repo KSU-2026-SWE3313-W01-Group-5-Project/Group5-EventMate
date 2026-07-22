@@ -11,7 +11,7 @@ export async function getConnections(req, res) {
         }
 
         const connectionResponse = await pool.query(
-            `SELECT sender_id, receiver_id, status FROM connections
+            `SELECT sender_id, receiver_id, status, conversation_id FROM connections
             WHERE sender_id = $1 OR receiver_id = $1`,
             [userID]
         );
@@ -112,16 +112,24 @@ export async function createConnection(req, res) {
             return res.status(400).json({ message: "USERS_ALREADY_CONNECTED" });
         }
 
+        const conversationResult = await pool.query(
+            `INSERT INTO conversations
+            DEFAULT VALUES
+            RETURNING id`
+        );
+
+        const conversationId = conversationResult.rows[0].id;
+
         await pool.query(
-            `INSERT INTO connections (sender_id, receiver_id, status)
-            VALUES ($1, $2, $3)`,
-            [senderID, receiverID, "CONNECTED"]
+            `INSERT INTO connections (sender_id, receiver_id, conversation_id, status)
+            VALUES ($1, $2, $3, $4)`,
+            [senderID, receiverID, conversationId, "CONNECTED"]
         );
 
         await pool.query(
-            `UPDATE connections SET status = $3
+            `UPDATE connections SET conversation_id = $3, status = $4
             WHERE sender_id = $2 AND receiver_id = $1`,
-            [senderID, receiverID, "CONNECTED"]
+            [senderID, receiverID, conversationId, "CONNECTED"]
         );
 
         return res.status(200).json({ message: "CONNECTION_MADE" })

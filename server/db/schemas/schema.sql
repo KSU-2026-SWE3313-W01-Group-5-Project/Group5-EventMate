@@ -117,8 +117,15 @@ CREATE TABLE event_registrations (
 -- Connections Tables Start --
 */
 
+CREATE TABLE conversations (
+    id SERIAL PRIMARY KEY,
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
 CREATE TABLE connections (
     id SERIAL PRIMARY KEY,
+
+    conversation_id INT,
 
     sender_id INT NOT NULL,
     receiver_id INT NOT NULL,
@@ -126,20 +133,22 @@ CREATE TABLE connections (
     status TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT NOW(),
 
+    FOREIGN KEY (conversation_id) REFERENCES conversations(id) ON DELETE CASCADE,
     FOREIGN KEY (sender_id) REFERENCES users(id) ON DELETE CASCADE,
     FOREIGN KEY (receiver_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
 CREATE TABLE messages (
     id SERIAL PRIMARY KEY,
-    connection_id INT NOT NULL,
+
+    conversation_id INT NOT NULL,
 
     sender_id INT NOT NULL,
     content TEXT NOT NULL,
 
     sent_at TIMESTAMPTZ DEFAULT NOW(),
 
-    FOREIGN KEY (connection_id) REFERENCES connections(id),
+    FOREIGN KEY (conversation_id) REFERENCES conversations(id),
     FOREIGN KEY (sender_id) REFERENCES users(id)
 );
 

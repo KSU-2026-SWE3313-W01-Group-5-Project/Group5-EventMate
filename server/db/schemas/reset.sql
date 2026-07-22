@@ -4,6 +4,7 @@ DROP TABLE IF EXISTS users CASCADE;
 DROP TABLE IF EXISTS venues;
 DROP TABLE IF EXISTS user_preferences;
 DROP TABLE IF EXISTS event_registrations;
+DROP TABLE IF EXISTS conversations CASCADE;
 DROP TABLE IF EXISTS connections CASCADE;
 DROP TABLE IF EXISTS messages;
 DROP TABLE IF EXISTS notifications;
