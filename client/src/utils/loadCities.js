@@ -14,7 +14,7 @@ export default async function loadCities() {
 
     const groupedCities = {};
 
-    const res = await fetch("http://localhost:3000/api/cities");
+    const res = await fetch(import.meta.env.VITE_CITIES_API_URL);
     const csvText = await res.text();
 
     const csvData = await parseCSV(csvText);

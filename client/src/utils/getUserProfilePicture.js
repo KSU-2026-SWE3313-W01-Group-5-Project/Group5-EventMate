@@ -5,10 +5,10 @@
  * picture if not.
  */
 
-const BASE_URL = "http://localhost:3000";
+const BASE_URL = import.meta.env.VITE_API_URL;
 
 export default function getUserProfilePicture(filename) {
     return filename
-        ? `${BASE_URL}/uploads/profile_images/${filename}`
+        ? `${BASE_URL}uploads/profile_images/${filename}`
         : "/default-profile.png";
 }
