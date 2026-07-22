@@ -18,10 +18,6 @@ export const SocketProvider = ({ children }) => {
     const {user} = useAuth();
 
     useEffect(() => {
-        function handleConnect() {
-            console.log("Socket connected:", socket.id);
-        }
-
         function handleConnectError(error) {
             console.error(
                 "Socket connection failed:",
@@ -29,7 +25,6 @@ export const SocketProvider = ({ children }) => {
             );
         }
 
-        socket.on("connect", handleConnect);
         socket.on("connect_error", handleConnectError);
 
         if (user) {
@@ -39,7 +34,6 @@ export const SocketProvider = ({ children }) => {
         }
 
         return () => {
-            socket.off("connect", handleConnect);
             socket.off("connect_error", handleConnectError);
             socket.disconnect();
         };
@@ -52,7 +46,6 @@ export const SocketProvider = ({ children }) => {
 
     useEffect(() => {
         function handleNewMessage(newMessage) {
-            console.log("SocketContext received:", newMessage);
 
             const isCurrentConversation = conversationID && String(conversationID) === String(newMessage.conversation_id);
 
@@ -63,25 +56,11 @@ export const SocketProvider = ({ children }) => {
             const preview = newMessage.content.length > 100
                 ? `${newMessage.content.slice(0, 100)}...` : newMessage.content;
 
-            const handleOpenConversation = (e) => {
-                e.stopPropagation();
-
-                setSearchParams((prevParams) => {
-                    const params = new URLSearchParams(prevParams);
-                    params.set("modal", "messaging");
-                    params.set("conversation", newMessage.conversation_id);
-
-                    return params;
-                });
-            }
-
             addNotification({
                 kind: "info",
                 title: newMessage.sender_username,
                 subtitle: preview,
                 timeout: 5000,
-                actionButtonLabel: "Read Message",
-                onActionButtonClick: handleOpenConversation
             });
         }
 

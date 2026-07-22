@@ -32,7 +32,7 @@ export function setupSocketHandlers(io) {
                 );
 
                 const senderPublicResult = await pool.query(`
-                    SELECT public_id, username FROM users WHERE id = $1`,
+                    SELECT public_id, us FROM users WHERE id = $1`,
                     [socket.user.id]
                 );
 
