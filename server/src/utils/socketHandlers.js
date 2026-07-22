@@ -10,6 +10,9 @@ export function setupSocketHandlers(io) {
         console.log("User connected:", socket.id);
 
         socket.join(`user-${socket.user.id}`);
+        console.log(
+            `User ${socket.user.id} joined user-${socket.user.id}`
+        );
 
         socket.on("join_conversation", (conversationID) => {
             socket.join(`conversation-${conversationID}`);
@@ -65,6 +68,13 @@ export function setupSocketHandlers(io) {
                     ...message,
                     sender_id: senderUUIDResult.rows[0].public_id,
                 }));
+
+                console.log({
+                    senderID: socket.user.id,
+                    recipientID,
+                    conversationID,
+                    recipientRoom: `user-${recipientID}`,
+                });
 
                 io.to(`conversation-${conversationID}`)
                     .to(`user-${recipientID}`)

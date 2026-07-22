@@ -17,12 +17,21 @@ const socket = io(
 export const SocketProvider = ({ children }) => {
     const {user} = useAuth();
 
-    const {addNotification} = useNotifications();
-    const [searchParams] = useSearchParams();
-
-    const conversationID = searchParams.get("conversation");
-
     useEffect(() => {
+        function handleConnect() {
+            console.log("Socket connected:", socket.id);
+        }
+
+        function handleConnectError(error) {
+            console.error(
+                "Socket connection failed:",
+                error.message
+            );
+        }
+
+        socket.on("connect", handleConnect);
+        socket.on("connect_error", handleConnectError);
+
         if (user) {
             socket.connect();
         } else {
@@ -30,12 +39,21 @@ export const SocketProvider = ({ children }) => {
         }
 
         return () => {
+            socket.off("connect", handleConnect);
+            socket.off("connect_error", handleConnectError);
             socket.disconnect();
         };
     }, [user]);
 
+    const {addNotification} = useNotifications();
+    const [searchParams] = useSearchParams();
+
+    const conversationID = searchParams.get("conversation");
+
     useEffect(() => {
         function handleNewMessage(newMessage) {
+            console.log("SocketContext received:", newMessage);
+
             const isCurrentConversation = conversationID && String(conversationID) === String(newMessage.conversation_id);
 
             if (isCurrentConversation) {
