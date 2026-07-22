@@ -40,8 +40,6 @@ export async function getConnections(req, res) {
             })
         );
 
-        console.log(connections);
-
         return res.status(200).json({ data: connections });
     } catch (err) {
         console.error("Error getting connection by UUID:", err);

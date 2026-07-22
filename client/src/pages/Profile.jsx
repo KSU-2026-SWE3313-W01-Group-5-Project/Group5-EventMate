@@ -19,10 +19,15 @@ import {getUserProfile} from "../services/userServices.js";
 import {useQuery} from "@tanstack/react-query";
 import ProfileHeader from "../components/profile_components/ProfileHeader.jsx";
 import LoadingPage from "../components/LoadingPage.jsx";
+import Modal from "../components/Modal.jsx";
+import MessagingModal from "./modals/MessagingModal.jsx";
 
 export default function Profile() {
-    const [searchParams] = useSearchParams();
+    const [searchParams, setSearchParams] = useSearchParams();
     const displayedUserUUID = searchParams.get("user");
+
+    const modal = searchParams.get("modal");
+    const isOpen = modal === "messaging";
 
     const {
         data: displayedUser,
@@ -33,6 +38,15 @@ export default function Profile() {
         queryFn: () => getUserProfile(displayedUserUUID),
         enabled: !!displayedUserUUID,
     });
+
+    const closeModal = () => {
+        setSearchParams(prev => {
+            const params = new URLSearchParams(prev);
+            params.delete("modal");
+            params.delete("conversation");
+            return params;
+        });
+    };
 
     return (
         <>
@@ -63,6 +77,10 @@ export default function Profile() {
                     </main>
                 </div>
             )}
+
+            <Modal isOpen={isOpen} onClose={closeModal}>
+                <MessagingModal className={isOpen ? "" : "hidden"} />
+            </Modal>
         </>
     )
 }

@@ -18,11 +18,14 @@ import {useConnection} from "../../context/ConnectionContext.jsx";
 import LoadingPage from "../LoadingPage.jsx";
 import {useAuth} from "../../context/AuthContext.jsx";
 import {useNotifications} from "../../context/NotificationContext.jsx";
+import {useSearchParams} from "react-router-dom";
 
 export default function ProfileHeader({ displayedUser }) {
     const {user} = useAuth();
     const {connectionsData, isLoading, connect, removeConnection} = useConnection();
     const {addNotification} = useNotifications();
+
+    const [searchParams, setSearchParams] = useSearchParams();
 
     const [connection, setConnection] = useState(null);
 
@@ -168,6 +171,15 @@ export default function ProfileHeader({ displayedUser }) {
                     {isConnected ? (
                         <>
                             <button
+                                onClick={(e) => {
+                                    e.stopPropagation()
+                                    setSearchParams((prevParams) => {
+                                        const params = new URLSearchParams(prevParams);
+                                        params.set("modal", "messaging");
+                                        params.set("conversation", connection.conversation_id);
+
+                                        return params;
+                                    })}}
                                 className={`px-4 py-3 rounded-md bg-zinc-500 hover:bg-zinc-600 text-white/75 text-sm border border-zinc-400`}
                             >
                                 Message

@@ -16,8 +16,10 @@
  */
 
 import React, {useEffect, useState, cloneElement} from "react";
+import {useSocket} from "../context/SocketContext.jsx";
 
 export default function Modal({ children, onClose, isOpen }) {
+    const {socket} = useSocket();
 
     // Controls the opacity animation independently of the isOpen prop.
     // This allows the modal to animate itself out before being removed from the DOM.
