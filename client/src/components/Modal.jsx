@@ -83,7 +83,7 @@ export default function Modal({ children, onClose, isOpen }) {
         // we used in the LocationTypeahead dropdowns, but I coded this before that, so I had not learned about that yet
         <div
             className={`fixed inset-0 transition-colors duration-300 ease-in-out ${
-                visible ? 'bg-black/60' : 'bg-black/0'
+                visible ? 'bg-black/70' : 'bg-black/0'
             }`}
             onClick={handleClose}
         >
@@ -91,7 +91,7 @@ export default function Modal({ children, onClose, isOpen }) {
 
                 {/* Prevents clicking inside the modal from closing it */}
                 <div
-                    className={`w-full max-w-md ${
+                    className={`${
                         visible ? 'opacity-100' : 'opacity-0'}
                     `}
                     onClick={(e) => e.stopPropagation()}

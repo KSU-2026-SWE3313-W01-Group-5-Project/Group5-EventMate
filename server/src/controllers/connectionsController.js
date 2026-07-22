@@ -11,7 +11,7 @@ export async function getConnections(req, res) {
         }
 
         const connectionResponse = await pool.query(
-            `SELECT sender_id, receiver_id, status FROM connections
+            `SELECT sender_id, receiver_id, status, conversation_id FROM connections
             WHERE sender_id = $1 OR receiver_id = $1`,
             [userID]
         );
@@ -112,21 +112,74 @@ export async function createConnection(req, res) {
             return res.status(400).json({ message: "USERS_ALREADY_CONNECTED" });
         }
 
+        const conversationResult = await pool.query(
+            `INSERT INTO conversations
+            DEFAULT VALUES
+            RETURNING id`
+        );
+
+        const conversationId = conversationResult.rows[0].id;
+
         await pool.query(
-            `INSERT INTO connections (sender_id, receiver_id, status)
-            VALUES ($1, $2, $3)`,
-            [senderID, receiverID, "CONNECTED"]
+            `INSERT INTO connections (sender_id, receiver_id, conversation_id, status)
+            VALUES ($1, $2, $3, $4)`,
+            [senderID, receiverID, conversationId, "CONNECTED"]
         );
 
         await pool.query(
-            `UPDATE connections SET status = $3
+            `UPDATE connections SET conversation_id = $3, status = $4
             WHERE sender_id = $2 AND receiver_id = $1`,
-            [senderID, receiverID, "CONNECTED"]
+            [senderID, receiverID, conversationId, "CONNECTED"]
         );
 
         return res.status(200).json({ message: "CONNECTION_MADE" })
     } catch (err) {
         console.error("Error creating connection:", err);
+        return res.status(500).json({ message: "INTERNAL_SERVER_ERROR" });
+    }
+}
+
+export async function removeConnection(req, res) {
+    try {
+        const userID = req.user.id;
+        const connectedUserUUID = req.params.userUUID;
+
+        if (!userID) {
+            return res.status(401).json({message: "UNAUTHORIZED" });
+        }
+
+        if (!connectedUserUUID) {
+            return res.status(400).json({message: "RECEIVER_NOT_FOUND" });
+        }
+
+        const connectedUserResponse = await pool.query(
+            `SELECT id FROM users WHERE public_id = $1`,
+            [connectedUserUUID]
+        )
+
+        if (connectedUserResponse.rowCount === 0) {
+            return res.status(404).json({message: "RECEIVER_NOT_FOUND" });
+        }
+
+        const connectedUserID = connectedUserResponse.rows[0].id;
+
+        const removeConnectionResponse = await pool.query(
+            `DELETE FROM connections 
+            WHERE 
+                (sender_id = $1 AND receiver_id = $2)
+                OR 
+                (sender_id = $2 AND receiver_id = $1)`,
+                [userID, connectedUserID],
+        );
+
+        if (removeConnectionResponse.rowCount === 0) {
+            return res.status(404).json({ message: "CONNECTION_NOT_FOUND" });
+        }
+
+        return res.status(200).json({ message: "CONNECTION_REMOVED" });
+    } catch (error) {
+        console.error("Error removing connection:", error);
+
         return res.status(500).json({ message: "INTERNAL_SERVER_ERROR" });
     }
 }

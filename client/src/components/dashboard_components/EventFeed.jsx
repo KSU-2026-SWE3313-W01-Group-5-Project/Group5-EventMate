@@ -95,7 +95,7 @@ export default function EventFeed() {
                     onChange={(e) => setSearchTerm(e.target.value)}
                     placeholder="Search Events..."
                     className="
-                    rounded-full w-full
+                    rounded-lg w-full
                     px-4 py-1
                     bg-zinc-400/50
                     dark:bg-zinc-500

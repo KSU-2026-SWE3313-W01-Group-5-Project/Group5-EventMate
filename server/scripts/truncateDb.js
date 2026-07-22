@@ -10,6 +10,7 @@ const TABLES = {
     venues: "venues",
     event_registrations: "event_registrations",
     connections: "connections",
+    conversations: "conversations",
 }
 
 const truncateSQL = fs.readFileSync("./db/schemas/truncate.sql", "utf8");
