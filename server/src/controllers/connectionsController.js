@@ -130,3 +130,48 @@ export async function createConnection(req, res) {
         return res.status(500).json({ message: "INTERNAL_SERVER_ERROR" });
     }
 }
+
+export async function removeConnection(req, res) {
+    try {
+        const userID = req.user.id;
+        const connectedUserUUID = req.params.userUUID;
+
+        if (!userID) {
+            return res.status(401).json({message: "UNAUTHORIZED" });
+        }
+
+        if (!connectedUserUUID) {
+            return res.status(400).json({message: "RECEIVER_NOT_FOUND" });
+        }
+
+        const connectedUserResponse = await pool.query(
+            `SELECT id FROM users WHERE public_id = $1`,
+            [connectedUserUUID]
+        )
+
+        if (connectedUserResponse.rowCount === 0) {
+            return res.status(404).json({message: "RECEIVER_NOT_FOUND" });
+        }
+
+        const connectedUserID = connectedUserResponse.rows[0].id;
+
+        const removeConnectionResponse = await pool.query(
+            `DELETE FROM connections 
+            WHERE 
+                (sender_id = $1 AND receiver_id = $2)
+                OR 
+                (sender_id = $2 AND receiver_id = $1)`,
+                [userID, connectedUserID],
+        );
+
+        if (removeConnectionResponse.rowCount === 0) {
+            return res.status(404).json({ message: "CONNECTION_NOT_FOUND" });
+        }
+
+        return res.status(200).json({ message: "CONNECTION_REMOVED" });
+    } catch (error) {
+        console.error("Error removing connection:", error);
+
+        return res.status(500).json({ message: "INTERNAL_SERVER_ERROR" });
+    }
+}

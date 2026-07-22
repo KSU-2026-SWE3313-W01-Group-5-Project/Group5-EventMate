@@ -29,7 +29,17 @@ export function ConnectionProvider({ children }) {
         onSuccess: (data) => {
             queryClient.invalidateQueries({
                 queryKey: ["connections"],
-            })
+            });
+        }
+    });
+
+    const removeConnectionMutation = useMutation({
+        mutationFn: (userUUID) => connectionServices.removeConnection(userUUID),
+
+        onSuccess: (data) => {
+            queryClient.invalidateQueries({
+                queryKey: ["connections"],
+            });
         }
     })
 
@@ -42,6 +52,7 @@ export function ConnectionProvider({ children }) {
                 error,
 
                 connect: connectionMutation.mutateAsync,
+                removeConnection: removeConnectionMutation.mutateAsync,
             }}
         >
             {children}
