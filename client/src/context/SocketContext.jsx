@@ -36,19 +36,21 @@ export const SocketProvider = ({ children }) => {
 
     useEffect(() => {
         function handleNewMessage(newMessage) {
-            const isCurrentConversation = String(conversationID) === String(newMessage.conversation_id);
+            const isCurrentConversation = conversationID && String(conversationID) === String(newMessage.conversation_id);
+
+            if (isCurrentConversation) {
+                return;
+            }
 
             const preview = newMessage.content.length > 100
                 ? `${newMessage.content.slice(0, 100)}...` : newMessage.content;
 
-            if (!isCurrentConversation) {
-                addNotification({
-                    kind: "info",
-                    title: "New Message",
-                    subtitle: preview,
-                    timeout: 5000,
-                });
-            }
+            addNotification({
+                kind: "info",
+                title: "New Message",
+                subtitle: preview,
+                timeout: 5000,
+            });
         }
 
         socket.on("new_message", handleNewMessage);
