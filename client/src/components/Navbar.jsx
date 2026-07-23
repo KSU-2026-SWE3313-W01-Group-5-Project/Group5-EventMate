@@ -147,7 +147,6 @@ export default function Navbar() {
                 </NavLink>
             </div>
 
-            {/* Temporary placeholder text until we design an EventMate logo */}
             <div className="relative flex items-center justify-center">
                 <div
                     className={`
