@@ -35,6 +35,8 @@ CREATE TABLE user_preferences (
     sports_categories TEXT[] DEFAULT '{}',
     arts_categories TEXT[] DEFAULT '{}',
 
+    age_range TEXT DEFAULT 'All Ages',
+
     max_distance INT,
     city_filter JSONB,
     state_filter TEXT,
@@ -79,6 +81,8 @@ CREATE TABLE events (
     segment TEXT,
     genre TEXT,
     subgenre TEXT,
+
+    age_restriction INT,
 
     occurrences TIMESTAMPTZ[] NOT NULL DEFAULT '{}',
 

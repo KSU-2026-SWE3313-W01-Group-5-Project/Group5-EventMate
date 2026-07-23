@@ -43,6 +43,7 @@ export async function getUser(req, res) {
                     'music_categories', p.music_categories,
                     'sports_categories', p.sports_categories,
                     'arts_categories', p.arts_categories,
+                    'age_range', p.age_range,
                     'max_distance', p.max_distance,
                     'city_filter', p.city_filter,
                     'state_filter', p.state_filter
@@ -234,7 +235,7 @@ export async function updateUserPreferences(req, res) {
 
         const requestedUpdates = req.body;
 
-        const allowedColumns = ['auto_filter_enabled', 'event_types', 'music_categories', 'sports_categories', 'arts_categories', 'max_distance', 'city_filter', 'state_filter'];
+        const allowedColumns = ['auto_filter_enabled', 'event_types', 'music_categories', 'sports_categories', 'arts_categories', 'age_range', 'max_distance', 'city_filter', 'state_filter'];
 
         Object.keys(requestedUpdates).forEach(key => {
             if (!allowedColumns.includes(key)) {
@@ -260,7 +261,7 @@ export async function updateUserPreferences(req, res) {
             UPDATE user_preferences
             SET ${setClause}
             WHERE user_id = ${userIdPlaceholder}
-            RETURNING auto_filter_enabled, event_types, music_categories, sports_categories, arts_categories, max_distance, city_filter, state_filter
+            RETURNING auto_filter_enabled, event_types, music_categories, sports_categories, arts_categories, age_range, max_distance, city_filter, state_filter
             `;
 
         const result = await pool.query(sqlQuery, queryValues);

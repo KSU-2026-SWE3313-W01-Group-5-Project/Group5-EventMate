@@ -5,9 +5,17 @@ const pool = createPool();
 export class EventModel {
     static async insert(event) {
         try {
+            const occurrences = event.occurrences?.filter(
+                (occurrence) => occurrence != null
+            );
+
+            if (!occurrences || occurrences.length === 0) {
+                return null;
+            }
+
             const result = await pool.query(`
-                INSERT INTO events (id, canonical_key, name, description, timezone, status, image_url, venue_id, segment, genre, subgenre, occurrences, last_seen_at)
-                VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, NOW())
+                INSERT INTO events (id, canonical_key, name, description, timezone, status, image_url, venue_id, segment, genre, subgenre, age_restriction, occurrences, last_seen_at)
+                VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, NOW())
                 ON CONFLICT (id)
                 DO UPDATE SET
                     canonical_key = EXCLUDED.canonical_key,
@@ -20,6 +28,7 @@ export class EventModel {
                     segment = EXCLUDED.segment,
                     genre = EXCLUDED.genre,
                     subGenre = EXCLUDED.subGenre,
+                    age_restriction = EXCLUDED.age_restriction,
                     occurrences = EXCLUDED.occurrences,
                     last_seen_at = NOW()
                 RETURNING id
@@ -40,6 +49,8 @@ export class EventModel {
                 event.segment?.name,
                 event.genre?.name,
                 event.subgenre?.name,
+
+                event.age_restriction,
 
                 event.occurrences,
             ])

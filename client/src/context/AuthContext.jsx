@@ -85,7 +85,7 @@ export function AuthProvider({ children }) {
         mutationFn: authService.login,
 
         onSuccess: (data) => {
-            queryClient.invalidateQueries({
+            return queryClient.invalidateQueries({
                 queryKey: ["currentUser"],
             });
         }

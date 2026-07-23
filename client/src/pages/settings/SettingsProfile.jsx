@@ -105,7 +105,7 @@ export default function SettingsProfile() {
         // Only sends fields to the backend that have actually had changes made.
         if (username.trim()) formData.append("username", username)
         if (bio.trim()) formData.append("bio", bio)
-        formData.append("city", city.city ?? "");
+        formData.append("city", city?.city ?? "");
         formData.append("state", state ?? "");
         if (profileImageFile) {
             formData.append("profileImage", profileImageFile)

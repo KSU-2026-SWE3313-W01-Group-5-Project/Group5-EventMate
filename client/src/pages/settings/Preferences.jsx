@@ -125,6 +125,13 @@ const DISTANCE_OPTIONS = [
     250
 ];
 
+const AGE_RANGE_OPTIONS = [
+    "21 and Over",
+    "18 and Over",
+    "16 and Over",
+    "All Ages",
+]
+
 export default function Preferences() {
     const {user, updatePreferences, isLoading} = useAuth();
     const userPreferences = user.preferences;
@@ -138,6 +145,9 @@ export default function Preferences() {
 
     const [showDistanceDropdown, setShowDistanceDropdown] = useState(false);
     const [distance, setDistance] = useState(null);
+
+    const [showAgeRangeDropdown, setShowAgeRangeDropdown] = useState(false);
+    const [ageRange, setAgeRange] = useState(userPreferences?.age_range ?? "All Ages");
 
     const [stateFilter, setStateFilter] = useState(null);
     const [cityFilter, setCityFilter] = useState(null);
@@ -166,6 +176,8 @@ export default function Preferences() {
         setSelectedMusic(userPreferences.music_categories);
         setSelectedSports(userPreferences.sports_categories);
         setSelectedArts(userPreferences.arts_categories);
+
+        setAgeRange(userPreferences.age_range);
 
         setDistance(userPreferences.max_distance);
 
@@ -206,6 +218,8 @@ export default function Preferences() {
 
                 // Only include arts categories if Arts & Theatre is selected.
                 arts_categories: (selectedEventTypes.includes("Arts & Theatre") ? selectedArts : []),
+
+                age_range: ageRange,
 
                 max_distance: distance,
                 city_filter: cityFilter,
@@ -485,6 +499,37 @@ export default function Preferences() {
                                 onClick={resetLocationFilters}>
                                 Reset
                             </button>
+                        </div>
+                    </div>
+
+                    <div className={`${styles.formInput} items-center flex-wrap`}>
+                        <h1 className={'min-w-40'}>Age Range</h1>
+
+                        <div className={'relative flex-1'}>
+                            <button
+                                type={'button'}
+                                onClick={() => setShowAgeRangeDropdown(prev => !prev)}
+                                className={'w-full text-left outline-none'}
+                            >
+                                {ageRange}
+                            </button>
+                            <span className={'absolute right-0 top-1/2 -translate-y-1/2 text-stone-500'}>▼</span>
+                            {showAgeRangeDropdown && (
+                                <ul className={'absolute left-0 top-full mt-1 w-full bg-white border border-stone-300 rounded-md shadow-lg z-10 max-h-60 overflow-y-auto'}>
+                                    {AGE_RANGE_OPTIONS.map(option => (
+                                        <li
+                                            key={option}
+                                            onClick={() => {
+                                                setAgeRange(option);
+                                                setShowAgeRangeDropdown(false);
+                                            }}
+                                            className={'px-3 py-2 hover:bg-stone-100 cursor-pointer'}
+                                        >
+                                            {option}
+                                        </li>
+                                    ))}
+                                </ul>
+                            )}
                         </div>
                     </div>
                 </fieldset>
