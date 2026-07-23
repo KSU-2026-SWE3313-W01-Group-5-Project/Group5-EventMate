@@ -24,7 +24,7 @@ export function EventsProvider({ children }) {
     } = useQuery({
         queryKey: ["events", feedPage],
         queryFn: () => eventServices.getEvents(feedPage),
-        enabled: !!userUUID
+        enabled: !!user
     });
 
     const totalPages = eventData?.totalPages ?? 0;
@@ -43,7 +43,7 @@ export function EventsProvider({ children }) {
     } = useQuery({
         queryKey: ["eventRegistrations", userUUID],
         queryFn: () => eventServices.getEventRegistrations(),
-        enabled: !!userUUID,
+        enabled: !!user,
         refetchInterval: 3000,
     });
     // would use socket for these instead of refetch, but this is simple enough for now
