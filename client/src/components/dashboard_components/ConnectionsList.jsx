@@ -132,7 +132,7 @@ export default function ConnectionsList() {
                 dark:border-zinc-800
                 border-2 border-stone-200
                 rounded-xl
-                ml-2 mt-4 mr-4 mb-4
+                ml-2 mt-2 mr-4 mb-4
                 p-6 h-3/5
                 hover:bg-zinc-300/35
                 hover:dark:bg-zinc-800

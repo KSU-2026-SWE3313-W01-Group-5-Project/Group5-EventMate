@@ -39,6 +39,12 @@ export async function getEvents(req, res) {
                 [limit, offset]
             );
 
+            for (const event of events.rows) {
+                if (event.age_restriction && event.age_restriction["legalAgeEnforced"]) {
+                    console.log(event.age_restriction["legalAgeEnforced"], event.age_restriction["ageRuleDescription"]);
+                }
+            }
+
             const totalEvents = await pool.query(
                 `SELECT COUNT(*)
                 FROM events`
@@ -61,14 +67,19 @@ export async function getEvents(req, res) {
                 "Music": preferences.music_categories,
                 "Sports": preferences.sports_categories,
                 "Arts & Theatre": preferences.arts_categories,
+                "Miscellaneous": []
             };
+
+            if (preferences.event_types.length === 0) {
+                segments.push(...Object.keys(categoryMap));
+            }
 
             for (const eventType of preferences.event_types) {
                 const categories = categoryMap[eventType];
 
                 if (eventType === "Miscellaneous") {
-                    genres.push(..."Miscellaneous");
-                    segments.push(..."Miscellaneous");
+                    genres.push(eventType);
+                    segments.push(eventType);
                     continue;
                 }
 
@@ -83,14 +94,14 @@ export async function getEvents(req, res) {
 
             if (preferences.state_filter != null && preferences.max_distance == null) {
                 const state = preferences.state_filter;
-                const city = preferences.city_filter;
+                const city = preferences.city_filter.city;
 
                 const venuesResponse = await pool.query(
                     `SELECT *
                     FROM venues
                     WHERE state = $1
                     AND ($2::text IS NULL OR city = $2)`,
-                    [state, city.city]
+                    [state, city]
                 );
 
                 venues = venuesResponse.rows;
@@ -116,7 +127,11 @@ export async function getEvents(req, res) {
                 })
             }
 
-            const venueIds = Object.values(venues).map((venue) => venue.id)
+            let venueIds = null;
+
+            if (venues) {
+                venueIds = Object.values(venues).map((venue) => venue.id)
+            }
 
             const filteredEvents = await pool.query(
                 `SELECT *
@@ -126,10 +141,19 @@ export async function getEvents(req, res) {
                     OR genre = ANY ($2)
                 )
                 AND ($3::text[] is NULL OR venue_id = ANY($3))
+                AND (
+                    $4::text = 'All Ages'
+                    OR age_restriction >= CASE $4::text
+                    WHEN '16 and Over' THEN 16
+                    WHEN '18 and Over' THEN 18
+                    WHEN '21 and Over' THEN 21
+                    ELSE 0
+                    END
+                )
                 ORDER BY last_seen_at
-                    LIMIT $4
-                OFFSET $5`,
-                [segments, genres, venueIds, limit, offset]
+                    LIMIT $5
+                OFFSET $6`,
+                [segments, genres, venueIds, preferences.age_range, limit, offset]
             );
 
             const totalEvents = await pool.query(
@@ -139,8 +163,17 @@ export async function getEvents(req, res) {
                     segment = ANY ($1)
                     OR genre = ANY ($2)
                     )
-                AND ($3::text[] is NULL OR venue_id = ANY($3))`,
-                [segments, genres, venueIds]
+                AND ($3::text[] is NULL OR venue_id = ANY($3))
+                AND (
+                    $4::text = 'All Ages'
+                    OR age_restriction >= CASE $4::text
+                        WHEN '16 and Over' THEN 16
+                        WHEN '18 and Over' THEN 18
+                        WHEN '21 and Over' THEN 21
+                        ELSE 0
+                    END
+                )`,
+                [segments, genres, venueIds, preferences.age_range]
             );
 
             const totalPages = Math.ceil(totalEvents.rows[0].count / limit);

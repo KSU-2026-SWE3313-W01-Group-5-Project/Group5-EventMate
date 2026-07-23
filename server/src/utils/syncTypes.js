@@ -2,7 +2,8 @@ export const EVENT_TYPES = [
     "Music",
     "Sports",
     "Arts & Theatre",
-    "Miscellaneous"
+    "Miscellaneous",
+    "Family"
 ];
 
 export const MUSIC_CLASSIFICATIONS = [

@@ -1,10 +1,13 @@
 import generateDescription from "../utils/generateDescription.js";
+import normalizeAge from "../utils/normalizeAge.js";
 
 export default function normalizeEvent(tmEvent, canonicalKey) {
     const venueData = tmEvent._embedded?.venues?.[0];
     const classificationData = tmEvent.classifications?.[0];
 
     const image = tmEvent.images?.find(img => img.ratio === "16_9" && img.width >= 1024) ?? tmEvent.images?.[0];
+
+    const age_restriction = normalizeAge(tmEvent.ageRestrictions);
 
     const venue = {
         id: venueData.id,
@@ -34,6 +37,8 @@ export default function normalizeEvent(tmEvent, canonicalKey) {
         segment: classificationData.segment,
         genre: classificationData.genre,
         subgenre: classificationData.subGenre,
+
+        age_restriction: age_restriction,
 
         occurrences: [tmEvent.dates?.start?.dateTime]
     };
