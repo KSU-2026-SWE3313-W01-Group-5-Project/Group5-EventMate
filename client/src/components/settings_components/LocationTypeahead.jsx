@@ -33,20 +33,12 @@ import {useEffect, useRef, useState} from "react";
 import {useCities} from "../../hooks/useCities.js";
 
 export default function LocationTypeahead({state, city, setState, setCity, user}) {
-
-    console.log(state);
-    console.log(city);
-
-    // All the states for this file.
-    // Honestly, statePlaceholderValue and cityPlaceholderValue may be able to be constants instead of states, I am not entirely sure
-    // and cant be asked to change them right now, but their setters do not look like they are being used
     const [stateInputValue, setStateInputValue] = useState("");
     const [stateFiltered, setStateFiltered] = useState([]);
 
     const [cityInputValue, setCityInputValue] = useState("");
     const [cityFiltered, setCityFiltered] = useState([]);
 
-    // Pretty straightforward, used to tell the render when to show or hide the dropdowns
     const [stateIsOpen, setStateIsOpen] = useState(false);
     const [cityIsOpen, setCityIsOpen] = useState(false);
 
@@ -114,7 +106,6 @@ export default function LocationTypeahead({state, city, setState, setCity, user}
                     .filter(cityObj =>
                         cityObj.city.toLowerCase().includes(value.toLowerCase())
                     )
-                    .map(cityObj => cityObj.city)
             )
         );
 
@@ -124,7 +115,7 @@ export default function LocationTypeahead({state, city, setState, setCity, user}
 
     const handleCitySelect = (value) => {
         setCityInputValue(value);
-        setCity(value);
+        setCity(cityFiltered.find((cityObj) => cityObj.city.toLowerCase().includes(value.toLowerCase())));
         setCityIsOpen(false);
     }
 
@@ -186,11 +177,11 @@ export default function LocationTypeahead({state, city, setState, setCity, user}
                     <ul className="absolute left-0 top-full mt-1 w-full bg-white border border-stone-300 rounded-md shadow-lg z-10 max-h-60 overflow-y-auto">
                         {cityFiltered.map(city => (
                             <li
-                                key={city}
-                                onClick={() => handleCitySelect(city)}
+                                key={`${city.city}-${city.lat}`}
+                                onClick={() => handleCitySelect(city.city)}
                                 className="px-3 py-2 hover:bg-stone-100 cursor-pointer"
                             >
-                                {city}
+                                {city.city}
                             </li>
                         ))}
                     </ul>
