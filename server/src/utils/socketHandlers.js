@@ -32,15 +32,9 @@ export function setupSocketHandlers(io) {
                 );
 
                 const senderPublicResult = await pool.query(`
-                    SELECT public_id, us FROM users WHERE id = $1`,
+                    SELECT public_id, username FROM users WHERE id = $1`,
                     [socket.user.id]
                 );
-
-                // const recipientIDResult = await pool.query(`
-                //     SELECT receiver_id
-                //     FROM connections
-                //     WHERE conversation_id = $1 AND sender_id = $2`,
-                //     [conversationID, socket.user.id]);
 
                 const recipientIDResult = await pool.query(`
                     SELECT
@@ -61,8 +55,6 @@ export function setupSocketHandlers(io) {
                 }
 
                 const recipientID = recipientIDResult.rows[0].recipient_id;
-
-                // const recipientID = recipientIDResult.rows[0].receiver_id;
 
                 const message = messageResult.rows.map(message => ({
                     ...message,
