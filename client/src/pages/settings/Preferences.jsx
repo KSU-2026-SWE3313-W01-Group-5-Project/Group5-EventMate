@@ -21,6 +21,8 @@ import {useEffect, useState} from "react";
 import LocationTypeahead from "../../components/settings_components/LocationTypeahead.jsx";
 import {useAuth} from "../../context/AuthContext.jsx";
 import LoadingPage from "../../components/LoadingPage.jsx";
+import {useCities} from "../../hooks/useCities.js";
+import {useNotifications} from "../../context/NotificationContext.jsx";
 
 /**
  * These event types constant arrays are most of the categories I felt were applicable to take from TicketMaster's API.
@@ -140,8 +142,7 @@ export default function Preferences() {
     const [stateFilter, setStateFilter] = useState(null);
     const [cityFilter, setCityFilter] = useState(null);
 
-    const [success, setSuccess] = useState(false);
-    const [errorMessage, setErrorMessage] = useState("");
+    const {addNotification} = useNotifications();
 
     // Location must be fully defined (both city and state) before enabling distance filtering.
     const locationSelected = stateFilter != null && cityFilter != null;
@@ -192,6 +193,7 @@ export default function Preferences() {
             // the event type and the subcategories are still sent.
             // You may notice that all variables in this object are named in snake_case instead of camelCase. This is so the fields
             // can automatically match the columns in our table so we do not have to do any tedious parsing in the backend.
+
             const preferences = {
                 auto_filter_enabled: autoFilterEnabled,
                 event_types: selectedEventTypes,
@@ -210,17 +212,29 @@ export default function Preferences() {
                 state_filter: stateFilter,
             };
 
-            console.log(preferences);
-
             await updatePreferences(preferences);
 
-            setSuccess(true);
-            setErrorMessage("");
+            addNotification({
+                kind: "success",
+                title: "Event Preferences Set",
+                subtitle: "Your filter preferences have been updated successfully!",
+                timeout: 5000,
+            });
         } catch (err) {
             if (!err?.response) {
-                setErrorMessage('No Server Response');
+                addNotification({
+                    kind: "error",
+                    title: "Server Error",
+                    subtitle: "The server failed to respond.",
+                    timeout: 5000,
+                });
             } else {
-                setErrorMessage('Updating Preferences Failed');
+                addNotification({
+                    kind: "error",
+                    title: "Updating Preferences Failed",
+                    subtitle: "Your filter preferences were not updated.",
+                    timeout: 5000,
+                });
             }
         }
     };
@@ -229,25 +243,6 @@ export default function Preferences() {
 
     return (
         <div className={"max-w-full h-full flex flex-col gap-5"}>
-            {success && (
-                <h1 className={"w-full px-4 py-3 rounded-md border border-green-200 bg-green-50 text-green-700 text-sm"}>
-                    Preferences updated!
-                </h1>
-            )}
-
-            {errorMessage && (
-                <p className={`
-                    w-full 
-                    px-4 py-3  
-                    rounded-md 
-                    border border-red-200 bg-red-50
-                    text-red-700
-                    text-sm
-                    `}>
-                    {errorMessage}
-                </p>
-            )}
-
             <h1 className={"text-xl font-semibold text-stone-700 dark:text-white"}>
                 Event Preferences
             </h1>
@@ -440,11 +435,21 @@ export default function Preferences() {
                                 onClick={() => setShowDistanceDropdown(prev => !prev)}
                                 className={'w-full text-left outline-none'}
                             >
-                                Within {distance} miles
+                                {distance ? `Within ${distance} miles` : "No Filtering"}
                             </button>
                             <span className={'absolute right-0 top-1/2 -translate-y-1/2 text-stone-500'}>▼</span>
                             {showDistanceDropdown && (
                                 <ul className={'absolute left-0 top-full mt-1 w-full bg-white border border-stone-300 rounded-md shadow-lg z-10 max-h-60 overflow-y-auto'}>
+                                    <li
+                                        key={"reset"}
+                                        onClick={() => {
+                                            setDistance(null);
+                                            setShowDistanceDropdown(false);
+                                        }}
+                                        className={'px-3 py-2 hover:bg-stone-100 cursor-pointer'}
+                                    >
+                                        No Filtering
+                                    </li>
                                     {DISTANCE_OPTIONS.map(option => (
                                         <li
                                             key={option}
@@ -473,7 +478,7 @@ export default function Preferences() {
                         <div className={styles.formInput}>
                             <h1>Preferred Location</h1>
 
-                            <LocationTypeahead user={user} setState={setStateFilter} setCity={setCityFilter} state={stateFilter} city={cityFilter}/>
+                            <LocationTypeahead user={user} setState={setStateFilter} setCity={setCityFilter} state={stateFilter} city={cityFilter?.city}/>
                             <button
                                 type={`button`}
                                 className={`text-red-700`}

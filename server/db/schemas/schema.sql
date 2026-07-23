@@ -36,7 +36,7 @@ CREATE TABLE user_preferences (
     arts_categories TEXT[] DEFAULT '{}',
 
     max_distance INT,
-    city_filter TEXT,
+    city_filter JSONB,
     state_filter TEXT,
 
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE

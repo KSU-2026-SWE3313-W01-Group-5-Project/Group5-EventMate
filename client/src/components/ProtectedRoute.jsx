@@ -13,8 +13,8 @@
  */
 
 import { Navigate, Outlet } from "react-router-dom";
-import { useAuth } from "../../context/AuthContext";
-import LoadingPage from "../LoadingPage.jsx";
+import { useAuth } from "../context/AuthContext.jsx";
+import LoadingPage from "./LoadingPage.jsx";
 
 export default function ProtectedRoute() {
 

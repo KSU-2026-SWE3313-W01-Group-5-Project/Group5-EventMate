@@ -35,7 +35,7 @@ import Settings from "./pages/Settings.jsx";
 import SettingsProfile from "./pages/settings/SettingsProfile.jsx";
 import Preferences from "./pages/settings/Preferences.jsx";
 import Security from "./pages/settings/Security.jsx";
-import ProtectedRoute from "./components/settings_components/ProtectedRoute.jsx";
+import ProtectedRoute from "./components/ProtectedRoute.jsx";
 
 export default function App() {
     return (

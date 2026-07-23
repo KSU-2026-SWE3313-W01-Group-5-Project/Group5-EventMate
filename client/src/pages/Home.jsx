@@ -5,42 +5,16 @@
  * of having an element that displays random top events or something for everyone to see, we will see.
  */
 
-import {useNavigate} from "react-router-dom";
 import Navbar from "../components/Navbar.jsx";
-import {useAuth} from "../context/AuthContext.jsx";
-
 import heroImage from "../assets/hero/homepage-hero.jpg"
-import LoadingPage from "../components/LoadingPage.jsx";
 
 export default function Home() {
-    const {user, isLoading, isError, logout} = useAuth();
-    const navigate = useNavigate();
-
-    const renderUser = () => {
-        if (isLoading) {
-            return (
-                <LoadingPage />
-            )
-        }
-
-        if (isError || !user) {
-            return <span>Not logged in...</span>
-        }
-
-        return (
-            <>
-                <p>Username: {user.username}</p>
-                <p>Email: {user.email}</p>
-            </>
-        )
-    }
-
     return (
         <>
             <Navbar/>
 
             <main>
-                <section className="relative h-[80vh] min-h-200">
+                <section className="relative h-[80vh] min-h-200 dark:bg-zinc-700">
 
                     <img
                         src={heroImage}

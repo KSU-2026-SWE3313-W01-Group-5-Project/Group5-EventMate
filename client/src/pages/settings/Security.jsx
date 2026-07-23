@@ -28,11 +28,13 @@ import openEyeIcon from "../../assets/registration_modal_icons/open-eye.png"
 import DeleteAccountModal from "../modals/DeleteAccountModal.jsx";
 import Modal from "../../components/Modal.jsx";
 import {useNavigate} from "react-router-dom";
+import {useNotifications} from "../../context/NotificationContext.jsx";
 
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
 const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
 export default function Security() {
+    const {addNotification} = useNotifications()
     const { user, updateUser, logout } = useAuth();
     const navigate = useNavigate();
 
@@ -79,6 +81,18 @@ export default function Security() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        const pass = PWD_REGEX.test(password);
+
+        if (!pass) {
+            addNotification({
+                kind: "error",
+                title: "Invalid Password",
+                subtitle: "Your password is not valid.",
+                timeout: 5000,
+            });
+            return;
+        }
+
         const settings = {
             password: password,
             email: email,
@@ -97,28 +111,49 @@ export default function Security() {
         try {
             await updateUser(cleanSettings);
 
-            setSuccess(true);
+            addNotification({
+                kind: "success",
+                title: "Security Settings Updated",
+                subtitle: "Your security settings have been successfully updated!",
+                timeout: 5000,
+            });
 
             setPassword('');
             setMatchPassword('');
-
-            setErrorMessage('');
         } catch (err) {
-
-            // Same error handling and message-creating for users as the login and registration modals (and other settings)
             if (!err?.response) {
-                setErrorMessage('No Server Response');
+                addNotification({
+                    kind: "error",
+                    title: "Server Error",
+                    subtitle: "The server failed to respond.",
+                    timeout: 5000,
+                });
             } else if (err.response?.status === 409) {
                 switch (err.response?.data?.error) {
                     case "EMAIL_TAKEN":
-                        setErrorMessage('An account with that email already exists');
+                        addNotification({
+                            kind: "warning",
+                            title: "Updating Settings Failed",
+                            subtitle: "An account with that email already exists.",
+                            timeout: 5000,
+                        });
                         break;
 
                     default:
-                        setErrorMessage("Updating Settings Failed");
+                        addNotification({
+                            kind: "error",
+                            title: "Updating Settings Failed",
+                            subtitle: "Your settings were not updated.",
+                            timeout: 5000,
+                        });
                 }
             } else {
-                setErrorMessage('Updating Settings Failed');
+                addNotification({
+                    kind: "error",
+                    title: "Updating Settings Failed",
+                    subtitle: "Your settings were not updated.",
+                    timeout: 5000,
+                });
             }
         }
     }
@@ -154,24 +189,6 @@ export default function Security() {
 
                 Same goes for the password/confirm password and email inputs. Copied from the registration modal */}
             <div className={`max-w-full h-full flex flex-col gap-5`}>
-                {success && (
-                    <h1 className={"w-full px-4 py-3 rounded-md border border-green-200 bg-green-50 text-green-700 text-sm"}>
-                        Settings updated!
-                    </h1>
-                )}
-
-                {errorMessage && (
-                    <p className={`
-                    w-full 
-                    px-4 py-3  
-                    rounded-md 
-                    border border-red-200 bg-red-50
-                    text-red-700
-                    text-sm
-                    `}>
-                        {errorMessage}
-                    </p>
-                )}
 
                 <h1 className={`
                     text-xl font-semibold

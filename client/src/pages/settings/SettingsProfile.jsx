@@ -21,6 +21,7 @@ import {useAuth} from "../../context/AuthContext.jsx";
 
 import ProfileImageUpload from "../../components/settings_components/ProfileImageUpload.jsx";
 import getUserProfilePicture from "../../utils/getUserProfilePicture.js";
+import {useNotifications} from "../../context/NotificationContext.jsx";
 
 // These are mostly arbitrary interest categories that I came up with off the top of my head.
 // These are to fulfill the requirement for this project to allow users to set up profiles with their interests.
@@ -51,6 +52,7 @@ const availableInterests = [
 
 export default function SettingsProfile() {
     const {user, updateUser} = useAuth();
+    const {addNotification} = useNotifications();
 
     const [selected, setSelected] = useState([]);
 
@@ -62,9 +64,6 @@ export default function SettingsProfile() {
 
     const [profileImagePreview, setProfileImagePreview] = useState(null);
     const [profileImageFile, setProfileImageFile] = useState(null);
-
-    const [errorMessage, setErrorMessage] = useState('');
-    const [success, setSuccess] = useState(false);
 
     // Same toggleInterest function as the Preferences sub-page (I wrote this one first) except for the fact that this one
     // can only toggleInterests for the single multi-select element on this page. The function in preferences can handle
@@ -106,7 +105,7 @@ export default function SettingsProfile() {
         // Only sends fields to the backend that have actually had changes made.
         if (username.trim()) formData.append("username", username)
         if (bio.trim()) formData.append("bio", bio)
-        formData.append("city", city ?? "");
+        formData.append("city", city.city ?? "");
         formData.append("state", state ?? "");
         if (profileImageFile) {
             formData.append("profileImage", profileImageFile)
@@ -117,22 +116,46 @@ export default function SettingsProfile() {
         try {
             await updateUser(formData);
 
-            setSuccess(true);
-            setErrorMessage('');
+            addNotification({
+                kind: "success",
+                title: "Profile Updated",
+                subtitle: "Your profile has been successfully updated!",
+                timeout: 5000,
+            });
         } catch (err) {
             if (!err?.response) {
-                setErrorMessage('No Server Response');
+                addNotification({
+                    kind: "error",
+                    title: "Server Error",
+                    subtitle: "The server failed to respond.",
+                    timeout: 5000,
+                });
             } else if (err.response?.status === 409) {
                 switch (err.response?.data?.error) {
                     case "USERNAME_TAKEN":
-                        setErrorMessage('An account with that email already exists');
+                        addNotification({
+                            kind: "error",
+                            title: "Updating Profile Failed",
+                            subtitle: "An account with that username already exists.",
+                            timeout: 5000,
+                        });
                         break;
 
                     default:
-                        setErrorMessage("Updating Settings Failed");
+                        addNotification({
+                            kind: "error",
+                            title: "Updating Profile Failed",
+                            subtitle: "Your profile was not updated.",
+                            timeout: 5000,
+                        });
                 }
             } else {
-                setErrorMessage('Updating Settings Failed');
+                addNotification({
+                    kind: "error",
+                    title: "Updating Profile Failed",
+                    subtitle: "Your profile was not updated.",
+                    timeout: 5000,
+                });
             }
         }
     }
@@ -140,25 +163,6 @@ export default function SettingsProfile() {
     return (
         <>
             <div className={`max-w-full h-full flex flex-col gap-5`}>
-                {success && (
-                    <h1 className={"w-full px-4 py-3 rounded-md border border-green-200 bg-green-50 text-green-700 text-sm"}>
-                        Profile updated!
-                    </h1>
-                )}
-
-                {errorMessage && (
-                    <p className={`
-                    w-full 
-                    px-4 py-3  
-                    rounded-md 
-                    border border-red-200 bg-red-50
-                    text-red-700
-                    text-sm
-                    `}>
-                        {errorMessage}
-                    </p>
-                )}
-
                 <h1 className={`
                     text-xl font-semibold
                     text-stone-700 dark:text-white

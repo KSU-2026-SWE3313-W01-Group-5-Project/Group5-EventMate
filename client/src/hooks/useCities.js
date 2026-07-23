@@ -9,7 +9,6 @@ import {useEffect, useState} from "react";
 import loadCities from "../utils/loadCities.js";
 
 export function useCities() {
-
     // Hook states to store the data and save a loading state to help keep rendering safe
     const [cities, setCities] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -22,5 +21,16 @@ export function useCities() {
         });
     }, []);
 
-    return { cities, loading };
+    const getCityObject = (city, state) => {
+        return Array.from(
+            new Set(
+                (cities[state] || [])
+                    .filter(cityObj =>
+                        cityObj.city.toLowerCase().includes(city.toLowerCase())
+                    )
+            )
+        )
+    }
+
+    return { cities, loading, getCityObject };
 }

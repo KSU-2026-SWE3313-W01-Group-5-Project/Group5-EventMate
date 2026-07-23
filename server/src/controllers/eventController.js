@@ -1,4 +1,5 @@
 import {createPool} from "../../db/index.js";
+import doHaversineFormula from "../utils/doHaversineFormula.js";
 
 const pool = createPool();
 
@@ -78,22 +79,44 @@ export async function getEvents(req, res) {
                 }
             }
 
-            let venueIds = null;
+            let venues = null;
 
-            if (preferences.state_filter != null) {
+            if (preferences.state_filter != null && preferences.max_distance == null) {
                 const state = preferences.state_filter;
                 const city = preferences.city_filter;
 
-                const filteredVenues = await pool.query(
-                    `SELECT id
+                const venuesResponse = await pool.query(
+                    `SELECT *
                     FROM venues
                     WHERE state = $1
                     AND ($2::text IS NULL OR city = $2)`,
-                    [state, city]
+                    [state, city.city]
                 );
 
-                venueIds = filteredVenues.rows.map(row => row.id);
+                venues = venuesResponse.rows;
             }
+
+            if (preferences.max_distance != null) {
+                const state = preferences.state_filter;
+
+                const venuesResponse = await pool.query(
+                    `SELECT *
+                    FROM venues
+                    WHERE state = $1`,
+                    [state]
+                );
+
+                venues = venuesResponse.rows;
+
+                const lat = preferences.city_filter.lat;
+                const lng = preferences.city_filter.lng;
+
+                venues = venues?.filter((venue) => {
+                    return doHaversineFormula(lat, lng, venue.latitude, venue.longitude) <= preferences.max_distance;
+                })
+            }
+
+            const venueIds = Object.values(venues).map((venue) => venue.id)
 
             const filteredEvents = await pool.query(
                 `SELECT *
