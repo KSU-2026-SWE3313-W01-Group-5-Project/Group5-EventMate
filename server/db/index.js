@@ -9,8 +9,9 @@ export function createPool() {
         port: process.env.DB_PORT,
         database: process.env.DB_NAME,
 
-        ssl: {
+        ssl: process.env.NODE_ENV === "production" ?
+            {
             rejectUnauthorized: false,
-        },
+        } : false,
     });
 }

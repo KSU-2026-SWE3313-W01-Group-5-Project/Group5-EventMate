@@ -72,6 +72,7 @@ export function AuthProvider({ children }) {
         queryFn: () => userService.getUserRegistrations(),
 
         retry: false,
+        enabled: !!user,
     })
 
     /**

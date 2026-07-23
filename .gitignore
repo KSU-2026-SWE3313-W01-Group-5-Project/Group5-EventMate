@@ -34,3 +34,10 @@ server/uploads/profile_images/*
 !server/uploads/profile_images/default-profile.png
 
 client/.vite/
+
+# Cypress generated files
+cypress/screenshots/
+cypress/videos/
+
+# Cypress cache
+.cache/

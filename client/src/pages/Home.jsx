@@ -61,12 +61,6 @@ export default function Home() {
 
                 </section>
             </main>
-            <div className={"flex flex-col gap-8"}>
-
-                {renderUser()}
-
-                <button onClick={() => navigate('/profile/?user=e75e1b94-804b-40f0-bbbe-cea9d9b5a8b3')}>view profile 803a330c-dbae-4bf7-9e78-5a7da9543a13</button>
-            </div>
         </>
     )
 }
