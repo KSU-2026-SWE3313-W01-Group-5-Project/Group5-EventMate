@@ -139,7 +139,7 @@ export default function MessagingModal({ onRequestClose }) {
                                     className={`flex w-full ${sentByReceiver ? "justify-start" : "justify-end"} `}
                                 >
                                     <div className={`flex gap-3 max-w-[45%]`}>
-                                        <div className={`w-10`}>
+                                        <div className={`${sentByReceiver ? `w-10` : `w-0`}`}>
                                             <img
                                                 className={`rounded-full mt-1`}
                                                 src={getUserProfilePicture(connectionProfile.profile_picture_url)}
@@ -150,7 +150,7 @@ export default function MessagingModal({ onRequestClose }) {
                                         <p className={`
                                             mt-1
                                             text-white px-4 py-2 
-                                            break-all
+                                            break-words
                                             max-w-[90%]
                                             ${sentByReceiver ? `mr-auto bg-zinc-800 rounded-tl-2xl rounded-tr-2xl rounded-br-2xl` 
                                             : `bg-zinc-300 ml-auto rounded-tl-2xl rounded-tr-2xl rounded-bl-2xl text-zinc-900`}`}>
@@ -167,7 +167,7 @@ export default function MessagingModal({ onRequestClose }) {
                                 className={`flex w-full ${sentByReceiver ? "justify-start" : "justify-end"} `}
                             >
                                 <div className={`flex gap-3 max-w-[45%]`}>
-                                    <div className={`w-10`}>
+                                    <div className={`${sentByReceiver ? `w-10` : `w-0`}`}>
                                         <img
                                             className={`rounded-full mt-1`}
                                             src={getUserProfilePicture(connectionProfile.profile_picture_url)}
@@ -178,7 +178,7 @@ export default function MessagingModal({ onRequestClose }) {
                                     <p className={`
                                         mt-1
                                         text-white px-4 py-2 
-                                        break-all
+                                        break-words
                                         max-w-[85%]
                                         ${sentByReceiver ? `mr-auto bg-zinc-800 rounded-tl-2xl rounded-tr-2xl rounded-br-2xl`
                                         : `bg-zinc-300 ml-auto rounded-tl-2xl rounded-tr-2xl rounded-bl-2xl text-zinc-900`}`}>
