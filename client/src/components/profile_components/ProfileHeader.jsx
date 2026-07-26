@@ -67,9 +67,9 @@ export default function ProfileHeader({ displayedUser }) {
     const formattedName = `${displayedUser.firstname} ${displayedUser.lastname}`;
 
     const formattedLocation =
-        displayedUser.city && displayedUser.state
-            ? `${displayedUser.city}, ${displayedUser.state}`
-            : displayedUser.city || displayedUser.state || "";
+        displayedUser.city.city && displayedUser.state
+            ? `${displayedUser.city.city}, ${displayedUser.state}`
+            : displayedUser.city.city || displayedUser.state || "";
 
     const formattedInterests =
         displayedUser.interests.length > 0
