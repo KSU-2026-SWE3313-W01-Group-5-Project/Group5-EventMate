@@ -33,7 +33,7 @@ export default function Navbar() {
     const [dropDownOpen, setDropdownOpen] = useState(false);
 
     // Stores the user's preferred color theme.
-    // Defaults to the previously saved preferrence from the localStorage in the browser, or the operating system's preference if none is saved
+    // Defaults to the previously saved preference from the localStorage in the browser, or the operating system's preference if none is saved
     const [theme, setTheme] = useState(localStorage.getItem("theme") || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"));
 
     // Handles navigating with react-router and defines every page displayed in the main navigation. Rendering from an array makes adding and removing
@@ -147,10 +147,9 @@ export default function Navbar() {
                 </NavLink>
             </div>
 
-            <div className="relative flex items-center justify-center">
+            <div className="absolute left-1/2 -translate-x-1/2 items-center justify-center">
                 <div
                     className={`
-                        relative
                         px-5 py-2
                         bg-stone-700 dark:bg-zinc-900/50 
                         -skew-x-12
@@ -206,7 +205,7 @@ export default function Navbar() {
                 <div className="relative">
                     <button
                         onClick={() => handleUserDropdown()}
-                        className={ `${styles.iconButton} flex gap-2` }
+                        className={ `${styles.iconButton} flex h-10 items-center gap-2` }
                     >
                         <img
                             className={"h-5 w-auto object-contain rounded-full"}

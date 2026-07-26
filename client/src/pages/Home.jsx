@@ -10,7 +10,7 @@ import heroImage from "../assets/hero/homepage-hero.jpg"
 
 export default function Home() {
     return (
-        <>
+        <div className={`min-h-screen  dark:bg-zinc-800`}>
             <Navbar/>
 
             <main>
@@ -35,6 +35,6 @@ export default function Home() {
 
                 </section>
             </main>
-        </>
+        </div>
     )
 }

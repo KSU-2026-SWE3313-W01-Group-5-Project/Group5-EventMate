@@ -13,7 +13,6 @@ const pool = createPool();
 
 export async function getEvents(req, res) {
     try {
-
         const userId = req.user.id;
 
         const result = await pool.query(`

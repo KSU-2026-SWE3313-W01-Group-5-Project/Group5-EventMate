@@ -8,9 +8,11 @@ import ConnectionsList from "../components/dashboard_components/ConnectionsList.
 import ManageEvents from "../components/dashboard_components/ManageEvents.jsx";
 import LoadingPage from "../components/LoadingPage.jsx";
 import {useEvents} from "../context/EventContext.jsx";
+import {useNotifications} from "../context/NotificationContext.jsx";
 
 export default function Dashboard() {
     const {isLoading, isError} = useEvents();
+    const {addNotification} = useNotifications();
 
     if (isLoading) return (
         <>
@@ -18,12 +20,14 @@ export default function Dashboard() {
         </>
     );
 
-    if (isError) return (
-        <>
-            <Navbar />
-            <span>Error...</span>
-        </>
-    );
+    if (isError) {
+        addNotification({
+            kind: 'error',
+            title: 'System Error',
+            subtitle: "The server has timed out.",
+            timeout: 10000
+        });
+    }
 
     return (
         <div className={`flex flex-col h-screen bg-stone-50 dark:bg-zinc-900 overflow-hidden`}>

@@ -335,12 +335,13 @@ export default function EventDetails({ eventId, onClose }) {
                                 dark:scrollbar-thumb-stone-100
                                 m-5 p-3
                             `}>
-                                {usersData.length > 0 ? (
-                                    usersData.map((user) => (
-                                        <li
-                                            onClick={() => navigate(`/profile/?user=${user.public_id}`)}
-                                            key={user.public_id}
-                                            className="
+                                {currentRegistrations.length > 0 ? (
+                                    usersData.length > 0 ? (
+                                        usersData.map((user) => (
+                                            <li
+                                                onClick={() => navigate(`/profile/?user=${user.public_id}`)}
+                                                key={user.public_id}
+                                                className="
                                             flex h-20 shrink-0 items-center gap-5
                                             rounded-lg
                                             bg-zinc-200 dark:bg-zinc-600
@@ -351,20 +352,23 @@ export default function EventDetails({ eventId, onClose }) {
                                             text-stone-800 dark:text-white
                                             dark:border-zinc-800
                                             "
-                                        >
-                                            <img
-                                                src={getUserProfilePicture(user.profile_picture_url)}
-                                                className={`h-15 rounded-full bg-zinc-700/10 dark:bg-zinc-700/50 shadow-lg`}
-                                                alt="Profile Image"
-                                            />
-                                            <div className={`flex flex-col gap-1`}>
-                                                <h3 className="text-md font-semibold">{user.username}</h3>
-                                                <p className={`text-xs text-stone-500 dark:text-zinc-200 `}>{user.firstname} {user.lastname}</p>
-                                            </div>
-                                        </li>
-                                    ))
-                                ) : (
+                                            >
+                                                <img
+                                                    src={getUserProfilePicture(user.profile_picture_url)}
+                                                    className={`h-15 rounded-full bg-zinc-700/10 dark:bg-zinc-700/50 shadow-lg`}
+                                                    alt="Profile Image"
+                                                />
+                                                <div className={`flex flex-col gap-1`}>
+                                                    <h3 className="text-md font-semibold">{user.username}</h3>
+                                                    <p className={`text-xs text-stone-500 dark:text-zinc-200 `}>{user.firstname} {user.lastname}</p>
+                                                </div>
+                                            </li>
+                                        ))
+                                    ) : (
                                     <li className={`flex h-full items-center justify-center text-sm text-stone-600 dark:text-zinc-400`}>No one has signed up yet, be the first!</li>
+                                    )
+                                ) : (
+                                    <li className={`flex h-full text-center items-center justify-center text-sm text-stone-600 dark:text-zinc-400`}>You must register for this event before viewing other attendees.</li>
                                 )}
                             </ul>
                         </div>
