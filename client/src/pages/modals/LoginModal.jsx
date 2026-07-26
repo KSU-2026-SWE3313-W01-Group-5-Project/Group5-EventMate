@@ -69,7 +69,7 @@ export default function LoginModal({ onSwitch, onRequestCloseWithoutNavigation }
             <div
                 className={`
                 flex flex-col gap-6
-                w-full max-w-md 
+                w-[28rem]
                 rounded-xl 
                 border border-stone-200 
                 bg-stone-50 dark:bg-zinc-800 dark:border-zinc-900 
