@@ -16,7 +16,6 @@
  */
 
 import React, {useEffect, useState, cloneElement} from "react";
-import {useSocket} from "../context/SocketContext.jsx";
 
 export default function Modal({ children, onClose, isOpen }) {
     // Controls the opacity animation independently of the isOpen prop.
@@ -47,15 +46,17 @@ export default function Modal({ children, onClose, isOpen }) {
     /**
      * Begins the closing animation BEFORE telling the parent that the modal is closing, this way it can animate before being unmounted
      */
-    const handleClose = () => {
+    const handleClose = (shouldCallOnClose = true) => {
 
         // This starts the closing animation
         setVisible(false);
 
         // This tells the parent to unmount it (which physically removes the modal object from the page), waits the full 3 seconds
-        setTimeout(() => {
-            onClose();
-        }, 300)
+        if (shouldCallOnClose) {
+            setTimeout(() => {
+                onClose();
+            }, 300)
+        }
     }
 
     /**
@@ -71,7 +72,8 @@ export default function Modal({ children, onClose, isOpen }) {
     const childWithProps =
         React.isValidElement(children)
             ? cloneElement(children, {
-                onRequestClose: handleClose,
+                onRequestClose: () => handleClose(true),
+                onRequestCloseWithoutNavigation: () => handleClose(false),
             })
             : children;
 

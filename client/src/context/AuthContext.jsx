@@ -61,7 +61,7 @@ export function AuthProvider({ children }) {
     })
 
     // Convenience values derived from the query^
-    const user = query.data ?? null;
+    const user = query.data;
     const isLoading = query.isLoading;
     const isAuthenticated = !!query.data;
 
@@ -84,8 +84,8 @@ export function AuthProvider({ children }) {
     const loginMutation = useMutation({
         mutationFn: authService.login,
 
-        onSuccess: (data) => {
-            return queryClient.invalidateQueries({
+        onSuccess: async () => {
+            await queryClient.refetchQueries({
                 queryKey: ["currentUser"],
             });
         }

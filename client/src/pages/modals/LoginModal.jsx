@@ -20,8 +20,11 @@ import {useAuth} from "../../context/AuthContext.jsx";
 import idIcon from "../../assets/registration_modal_icons/id-card.png"
 import passwordIcon from "../../assets/registration_modal_icons/padlock.png"
 import openEyeIcon from "../../assets/registration_modal_icons/open-eye.png"
+import {useNavigate} from "react-router-dom";
 
-export default function LoginModal({ onSwitch, onRequestClose }) {
+export default function LoginModal({ onSwitch, onRequestCloseWithoutNavigation }) {
+    const navigate = useNavigate();
+
     const { login } = useAuth();
 
     const [username, setUsername] = useState("");
@@ -47,7 +50,8 @@ export default function LoginModal({ onSwitch, onRequestClose }) {
             setErrorMessage("");
 
             setTimeout(() => {
-                onRequestClose()
+                onRequestCloseWithoutNavigation();
+                navigate("/dashboard")
             }, 1000);
         } catch (err) {
             if (!err?.response) {
